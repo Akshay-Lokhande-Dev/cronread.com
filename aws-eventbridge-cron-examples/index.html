@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS EventBridge Cron Examples — 20+ Schedules with Terraform & CDK | CronRead Pro</title>
+<meta name="description" content="20+ AWS EventBridge cron expression examples. Covers cron() vs rate(), the ? wildcard, named days, nth-weekday, Terraform aws_cloudwatch_event_rule, EventBridge Scheduler, and common mistakes to avoid.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://cronread.com/aws-eventbridge-cron-examples">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AWS EventBridge Cron Examples — CronRead Pro">
+<meta property="og:description" content="20+ EventBridge cron examples with Terraform, AWS CDK, and CLI snippets. Understand cron() vs rate(), the ? wildcard, and common pitfalls.">
+<meta property="og:url" content="https://cronread.com/aws-eventbridge-cron-examples">
+<meta property="og:site_name" content="CronRead Pro">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../cronread-seo.css">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"What is the difference between cron() and rate() in AWS EventBridge?","acceptedAnswer":{"@type":"Answer","text":"rate() defines a fixed interval (e.g. rate(5 minutes)) while cron() uses a 6-field expression for precise scheduling (e.g. specific times, days of week, or months). Use rate() for simple repeating intervals and cron() when you need to control exactly when a rule fires."}},
+    {"@type":"Question","name":"Why does AWS EventBridge cron use 6 fields instead of 5?","acceptedAnswer":{"@type":"Answer","text":"AWS EventBridge cron adds a Year field as the 6th field: cron(minutes hours day-of-month month day-of-week year). The year field is usually * to match all years. AWS also requires either day-of-month or day-of-week to be ? (not both can be specified)."}},
+    {"@type":"Question","name":"What does ? mean in AWS EventBridge cron?","acceptedAnswer":{"@type":"Answer","text":"? means 'no specific value' and is used in either the day-of-month or day-of-week field (but not both). If you specify a day-of-week, the day-of-month must be ?. AWS requires this because specifying both would be ambiguous."}},
+    {"@type":"Question","name":"Can I use MON-FRI in AWS EventBridge cron?","acceptedAnswer":{"@type":"Answer","text":"Yes. AWS EventBridge supports named days (SUN, MON, TUE, WED, THU, FRI, SAT) and named months (JAN–DEC). It also supports nth-weekday syntax like MON#2 (second Monday) and last-weekday like 5L (last Friday)."}},
+    {"@type":"Question","name":"Why is my EventBridge rule not firing at the expected time?","acceptedAnswer":{"@type":"Answer","text":"AWS EventBridge cron runs in UTC. If you expect a rule to fire at 9 AM in New York (EST, UTC-5), you need cron(0 14 ? * MON-FRI *). Use CronRead Pro's timezone calculator to find the correct UTC equivalent for your local time."}}
+  ]
+}
+</script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">CRONREAD</a>
+    <div class="nav-links">
+      <a href="../index.html">Tool</a>
+      <a href="../cron-examples/index.html">Examples</a>
+      <a href="../kubernetes-cronjob-examples/index.html">Kubernetes</a>
+      <a href="../github-actions-cron-examples/index.html">GitHub Actions</a>
+      <a href="../cronguru-alternative/index.html">vs CronGuru</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<div class="hero">
+  <div class="hero-tag">AWS GUIDE</div>
+  <h1>AWS EventBridge<br><span class="hl">Cron Expression Examples</span></h1>
+  <p class="hero-sub">20+ real-world EventBridge schedule examples with Terraform, AWS CDK, and CLI snippets. Covers cron() vs rate(), the ? wildcard, common mistakes, and production patterns.</p>
+  <div class="cta-row">
+    <a href="../index.html" class="cta-btn">⚡ Validate Your EventBridge Cron</a>
+  </div>
+</div>
+
+<section>
+  <h2>AWS EventBridge Cron Format</h2>
+  <p>AWS EventBridge uses a 6-field cron format that differs from standard Linux cron. Understanding these differences prevents hard-to-debug production issues.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Values</th><th>Wildcards</th></tr></thead>
+      <tbody>
+        <tr><td>Minutes</td><td>0–59</td><td><code>* , - /</code></td></tr>
+        <tr><td>Hours</td><td>0–23</td><td><code>* , - /</code></td></tr>
+        <tr><td>Day of month</td><td>1–31</td><td><code>* , - / ? L W</code></td></tr>
+        <tr><td>Month</td><td>1–12 or JAN–DEC</td><td><code>* , - /</code></td></tr>
+        <tr><td>Day of week</td><td>1–7 or SUN–SAT</td><td><code>* , - / ? L #</code></td></tr>
+        <tr><td>Year</td><td>1970–2199</td><td><code>* , - /</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-warn">
+    <strong style="color:var(--yellow)">⚠ Key difference from Linux cron:</strong> In AWS EventBridge, day-of-week numbering starts at 1 (Sunday=1) not 0. And you must use <code>?</code> in exactly one of day-of-month or day-of-week.
+  </div>
+</section>
+
+<hr class="divider">
+
+<section>
+  <h2>cron() vs rate()</h2>
+  <p>EventBridge offers two schedule expression types. Choosing the right one keeps your configs readable and less error-prone.</p>
+
+  <h3>Use rate() for simple intervals</h3>
+  <pre>rate(5 minutes)    # Every 5 minutes
+rate(1 hour)       # Every hour
+rate(7 days)       # Every 7 days</pre>
+
+  <div class="callout callout-warn">
+    <strong style="color:var(--yellow)">⚠ rate() quirk:</strong> Use singular for value 1: <code>rate(1 minute)</code> not <code>rate(1 minutes)</code>. AWS returns an error for the plural form.
+  </div>
+
+  <h3>Use cron() for precise scheduling</h3>
+  <pre>cron(0 9 ? * MON-FRI *)     # 9 AM UTC on weekdays
+cron(0 0 1 * ? *)            # Midnight on the 1st of every month
+cron(30 14 ? * MON#2 *)     # 2:30 PM on the 2nd Monday of each month</pre>
+</section>
+
+<hr class="divider">
+
+<section>
+  <h2>The ? Wildcard Explained</h2>
+  <p>This trips up more developers than anything else in EventBridge cron. The <code>?</code> means "no specific value" — and exactly one of day-of-month or day-of-week must always be <code>?</code>.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Expression</th><th>Valid?</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>cron(0 12 * * ? *)</code></td><td style="color:var(--red)">✗ Invalid</td><td>Both DOM and DOW are wildcards — must use ?</td></tr>
+        <tr><td><code>cron(0 12 ? * * *)</code></td><td style="color:var(--green)">✓ Valid</td><td>Noon every day — DOW is wildcard, DOM is ?</td></tr>
+        <tr><td><code>cron(0 12 15 * ? *)</code></td><td style="color:var(--green)">✓ Valid</td><td>Noon on the 15th — DOM specified, DOW is ?</td></tr>
+        <tr><td><code>cron(0 12 ? * MON *)</code></td><td style="color:var(--green)">✓ Valid</td><td>Noon on Mondays — DOW specified, DOM is ?</td></tr>
+        <tr><td><code>cron(0 12 15 * MON *)</code></td><td style="color:var(--red)">✗ Invalid</td><td>Both DOM and DOW specified — ambiguous</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section>
+  <h2>20+ EventBridge Cron Examples</h2>
+
+  <h3>Every N minutes / hours</h3>
+  <div class="ex"><div class="ex-label">Every 5 minutes</div><div class="ex-cron">cron(0/5 * ? * * *)</div><div class="ex-desc">Runs at :00, :05, :10, :15... — use for health checks, polling</div></div>
+  <div class="ex"><div class="ex-label">Every 15 minutes</div><div class="ex-cron">cron(0/15 * ? * * *)</div><div class="ex-desc">Common for near-real-time data syncs</div></div>
+  <div class="ex"><div class="ex-label">Every hour on the hour</div><div class="ex-cron">cron(0 * ? * * *)</div><div class="ex-desc">Hourly aggregations, cache warming</div></div>
+  <div class="ex"><div class="ex-label">Every 6 hours</div><div class="ex-cron">cron(0 0/6 ? * * *)</div><div class="ex-desc">Runs at midnight, 6 AM, noon, 6 PM UTC</div></div>
+
+  <h3>Daily schedules</h3>
+  <div class="ex"><div class="ex-label">Daily at midnight UTC</div><div class="ex-cron">cron(0 0 ? * * *)</div><div class="ex-desc">Daily database cleanup, report generation</div></div>
+  <div class="ex"><div class="ex-label">Daily at 9 AM UTC</div><div class="ex-cron">cron(0 9 ? * * *)</div><div class="ex-desc">Morning digest emails, daily summaries</div></div>
+  <div class="ex"><div class="ex-label">Daily at 2:30 AM UTC</div><div class="ex-cron">cron(30 2 ? * * *)</div><div class="ex-desc">Off-hours maintenance window, low-traffic period</div></div>
+  <div class="ex"><div class="ex-label">Twice daily — 8 AM and 8 PM UTC</div><div class="ex-cron">cron(0 8,20 ? * * *)</div><div class="ex-desc">Twice-daily sync jobs, morning and evening digests</div></div>
+
+  <h3>Weekday schedules</h3>
+  <div class="ex"><div class="ex-label">Weekdays at 9 AM UTC (Mon–Fri)</div><div class="ex-cron">cron(0 9 ? * MON-FRI *)</div><div class="ex-desc">Business hours jobs, weekday-only processing</div></div>
+  <div class="ex"><div class="ex-label">Weekdays every 30 minutes, 9 AM–5 PM</div><div class="ex-cron">cron(0/30 9-17 ? * MON-FRI *)</div><div class="ex-desc">Business hours polling, order processing windows</div></div>
+  <div class="ex"><div class="ex-label">Monday mornings at 8 AM</div><div class="ex-cron">cron(0 8 ? * MON *)</div><div class="ex-desc">Weekly kickoff jobs, Monday report generation</div></div>
+  <div class="ex"><div class="ex-label">Friday afternoons at 5 PM UTC</div><div class="ex-cron">cron(0 17 ? * FRI *)</div><div class="ex-desc">End-of-week reports, weekly archiving</div></div>
+
+  <h3>Monthly schedules</h3>
+  <div class="ex"><div class="ex-label">1st of every month at midnight</div><div class="ex-cron">cron(0 0 1 * ? *)</div><div class="ex-desc">Monthly billing, subscription renewals</div></div>
+  <div class="ex"><div class="ex-label">Last day of month</div><div class="ex-cron">cron(0 23 L * ? *)</div><div class="ex-desc">Month-end closing jobs — L means last day</div></div>
+  <div class="ex"><div class="ex-label">1st and 15th of month</div><div class="ex-cron">cron(0 9 1,15 * ? *)</div><div class="ex-desc">Semi-monthly payroll runs, bi-monthly reports</div></div>
+
+  <h3>Nth-weekday of month</h3>
+  <div class="ex"><div class="ex-label">Second Monday of every month at 10 AM</div><div class="ex-cron">cron(0 10 ? * MON#2 *)</div><div class="ex-desc">Team meetings, monthly reviews — # means nth occurrence</div></div>
+  <div class="ex"><div class="ex-label">First Friday of every month</div><div class="ex-cron">cron(0 9 ? * FRI#1 *)</div><div class="ex-desc">Monthly deployment windows, release Fridays</div></div>
+  <div class="ex"><div class="ex-label">Last Friday of every month</div><div class="ex-cron">cron(0 17 ? * FRI L *)</div><div class="ex-desc">Month-end close, last-Friday-of-month jobs</div></div>
+
+  <h3>Quarterly / yearly</h3>
+  <div class="ex"><div class="ex-label">Quarterly — first day of Jan, Apr, Jul, Oct</div><div class="ex-cron">cron(0 0 1 1,4,7,10 ? *)</div><div class="ex-desc">Quarterly reports, billing cycles</div></div>
+  <div class="ex"><div class="ex-label">Once a year — January 1st at midnight</div><div class="ex-cron">cron(0 0 1 1 ? *)</div><div class="ex-desc">Annual resets, yearly archiving</div></div>
+  <div class="ex"><div class="ex-label">Specific year — Dec 31 2026 only</div><div class="ex-cron">cron(59 23 31 12 ? 2026)</div><div class="ex-desc">One-off future events — use specific year field</div></div>
+</section>
+
+<hr class="divider">
+
+<section>
+  <h2>Terraform Example</h2>
+  <p>Here's a complete Terraform configuration for an EventBridge rule that triggers a Lambda function on a weekday schedule:</p>
+  <pre>resource "aws_cloudwatch_event_rule" "weekday_job" {
+  name                = "weekday-morning-job"
+  description         = "Fires at 9 AM UTC Monday through Friday"
+  schedule_expression = "cron(0 9 ? * MON-FRI *)"
+  state               = "ENABLED"
+}
+
+resource "aws_cloudwatch_event_target" "lambda_target" {
+  rule      = aws_cloudwatch_event_rule.weekday_job.name
+  target_id = "WeekdayLambda"
+  arn       = aws_lambda_function.my_function.arn
+}
+
+resource "aws_lambda_permission" "allow_eventbridge" {
+  statement_id  = "AllowEventBridgeInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.my_function.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.weekday_job.arn
+}</pre>
+  <p><a href="../index.html">Paste any cron into CronRead</a> to instantly generate this Terraform snippet for your exact schedule.</p>
+</section>
+
+<hr class="divider">
+
+<section>
+  <h2>EventBridge Scheduler (New API)</h2>
+  <p>AWS introduced EventBridge Scheduler in 2022 as a more capable replacement for EventBridge Rules for scheduled invocations. Key differences:</p>
+  <ul>
+    <li>Scheduler supports timezone-aware schedules natively (no UTC conversion needed)</li>
+    <li>Scheduler supports one-time schedules with a specific date/time</li>
+    <li>Scheduler has a higher invocation rate limit</li>
+    <li>Scheduler uses a different cron format: the 6th field is the year, same as EventBridge Rules</li>
+  </ul>
+  <pre>aws scheduler create-schedule \
+  --name "weekday-morning-job" \
+  --schedule-expression "cron(0 9 ? * MON-FRI *)" \
+  --schedule-expression-timezone "America/New_York" \
+  --flexible-time-window '{"Mode": "OFF"}' \
+  --target '{
+    "Arn": "arn:aws:lambda:us-east-1:123456789:function:my-function",
+    "RoleArn": "arn:aws:iam::123456789:role/scheduler-role"
+  }'</pre>
+</section>
+
+<hr class="divider">
+
+<section>
+  <h2>Common Mistakes</h2>
+
+  <div class="callout callout-warn">
+    <strong style="color:var(--yellow)">Mistake 1: Both day-of-month and day-of-week specified</strong><br>
+    <code>cron(0 9 15 * MON *)</code> — Invalid. Use <code>cron(0 9 15 * ? *)</code> for the 15th or <code>cron(0 9 ? * MON *)</code> for Mondays.
+  </div>
+  <div class="callout callout-warn" style="margin-top:.5rem">
+    <strong style="color:var(--yellow)">Mistake 2: Forgetting UTC</strong><br>
+    EventBridge runs in UTC. For 9 AM New York time (EST = UTC-5), use <code>cron(0 14 ? * MON-FRI *)</code>.
+  </div>
+  <div class="callout callout-warn" style="margin-top:.5rem">
+    <strong style="color:var(--yellow)">Mistake 3: Using 5-field Linux cron directly</strong><br>
+    <code>0 9 * * 1-5</code> is invalid in EventBridge. You need 6 fields and a <code>?</code>: <code>cron(0 9 ? * MON-FRI *)</code>.
+  </div>
+  <div class="callout callout-warn" style="margin-top:.5rem">
+    <strong style="color:var(--yellow)">Mistake 4: Day-of-week numbering</strong><br>
+    In EventBridge, Sunday = 1 (not 0 as in Linux cron). So <code>1-5</code> means Sun–Thu, not Mon–Fri. Use named days like <code>MON-FRI</code> to avoid confusion.
+  </div>
+</section>
+
+<hr class="divider">
+
+<section>
+  <h2>Frequently Asked Questions</h2>
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q">What is the difference between cron() and rate() in AWS EventBridge?</div>
+      <div class="faq-a"><code>rate()</code> defines a fixed interval — <code>rate(5 minutes)</code>, <code>rate(1 hour)</code>. <code>cron()</code> uses a 6-field expression for exact scheduling. Use <code>rate()</code> for simple repeating intervals; use <code>cron()</code> when you need to control the exact time, day, or month a rule fires.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Why does AWS EventBridge use 6 fields?</div>
+      <div class="faq-a">AWS adds a Year field as the 6th field. This allows you to schedule one-time events at a specific year, or use <code>*</code> to match all years. The field order is: minutes, hours, day-of-month, month, day-of-week, year.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What does ? mean in AWS EventBridge cron?</div>
+      <div class="faq-a"><code>?</code> means "no specific value". You must put <code>?</code> in either day-of-month or day-of-week (but not both). If you're scheduling by day-of-week (<code>MON-FRI</code>), day-of-month must be <code>?</code>. If scheduling by day-of-month (<code>15</code>), day-of-week must be <code>?</code>.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Why is my EventBridge rule not firing at the expected time?</div>
+      <div class="faq-a">Most likely a UTC offset issue. EventBridge runs all schedules in UTC. If you're in UTC+5:30 (IST) and want 9 AM local time, the UTC time is 3:30 AM — so you'd use <code>cron(30 3 ? * * *)</code>. Use <a href="../index.html">CronRead Pro's timezone calculator</a> to find the right UTC time for your timezone.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I paste an EventBridge cron() expression into CronRead Pro?</div>
+      <div class="faq-a">Yes. Paste the full expression including the <code>cron()</code> wrapper — CronRead Pro strips it automatically and handles the 6-field format.</div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-row" style="margin-top:3rem">
+  <a href="../index.html" class="cta-btn">⚡ Validate Your EventBridge Cron</a>
+</div>
+
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="../index.html">CronRead</a> |
+    <a href="../cron-examples/index.html">Cron Examples</a> |
+    <a href="../kubernetes-cronjob-examples/index.html">Kubernetes</a> |
+    <a href="../github-actions-cron-examples/index.html">GitHub Actions</a> |
+    <a href="../cronguru-alternative/index.html">vs CronGuru</a>
+  </div>
+  <p style="margin-top:.5rem">© 2026 CronRead · Always verify cron schedules in production.</p>
+</footer>
+</body>
+</html>
