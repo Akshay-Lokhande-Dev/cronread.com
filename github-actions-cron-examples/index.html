@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Actions Cron Examples — Scheduled Workflows Guide | CronRead</title>
+<meta name="description" content="Complete guide to GitHub Actions scheduled workflows. 15+ cron examples, UTC timezone explained, common mistakes, workflow_dispatch override, and ready-to-use YAML snippets.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://cronread.com/github-actions-cron-examples">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GitHub Actions Cron Examples — Scheduled Workflows Guide | CronRead">
+<meta property="og:description" content="15+ GitHub Actions scheduled workflow examples with full YAML. UTC explained, common mistakes, workflow_dispatch override, and cron syntax reference.">
+<meta property="og:url" content="https://cronread.com/github-actions-cron-examples">
+<meta property="og:site_name" content="CronRead">
+<meta property="og:image" content="https://cronread.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GitHub Actions Cron Examples — CronRead">
+<meta name="twitter:description" content="15+ scheduled workflow examples with YAML. UTC explained, common mistakes, and ready-to-copy snippets.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../cronread-seo.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What timezone does GitHub Actions cron use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "GitHub Actions scheduled workflows always run in UTC. There is no way to set a timezone on the schedule itself. If you need a job to run at 9 AM New York time (EST, UTC-5), you must schedule it at 14:00 UTC: '0 14 * * 1-5'."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the minimum interval for GitHub Actions scheduled workflows?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The minimum schedule interval is 5 minutes. Schedules shorter than 5 minutes are not supported. Additionally, on free plans, scheduled workflows on public repositories may be delayed if GitHub's infrastructure is under load."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why is my GitHub Actions scheduled workflow not running?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Common reasons: 1) The workflow file is not on the default branch — schedules only trigger from the default branch. 2) The repository has been inactive for 60 days — GitHub disables scheduled workflows on inactive repos. 3) Delays due to GitHub infrastructure load. 4) The cron expression syntax is invalid."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I trigger a scheduled GitHub Actions workflow manually?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Add workflow_dispatch to your on: block alongside the schedule. This adds a 'Run workflow' button in the GitHub Actions UI. It's best practice to always include workflow_dispatch on scheduled workflows so you can test without waiting for the schedule."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I run a GitHub Actions workflow on weekdays only?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use 1-5 in the day-of-week field. For example: '0 9 * * 1-5' runs at 9 AM UTC Monday through Friday. Remember that 1=Monday and 5=Friday in cron (0=Sunday)."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">CRONREAD</a>
+    <div class="nav-links">
+      <a href="../index.html">Tool</a>
+      <a href="../cron-examples/index.html">Examples</a>
+      <a href="../aws-eventbridge-cron-examples/index.html">AWS</a>
+      <a href="../kubernetes-cronjob-examples/index.html">Kubernetes</a>
+      <a href="../github-actions-cron-examples/index.html" class="active">GitHub Actions</a>
+      <a href="../cronguru-alternative/index.html">vs CronGuru</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ── HERO ── -->
+  <div class="hero">
+    <div class="hero-tag">GITHUB ACTIONS GUIDE</div>
+    <h1>GitHub Actions<br><span class="hl">Cron Schedule Examples</span></h1>
+    <p class="hero-sub">Complete guide to scheduled GitHub Actions workflows — 15+ real YAML examples, UTC timezone explained, common mistakes, and production-ready workflow templates.</p>
+    <div class="cta-row">
+      <a href="../index.html" class="cta-btn">⚡ Validate Your Schedule</a>
+      <a href="#examples" class="cta-secondary">Jump to Examples ↓</a>
+    </div>
+  </div>
+
+  <!-- ── SYNTAX BASICS ── -->
+  <section>
+    <h2>How GitHub Actions Scheduled Workflows Work</h2>
+    <p>GitHub Actions uses standard 5-field cron syntax in the <code>schedule</code> trigger under <code>on:</code>. Schedules run on the <strong>default branch only</strong> and always in <strong>UTC</strong>.</p>
+
+    <pre>name: Scheduled Job
+
+on:
+  schedule:
+    - cron: '0 9 * * 1-5'   # 9:00 AM UTC, Monday–Friday
+  workflow_dispatch:          # Always add this for manual testing
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run scheduled task
+        run: echo "Running at $(date)"</pre>
+
+    <div class="callout">
+      <strong>The 5 cron fields in order:</strong><br>
+      <code>minute(0-59)  hour(0-23)  day-of-month(1-31)  month(1-12)  day-of-week(0-7)</code><br>
+      Where 0 and 7 both represent Sunday.
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── UTC EXPLANATION ── -->
+  <section>
+    <h2>GitHub Actions Always Runs in UTC</h2>
+    <p>This is the most common source of confusion with GitHub Actions schedules. All <code>schedule</code> triggers fire in UTC — there is no timezone setting. If your team is in a different timezone, you must manually convert.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Desired Local Time</th><th>Timezone</th><th>UTC Offset</th><th>Cron Expression (UTC)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>9:00 AM Mon–Fri</td><td>UTC</td><td>+0</td><td><code>0 9 * * 1-5</code></td></tr>
+          <tr><td>9:00 AM Mon–Fri</td><td>New York (EST)</td><td>-5</td><td><code>0 14 * * 1-5</code></td></tr>
+          <tr><td>9:00 AM Mon–Fri</td><td>New York (EDT)</td><td>-4</td><td><code>0 13 * * 1-5</code></td></tr>
+          <tr><td>9:00 AM Mon–Fri</td><td>London (GMT)</td><td>+0</td><td><code>0 9 * * 1-5</code></td></tr>
+          <tr><td>9:00 AM Mon–Fri</td><td>London (BST)</td><td>+1</td><td><code>0 8 * * 1-5</code></td></tr>
+          <tr><td>9:00 AM Mon–Fri</td><td>India (IST)</td><td>+5:30</td><td><code>30 3 * * 1-5</code></td></tr>
+          <tr><td>9:00 AM Mon–Fri</td><td>Singapore (SGT)</td><td>+8</td><td><code>0 1 * * 1-5</code></td></tr>
+          <tr><td>9:00 AM Mon–Fri</td><td>Tokyo (JST)</td><td>+9</td><td><code>0 0 * * 1-5</code></td></tr>
+          <tr><td>Midnight every day</td><td>Sydney (AEDT)</td><td>+11</td><td><code>0 13 * * *</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-warn">
+      <strong style="color:var(--yellow)">⚠ DST gotcha:</strong> UTC offsets change twice a year in most regions due to Daylight Saving Time. A schedule correct in winter may fire an hour off in summer. Use <a href="../index.html">CronRead's timezone calculator</a> to find the right UTC time for your current offset.
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── EXAMPLES ── -->
+  <section id="examples">
+    <h2>15+ GitHub Actions Cron Examples</h2>
+
+    <h3>Simple intervals</h3>
+    <div class="ex">
+      <div class="ex-label">Every 5 minutes</div>
+      <div class="ex-cron">*/5 * * * *</div>
+      <div class="ex-desc">Minimum practical interval. Used for polling, near-real-time checks. Note: GitHub may throttle below 5-minute intervals.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Every 15 minutes</div>
+      <div class="ex-cron">*/15 * * * *</div>
+      <div class="ex-desc">Data syncs, cache invalidation, status page checks</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Every hour</div>
+      <div class="ex-cron">0 * * * *</div>
+      <div class="ex-desc">Hourly builds, metrics collection, dependency checks</div>
+    </div>
+
+    <h3>Daily schedules</h3>
+    <div class="ex">
+      <div class="ex-label">Daily at midnight UTC</div>
+      <div class="ex-cron">0 0 * * *</div>
+      <div class="ex-desc">Nightly builds, daily cleanup, snapshot creation</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Daily at 2 AM UTC (low-traffic window)</div>
+      <div class="ex-cron">0 2 * * *</div>
+      <div class="ex-desc">Heavy jobs during off-peak: full test suite, large data exports</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Daily at 6 AM UTC</div>
+      <div class="ex-cron">0 6 * * *</div>
+      <div class="ex-desc">Pre-work automated checks, morning digest generation</div>
+    </div>
+
+    <h3>Weekday schedules</h3>
+    <div class="ex">
+      <div class="ex-label">Weekdays at 9 AM UTC (Mon–Fri)</div>
+      <div class="ex-cron">0 9 * * 1-5</div>
+      <div class="ex-desc">Business-hours CI jobs, weekday-only notifications</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Every 30 minutes, Mon–Fri 9–17 UTC</div>
+      <div class="ex-cron">*/30 9-17 * * 1-5</div>
+      <div class="ex-desc">Business hours polling, working-hours-only checks</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Monday morning 8 AM UTC</div>
+      <div class="ex-cron">0 8 * * 1</div>
+      <div class="ex-desc">Weekly dependency update PRs, Monday report generation</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Friday 5 PM UTC</div>
+      <div class="ex-cron">0 17 * * 5</div>
+      <div class="ex-desc">End-of-week reports, weekly release tagging</div>
+    </div>
+
+    <h3>Weekly schedules</h3>
+    <div class="ex">
+      <div class="ex-label">Every Sunday at midnight</div>
+      <div class="ex-cron">0 0 * * 0</div>
+      <div class="ex-desc">Weekly full test run, weekly changelog generation</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Sunday at 2 AM UTC</div>
+      <div class="ex-cron">0 2 * * 0</div>
+      <div class="ex-desc">Weekly database vacuum, full index rebuild</div>
+    </div>
+
+    <h3>Monthly schedules</h3>
+    <div class="ex">
+      <div class="ex-label">First of every month at midnight</div>
+      <div class="ex-cron">0 0 1 * *</div>
+      <div class="ex-desc">Monthly releases, subscription renewals, billing cycles</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">First of every quarter (Jan, Apr, Jul, Oct)</div>
+      <div class="ex-cron">0 0 1 1,4,7,10 *</div>
+      <div class="ex-desc">Quarterly reports, quarterly dependency audits</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Once a year — Jan 1st midnight</div>
+      <div class="ex-cron">0 0 1 1 *</div>
+      <div class="ex-desc">Annual version bumps, yearly archiving</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── FULL WORKFLOW TEMPLATES ── -->
+  <section>
+    <h2>Full Workflow Templates</h2>
+
+    <h3>Nightly build and test</h3>
+    <pre>name: Nightly Build
+
+on:
+  schedule:
+    - cron: '0 2 * * *'     # 2:00 AM UTC daily
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run full test suite
+        run: npm run test:full
+
+      - name: Build
+        run: npm run build
+
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Nightly build failed',
+              body: 'Run: ' + context.serverUrl + '/' + context.repo.owner + '/' + context.repo.repo + '/actions/runs/' + context.runId
+            })</pre>
+
+    <h3>Weekly dependency update</h3>
+    <pre>name: Weekly Dependency Check
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'    # Monday 8:00 AM UTC
+  workflow_dispatch:
+
+jobs:
+  update-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check for outdated packages
+        run: npm outdated || true
+
+      - name: Run audit
+        run: npm audit --audit-level=high</pre>
+
+    <h3>Scheduled release with version bump</h3>
+    <pre>name: Monthly Release
+
+on:
+  schedule:
+    - cron: '0 10 1 * *'   # 1st of every month, 10:00 AM UTC
+  workflow_dispatch:
+    inputs:
+      version_bump:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options: [patch, minor, major]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bump version
+        run: |
+          BUMP="${{ inputs.version_bump || 'patch' }}"
+          npm version $BUMP --no-git-tag-version
+
+      - name: Commit and tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          VERSION=$(node -p "require('./package.json').version")
+          git add package.json
+          git commit -m "chore: release v$VERSION"
+          git tag "v$VERSION"
+          git push && git push --tags</pre>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── COMMON MISTAKES ── -->
+  <section>
+    <h2>Common Mistakes</h2>
+
+    <div class="callout callout-warn">
+      <strong style="color:var(--yellow)">Mistake 1: Forgetting UTC</strong><br>
+      Scheduling <code>0 9 * * 1-5</code> expecting 9 AM in your local time. GitHub runs in UTC. For 9 AM IST (UTC+5:30), use <code>30 3 * * 1-5</code>.
+    </div>
+
+    <div class="callout callout-warn" style="margin-top:.6rem">
+      <strong style="color:var(--yellow)">Mistake 2: Schedule on non-default branch</strong><br>
+      Workflows with <code>schedule:</code> only trigger from the <strong>default branch</strong>. A schedule in a feature branch PR will never fire.
+    </div>
+
+    <div class="callout callout-warn" style="margin-top:.6rem">
+      <strong style="color:var(--yellow)">Mistake 3: No workflow_dispatch</strong><br>
+      Without <code>workflow_dispatch:</code>, you cannot manually test your scheduled workflow. You'd have to wait for the schedule or change it temporarily. Always add <code>workflow_dispatch:</code>.
+    </div>
+
+    <div class="callout callout-warn" style="margin-top:.6rem">
+      <strong style="color:var(--yellow)">Mistake 4: Inactive repo schedule disabled</strong><br>
+      GitHub automatically disables scheduled workflows on public repositories with no activity (commits, PRs, etc.) for <strong>60 days</strong>. You'll receive an email warning first. Re-enable in the Actions tab.
+    </div>
+
+    <div class="callout callout-warn" style="margin-top:.6rem">
+      <strong style="color:var(--yellow)">Mistake 5: Expecting precise timing</strong><br>
+      GitHub's schedule trigger has a documented delay of <strong>up to 15–30 minutes</strong> during high load. Don't use GitHub Actions schedules for time-critical tasks requiring second-level precision.
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── WORKFLOW_DISPATCH EXPLANATION ── -->
+  <section>
+    <h2>Always Include workflow_dispatch</h2>
+    <p>Adding <code>workflow_dispatch</code> alongside your schedule gives you a "Run workflow" button in the GitHub Actions UI. This is essential for:</p>
+    <ul>
+      <li><strong>Testing</strong> — Run immediately without waiting for the schedule</li>
+      <li><strong>Incident response</strong> — Manually trigger when you need the job to run now</li>
+      <li><strong>Debugging</strong> — Run with custom inputs to test different scenarios</li>
+      <li><strong>Re-enabling</strong> — Quickly test after re-enabling a disabled workflow</li>
+    </ul>
+
+    <pre>on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:         # No config needed — just add it
+    inputs:                  # Optional: add inputs for parameterised manual runs
+      environment:
+        description: 'Target environment'
+        required: false
+        default: 'staging'
+        type: choice
+        options: [staging, production]</pre>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── MULTIPLE SCHEDULES ── -->
+  <section>
+    <h2>Multiple Schedules in One Workflow</h2>
+    <p>A single workflow can have multiple <code>schedule</code> entries. All of them trigger the same workflow:</p>
+    <pre>on:
+  schedule:
+    - cron: '0 8 * * 1-5'   # Weekdays at 8 AM UTC
+    - cron: '0 12 * * 0'    # Sundays at noon UTC
+  workflow_dispatch:</pre>
+    <p>To know which schedule triggered the run, check <code>github.event.schedule</code> in your job steps:</p>
+    <pre>- name: Check which schedule triggered
+  run: |
+    echo "Triggered by: ${{ github.event.schedule || 'manual' }}"
+    if [ "${{ github.event.schedule }}" = "0 8 * * 1-5" ]; then
+      echo "Weekday morning run"
+    fi</pre>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── FAQ ── -->
+  <section>
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">What timezone does GitHub Actions cron use?</div>
+        <div class="faq-a">Always UTC. There is no way to set a timezone on the <code>schedule</code> trigger. Convert your desired local time to UTC before writing the cron expression. <a href="../index.html">CronRead's timezone calculator</a> does this automatically.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is the minimum cron interval in GitHub Actions?</div>
+        <div class="faq-a">The minimum supported interval is 5 minutes (<code>*/5 * * * *</code>). Schedules faster than this are technically unsupported and may be throttled or skipped.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Why is my GitHub Actions scheduled workflow not running?</div>
+        <div class="faq-a">Most likely causes: 1) The workflow file is on a branch that isn't the default — schedules only run from the default branch. 2) The repository has been inactive for 60+ days and GitHub disabled the schedule. 3) Infrastructure delays (GitHub's schedule trigger can lag up to 30 minutes). 4) The cron syntax is invalid.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I trigger a scheduled workflow manually?</div>
+        <div class="faq-a">Yes — add <code>workflow_dispatch:</code> to your <code>on:</code> block. This adds a "Run workflow" button in the Actions UI. Best practice is to include it on every scheduled workflow.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How do I know which schedule triggered the workflow?</div>
+        <div class="faq-a">Use <code>${{ github.event.schedule }}</code> in your workflow steps. It contains the cron string that triggered the run, or is empty for manual (<code>workflow_dispatch</code>) runs.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Do scheduled workflows run on forks?</div>
+        <div class="faq-a">Scheduled workflows are disabled on forked repositories by default. A contributor would need to enable Actions on their fork manually for schedules to run there.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-row" style="margin-top:3rem">
+    <a href="../index.html" class="cta-btn">⚡ Validate Your GitHub Actions Cron</a>
+  </div>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="footer-links">
+    <a href="../index.html">CronRead</a> |
+    <a href="../cron-examples/index.html">Cron Examples</a> |
+    <a href="../aws-eventbridge-cron-examples/index.html">AWS EventBridge</a> |
+    <a href="../kubernetes-cronjob-examples/index.html">Kubernetes</a> |
+    <a href="../github-actions-cron-examples/index.html">GitHub Actions</a> |
+    <a href="../cronguru-alternative/index.html">vs CronGuru</a>
+  </div>
+  <p style="margin-top:.6rem">© 2026 CronRead · Always verify cron schedules before deploying to production.</p>
+</footer>
+
+</body>
+</html>
