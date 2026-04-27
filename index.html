@@ -3,24 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="hygno1xKjeM1YmTvoTcE9RjtWHuF3_G1sViNreVlyE4" />
+<meta name="google-site-verification" content="hygno1xKjeM1YmTvoTcE9RjtWHuF3_G1sViNreVlyE4" />
+<meta name="format-detection" content="telephone=no">
+<meta http-equiv="x-dns-prefetch-control" content="on">
+<link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
 
 <!-- ══ PRIMARY SEO ══ -->
-<title>Cron Expression Generator, Explainer & Validator — AWS EventBridge, Terraform, Kubernetes | CronRead Pro</title>
-<meta name="description" content="Free online cron expression generator and explainer. Type plain English ('every weekday at 9am') or a cron string and instantly get the generated cron, human-readable explanation, next run times in any timezone, and ready-to-use AWS EventBridge, Terraform, Kubernetes, and GitHub Actions snippets. No login required.">
-<meta name="keywords" content="cron expression generator, cron expression explainer, cron to english, cron validator, cron builder, aws eventbridge cron format, terraform schedule expression, kubernetes cronjob schedule, github actions cron, cron syntax checker, cron next run calculator, online cron tester, cron job scheduler, @weekly cron, @monthly cron, @yearly cron, cron expression tool, plain english to cron, cron timezone converter, aws cloudwatch events cron, cron expression examples">
+<title>Cron Expression Generator, Explainer & Validator | CronRead Pro</title>
+<meta name="description" content="Free cron expression generator, explainer and validator. Convert cron to plain English, generate schedules from text, calculate next run times, and get AWS, Kubernetes and Terraform snippets.">
+<meta name="keywords" content="cron expression generator, cron validator, cron to english, aws eventbridge cron, kubernetes cronjob">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="author" content="CronRead Pro">
 <meta name="theme-color" content="#7c6dfa">
-<link rel="canonical" href="https://cronread.pro/">
+<link rel="canonical" href="https://cronread.com/">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
 <!-- ══ OPEN GRAPH ══ -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Cron Expression Generator & Explainer — CronRead Pro">
 <meta property="og:description" content="Type plain English or a cron string. Instantly get the generated cron expression, human-readable explanation, next run times in any timezone, and AWS/Terraform/K8s/GitHub Actions snippets. Free, no login.">
-<meta property="og:url" content="https://cronread.pro/">
-<meta property="og:site_name" content="CronRead Pro">
-<meta property="og:image" content="https://cronread.pro/og-image.png">
+<meta property="og:url" content="https://cronread.com/">
+<meta property="og:site_name" content="CronRead.com">
+<meta property="article:modified_time" content="2026-04-27T10:00:00+00:00">
+<meta property="og:image" content="https://cronread.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="CronRead Pro — Cron Expression Generator and Explainer">
@@ -30,7 +38,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Cron Expression Generator & Explainer — CronRead Pro">
 <meta name="twitter:description" content="Type any cron or plain English. Instantly see the generated cron, human explanation, next runs in your timezone, and cloud snippets.">
-<meta name="twitter:image" content="https://cronread.pro/og-image.png">
+<meta name="twitter:image" content="https://cronread.com/og-image.png">
 <meta name="twitter:image:alt" content="CronRead Pro — Cron Expression Generator">
 <meta name="twitter:site" content="@cronreadpro">
 
@@ -40,7 +48,7 @@
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "CronRead Pro",
-  "url": "https://cronread.pro/",
+  "url": "https://cronread.com/",
   "description": "Free cron expression generator, explainer and validator. Type plain English or a cron string to instantly get the generated cron, human-readable explanation, next run times in any timezone, and cloud snippets for AWS EventBridge, Terraform, Kubernetes, and GitHub Actions.",
   "applicationCategory": "DeveloperApplication",
   "applicationSubCategory": "DevOps Tool",
@@ -61,14 +69,19 @@
     "Visual cron builder",
     "Macro support (@weekly, @monthly, @yearly, etc.)"
   ],
-  "screenshot": "https://cronread.pro/og-image.png",
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.9",
-    "ratingCount": "128"
-  }
+  "screenshot": "https://cronread.com/og-image.png"
 }
 </script>
+    <script type="application/ld+json">
+{
+ "@context":"https://schema.org",
+ "@type":"Organization",
+ "name":"CronRead Pro",
+ "url":"https://cronread.com/",
+ "logo":"https://cronread.com/og-image.png"
+}
+</script>
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -522,6 +535,27 @@ html, body {
     <code id="snippetCode"></code>
   </div>
 </div>
+    <div style="
+margin-top:12px;
+padding:12px 14px;
+border-left:3px solid var(--yellow);
+background:rgba(255,221,87,.06);
+border-radius:8px;
+font-size:.82rem;
+line-height:1.6;
+color:var(--text2);
+">
+<strong style="color:var(--yellow)">
+Important Platform Compatibility Notes
+</strong><br><br>
+
+Advanced cron syntax (<code>L</code>, <code>W</code>, <code>#</code>)
+may have varying support across schedulers.
+
+Always test schedules in your actual platform before production deployment.
+
+Examples provided are for guidance and may require adaptation.
+</div>
 
 <!-- ══ BUILDER CARD ══ -->
 <div class="card">
@@ -713,6 +747,30 @@ while CronGuru mainly focuses on explanation.
 </p>
 
 </section>
+    <section class="seo-section" aria-label="Popular cron guides">
+<h2>Popular Cron Guides</h2>
+
+<ul>
+<li><a href="/cron-examples/">Cron Expression Examples</a></li>
+
+<li><a href="/aws-eventbridge-cron-examples/">
+AWS EventBridge Cron Examples
+</a></li>
+
+<li><a href="/kubernetes-cronjob-examples/">
+Kubernetes CronJob Examples
+</a></li>
+
+<li><a href="/github-actions-cron-examples/">
+GitHub Actions Cron Examples
+</a></li>
+
+<li><a href="/cronguru-alternative/">
+CronGuru Alternative
+</a></li>
+</ul>
+
+</section>
 
 <section class="seo-section" aria-label="Frequently asked questions">
   <h2>Frequently Asked Questions</h2>
@@ -756,11 +814,11 @@ while CronGuru mainly focuses on explanation.
 
 <br><br>
 
-<a href="cron-examples/index.html">Cron Examples</a> |
-<a href="aws-eventbridge-cron-examples/index.html">AWS EventBridge Guide</a> |
-<a href="kubernetes-cronjob-examples/index.html">Kubernetes CronJob Guide</a> |
-<a href="github-actions-cron-examples/index.html">GitHub Actions Guide</a> |
-<a href="cronguru-alternative/index.html">CronGuru Alternative</a>
+<a href="/cron-examples/">Cron Examples</a> |
+<a href="/aws-eventbridge-cron-examples/">AWS EventBridge Guide</a> |
+<a href="/kubernetes-cronjob-examples/">Kubernetes CronJob Guide</a> |
+<a href="/github-actions-cron-examples/">GitHub Actions Guide</a> |
+<a href="/cronguru-alternative/">CronGuru Alternative</a>
 
 <br><br>
 
@@ -840,9 +898,21 @@ initTzSelect();
 mainInput.addEventListener('input', e => processInput(e.target.value));
 mainInput.addEventListener('keydown', e => { if (e.key === 'Enter') processInput(e.target.value); });
 mainInput.addEventListener('paste', e => setTimeout(() => processInput(mainInput.value), 0));
-// Auto-load a default example
-processInput('0 12 * * *');
-mainInput.value = '0 12 * * *';
+
+// ── URL param: ?cron=0+9+*+*+1-5 or ?cron=every+weekday+at+9am ──
+(function loadFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const fromUrl = params.get('cron') || params.get('q') || params.get('expr');
+  if (fromUrl && fromUrl.trim()) {
+    const decoded = decodeURIComponent(fromUrl.trim());
+    processInput(decoded);
+    mainInput.value = decoded;
+  } else {
+    // Auto-load a default example
+    processInput('0 12 * * *');
+    mainInput.value = '0 12 * * *';
+  }
+})();
 
 // ══ CLEAR ═════════════════════════════════════════════════
 function clearAll() {
@@ -1046,7 +1116,8 @@ function parseEnglish(s) {
   let hourField = '*';
 
   // "every N hours from H to H" / "every N hours between H and H"
-  m = lc.match(/every\s+(\d+)\s+hours?\s+(?:from|between)\s+([\d:]+\s*(?:am|pm)?)\s+(?:to|and|through)\s+([\d:]+\s*(?:am|pm)?)/i);
+  // endpoints can be digits/am/pm or the words midnight/noon
+  m = lc.match(/every\s+(\d+)\s+hours?\s+(?:from|between)\s+(midnight|noon|[\d:]+\s*(?:am|pm)?)\s+(?:to|and|through)\s+(midnight|noon|[\d:]+\s*(?:am|pm)?)/i);
   if (m) {
     const step = m[1];
     const from = parseHour(m[2]);
@@ -1094,9 +1165,15 @@ function parseEnglish(s) {
     }
   }
 
-  // midnight / noon overrides
-  if (/\bmidnight\b/.test(lc)) { hourField = '0';  minField = minField === '0' ? '0' : minField; }
-  if (/\bnoon\b/.test(lc))     { hourField = '12'; minField = minField === '0' ? '0' : minField; }
+  // midnight / noon overrides — only when no explicit hour has been set yet
+  // (hourField is still the default '*'; never overwrite a parsed numeric hour or range)
+  if (hourField === '*') {
+    const hasMidnight = /\bmidnight\b/.test(lc);
+    const hasNoon     = /\bnoon\b/.test(lc);
+    if (hasMidnight && hasNoon) { hourField = '0,12'; }
+    else if (hasMidnight) { hourField = '0'; }
+    else if (hasNoon)     { hourField = '12'; }
+  }
 
   // ── DOM field ─────────────────────────────────────────────
   let domField = '*';
@@ -1130,6 +1207,12 @@ function parseEnglish(s) {
   if (domField === '*') {
     m = lc.match(/every\s+(\d+)\s+days?/);
     if (m) domField = `*/${m[1]}`;
+  }
+
+  // "nearest weekday to the Nth" → NW (must be parsed before DOW weekday shortcuts)
+  if (domField === '*') {
+    m = lc.match(/nearest\s+weekday\s+to\s+(?:the\s+)?(\d+)(?:st|nd|rd|th)?/i);
+    if (m) { domField = `${m[1]}W`; }
   }
 
   // ── DOW field ─────────────────────────────────────────────
@@ -1169,8 +1252,11 @@ function parseEnglish(s) {
   }
 
   // weekdays / weekends shortcuts (override range above if more specific)
-  if (/\bweekdays?\b/.test(lc) || /monday\s+through\s+friday/.test(lc)) dowField = '1-5';
-  if (/\bweekends?\b/.test(lc)) dowField = '6,0';
+  // but not when domField already uses the W (nearest-weekday) modifier
+  if (!/W$/.test(domField)) {
+    if (/\bweekdays?\b/.test(lc) || /monday\s+through\s+friday/.test(lc)) dowField = '1-5';
+    if (/\bweekends?\b/.test(lc)) dowField = '6,0';
+  }
 
   // list: "on monday, wednesday and friday"
   if (dowField === '*') {
@@ -1205,6 +1291,15 @@ function parseEnglish(s) {
     if (a && b) monthField = `${a}-${b}`;
   }
 
+  // "every other month" / "every N months"
+  if (monthField === '*') {
+    if (/\bevery\s+other\s+month\b/.test(lc)) monthField = '*/2';
+    else {
+      m = lc.match(/every\s+(\d+)\s+months?/);
+      if (m) monthField = `*/${m[1]}`;
+    }
+  }
+
   // list / individual month names (full names + "may")
   if (monthField === '*') {
     const foundMonths = [];
@@ -1222,6 +1317,8 @@ function parseEnglish(s) {
   }
 
   // ── Build & sanity-check result ───────────────────────────
+  // When domField uses the W (nearest-weekday) modifier, dow must be '?'
+  if (/W$/.test(domField)) dowField = '?';
   const result = `${minField} ${hourField} ${domField} ${monthField} ${dowField}`;
   if (result.split(' ').length !== 5) return null;
 
@@ -1233,10 +1330,12 @@ function parseEnglish(s) {
   return result;
 }
 
-// Helper: parse a time string like "8am", "8:00 AM", "08:59 PM", "20" into 24h hour integer
+// Helper: parse a time string like "8am", "8:00 AM", "08:59 PM", "20", "midnight", "noon" into 24h hour integer
 function parseHour(str) {
   if (!str) return null;
   str = str.trim().toLowerCase();
+  if (str === 'midnight') return 0;
+  if (str === 'noon')     return 12;
   const withMin = str.match(/^(\d{1,2}):(\d{2})\s*(am|pm)?$/);
   if (withMin) {
     let h = parseInt(withMin[1]);
@@ -1408,6 +1507,13 @@ function showResults(parts, macro, wasEnglish) {
   const isMacroInput   = !!macro;
   const isEnglishInput = wasEnglish && !isMacroInput;
 
+  // ── Push shareable URL to browser history ──
+  try {
+    const shareParam = encodeURIComponent(mainInput.value.trim());
+    const newUrl = `${location.pathname}?cron=${shareParam}`;
+    history.replaceState(null, '', newUrl);
+  } catch(e) {}
+
   let humanText = '';
   try { humanText = buildHumanText(parts); } catch(e) { humanText = 'Valid cron expression'; }
 
@@ -1422,6 +1528,7 @@ function showResults(parts, macro, wasEnglish) {
           <span class="generated-cron-label">GENERATED CRON</span>
           <code class="generated-cron-expr" id="generatedCronCode">${cronExpr}</code>
           <button class="copy-cron-btn" data-copy='${cronExpr}' onclick="copyFromBtn(this)">⎘ Copy</button>
+          <button class="copy-cron-btn" style="background:rgba(124,109,250,.12);border-color:rgba(124,109,250,.4);color:var(--accent2)" onclick="shareUrl()">🔗 Share</button>
         </div>
         <div class="human-desc-text" style="color:var(--muted);font-size:.85rem;margin-top:6px">↳ ${humanText}</div>`;
     } else {
@@ -1431,6 +1538,7 @@ function showResults(parts, macro, wasEnglish) {
           <span class="generated-cron-label" style="color:var(--green)">MEANS</span>
           <span id="generatedHumanText" style="color:var(--text);font-family:var(--sans);font-size:1rem;font-weight:600;letter-spacing:0;flex:1">${humanText}</span>
           <button class="copy-cron-btn" data-copy='${humanText}' onclick="copyFromBtn(this)">⎘ Copy</button>
+          <button class="copy-cron-btn" style="background:rgba(124,109,250,.12);border-color:rgba(124,109,250,.4);color:var(--accent2)" onclick="shareUrl()">🔗 Share</button>
         </div>
         <div class="human-desc-text" style="color:var(--muted);font-size:.85rem;margin-top:6px">↳ Cron: <code style="font-family:var(--mono);color:var(--accent2)">${cronExpr}</code></div>`;
     }
@@ -1457,24 +1565,53 @@ function showResults(parts, macro, wasEnglish) {
   } catch(e) { console.error('showResults:runsCard', e); }
 }
 
+function shareUrl() {
+  const url = location.href;
+  if (navigator.share) {
+    navigator.share({ title: 'CronRead Pro', url }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(url).then(() => showToast('Link copied to clipboard!'));
+  }
+}
+
 function copyFromBtn(btn) {
   const text = btn.getAttribute('data-copy');
   if (!text) return;
-  navigator.clipboard.writeText(text).then(() => {
+  const finish = () => {
     btn.textContent = '✓ Copied!';
     btn.style.color = 'var(--green)';
     showToast('Copied!');
     setTimeout(() => { btn.textContent = '⎘ Copy'; btn.style.color = ''; }, 2000);
-  });
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(finish).catch(() => fallbackCopy(text, finish));
+  } else {
+    fallbackCopy(text, finish);
+  }
+}
+
+function fallbackCopy(text, cb) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); if (cb) cb(); } catch(e) {}
+  document.body.removeChild(ta);
 }
 
 function copyText(text, btn) {
   if (!text) return;
-  navigator.clipboard.writeText(text).then(() => {
+  const finish = () => {
     if (btn) { btn.textContent = '✓ Copied!'; btn.style.color = 'var(--green)'; }
     showToast('Copied!');
     if (btn) setTimeout(() => { btn.textContent = '⎘ Copy'; btn.style.color = ''; }, 2000);
-  });
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(finish).catch(() => fallbackCopy(text, finish));
+  } else {
+    fallbackCopy(text, finish);
+  }
 }
 
 function copyCronExpr() {
@@ -1496,10 +1633,10 @@ const MONTH_NAMES = ['','January','February','March','April','May','June','July'
 
 function fmt12(h) {
   const n = parseInt(h);
-  if (n === 0)  return 'midnight';
-  if (n === 12) return 'noon';
-  if (n < 12)   return `${n}:00 AM`;
-  return `${n-12}:00 PM`;
+  if (n === 0)  return 'midnight (UTC)';
+  if (n === 12) return 'noon (UTC)';
+  if (n < 12)   return `${n}:00 AM (UTC)`;
+  return `${n-12}:00 PM (UTC)`;
 }
 
 function ordinal(n) {
@@ -1623,6 +1760,10 @@ function buildHumanText(parts) {
   try {
     const [minF, hourF, domF, monthF, dowF] = parts.slice(0,5);
 
+    // ── Detect fixed single numeric minute and hour ──
+    const isFixedMinute = /^\d+$/.test(minF);
+    const isFixedHour   = /^\d+$/.test(hourF);
+
     // ── minute ──
     let minutePart = '';
     if (minF === '*') {
@@ -1672,14 +1813,34 @@ function buildHumanText(parts) {
     let timePart = '';
     const isSpecificHour = hourF !== '*' && !hourF.includes('/') && !hourF.includes('-') && !hourF.includes(',');
 
-    if (minutePart === 'every minute' && hourPart === '') {
+    // ── Fixed clock time: both minute and hour are single numeric values ──
+    if (isFixedMinute && isFixedHour) {
+      const h = parseInt(hourF);
+      const mn = parseInt(minF);
+      const mStr = String(mn).padStart(2, '0');
+      let clockTime;
+      if (h === 0 && mn === 0) {
+        clockTime = 'midnight (UTC)';
+      } else if (h === 12 && mn === 0) {
+        clockTime = 'noon (UTC)';
+      } else if (h === 0) {
+        clockTime = `12:${mStr} AM (UTC)`;
+      } else if (h < 12) {
+        clockTime = `${h}:${mStr} AM (UTC)`;
+      } else if (h === 12) {
+        clockTime = `12:${mStr} PM (UTC)`;
+      } else {
+        clockTime = `${h - 12}:${mStr} PM (UTC)`;
+      }
+      timePart = `at ${clockTime}`;
+    } else if (minutePart === 'every minute' && hourPart === '') {
       timePart = 'every minute';
     } else if (minutePart === 'every minute') {
       timePart = `every minute, ${hourPart}`;
     } else if (minutePart === 'at the top of the hour' && isSpecificHour) {
-      // e.g. "0 10 * * *" → "at 10:00 AM" (cleaner than "at the top of the hour, at 10:00 AM")
+      // e.g. "0 10 * * *" → "at 10:00 AM (UTC)"
       const h = parseInt(hourF);
-      timePart = `at ${h < 12 ? h+':00 AM' : h === 12 ? '12:00 PM' : (h-12)+':00 PM'}`;
+      timePart = `at ${h < 12 ? h+':00 AM (UTC)' : h === 12 ? '12:00 PM (UTC)' : (h-12)+':00 PM (UTC)'}`;
     } else if (minutePart === 'at the top of the hour') {
       timePart = hourPart || 'at midnight';
     } else {
@@ -1949,10 +2110,10 @@ if (target > lastDay) {
   // Sunday
   if (dow === 0) {
 
-    if (target === 31) {
-      candidate.setUTCDate(target - 2); // avoid next month
+    if (target === lastDay) {
+    candidate.setUTCDate(target - 1); 
     } else {
-      candidate.setUTCDate(target + 1);
+    candidate.setUTCDate(target + 1);
     }
 
   }
@@ -2092,12 +2253,21 @@ function toAwsFormat(parts) {
   if (awsParts[4] !== '*' && awsParts[4] !== '?') {
     // DOW is specified → DOM must be ?
     awsParts[2] = '?';
+    // Handle nth-weekday e.g. 1#2 → MON#2
+    const nthMatch = awsParts[4].match(/^([0-7])#([1-5])$/);
+    if (nthMatch) {
+      awsParts[4] = `${dowNames[nthMatch[1]]}#${nthMatch[2]}`;
+    }
     // Convert numeric DOW to AWS named format if single digit
-    if (/^\d$/.test(awsParts[4]) && dowNames[awsParts[4]]) {
+    else if (/^\d$/.test(awsParts[4]) && dowNames[awsParts[4]]) {
       awsParts[4] = dowNames[awsParts[4]];
     }
+        else if (/^([0-7])L$/.test(awsParts[4])) {
+            const lastMatch = awsParts[4].match(/^([0-7])L$/);
+            awsParts[4] = `${dowNames[lastMatch[1]]}L`;
+    }
     // Handle range e.g. 1-5
-    if (/^\d-\d$/.test(awsParts[4])) {
+    else if (/^\d-\d$/.test(awsParts[4])) {
       awsParts[4] = awsParts[4].split('-').map(d => dowNames[d] || d).join('-');
     }
   } else {
@@ -2309,7 +2479,7 @@ export class ScheduledTaskStack extends cdk.Stack {
     const rule = new Rule(this, 'SchedulerRule', {
       ruleName: 'cronread-scheduled-rule',
       description: 'CronRead Pro generated schedule',
-      schedule: Schedule.expression('cron(${aws})'),
+      schedule: Schedule.expression('cron(' + aws + ')'),
       enabled: true,
     });
 
@@ -2344,7 +2514,7 @@ aws scheduler create-schedule \\
   --flexible-time-window '{"Mode": "OFF"}' \\
   --target '{
     "Arn": "arn:aws:lambda:us-east-1:123456789:function:your-function",
-    "RoleArn": "arn:aws:iam::123456789:role/SchedulerRole",
+    "RoleArn": "arn:aws:iam::123456789012:role/SchedulerRole",
     "RetryPolicy": {
       "MaximumRetryAttempts": 3,
       "MaximumEventAgeInSeconds": 3600
@@ -2366,6 +2536,25 @@ aws scheduler create-schedule \\
 #       Arn: !GetAtt MyFunction.Arn
 #       RoleArn: !GetAtt SchedulerRole.Arn`,
   };
+
+  // ── K8s / GitHub Actions: warn on unsupported advanced syntax (L, W, #) ──
+  const advancedMatch = linux.match(/[LW]|\d+#\d+/);
+  if (advancedMatch && (activeTab === 'k8s' || activeTab === 'gh')) {
+    const token = advancedMatch[0];
+    const simplified = linux
+      .replace(/\b(\d+)L\b/g, '$1')
+      .replace(/\b(\d+)W\b/g, '$1')
+      .replace(/(\d+)#\d+/g, '$1');
+    const platform = activeTab === 'k8s' ? 'Kubernetes CronJob' : 'GitHub Actions';
+    el.textContent =
+      `⚠ Advanced cron syntax detected: ${token}\n` +
+      `${platform} may not support L, W, or # syntax.\n\n` +
+      `Suggested workaround:\n` +
+      `  schedule: "${simplified}"\n` +
+      `  Then add logic inside the job to exit unless the intended condition is met.`;
+    return;
+  }
+  // ───────────────────────────────────────────────────────────────────────────
 
   try {
     el.textContent = snippets[activeTab] || snippets['tf'] || '';
