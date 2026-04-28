@@ -1872,6 +1872,9 @@ if (domF === '*' && dowF === '*' && monthF !== '*') {
     }
 
     const chunks = [timePart];
+    if (implicitEveryDay) {
+  chunks.push(implicitEveryDay);
+}
     if (domPart && dowPart) {
       chunks.push(
         domPart.replace(/^on /, '') +
