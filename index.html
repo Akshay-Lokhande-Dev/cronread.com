@@ -67,7 +67,8 @@
     "AWS CDK TypeScript snippet",
     "Cron expression validator",
     "Visual cron builder",
-    "Macro support (@weekly, @monthly, @yearly, etc.)"
+    "Macro support (@weekly, @monthly, @yearly, etc.)",
+    "Advanced cron syntax support: L (last), W (nearest weekday), # (nth weekday) — e.g. 5L, 15W, 1#2"
   ],
   "screenshot": "https://cronread.com/og-image.png"
 }
@@ -126,6 +127,11 @@
       "@type": "Question",
       "name": "Does GitHub Actions use UTC for cron schedules?",
       "acceptedAnswer": { "@type": "Answer", "text": "Yes. GitHub Actions cron schedules always run in UTC. There is no way to set a timezone in the workflow file — you must convert your desired local time to UTC when writing the cron expression." }
+    },
+    {
+      "@type": "Question",
+      "name": "What do L, W, and # mean in cron expressions?",
+      "acceptedAnswer": { "@type": "Answer", "text": "These are advanced cron special characters. L means 'last' — for example, 5L means the last Friday of the month. W means 'nearest weekday' — 15W triggers on the weekday closest to the 15th. # means 'nth occurrence' — 1#2 means the second Monday of the month. Note that Kubernetes CronJobs and GitHub Actions may not support these characters; they are best used with Quartz schedulers or AWS EventBridge." }
     }
   ]
 }
@@ -713,7 +719,11 @@ Examples provided are for guidance and may require adaptation.
       <div class="diff-title">Zero Friction</div>
       <div class="diff-desc">No sign-up, no ads, no rate limits. Paste your cron and go. Works offline after first load — your schedule data never leaves your browser.</div>
     </div>
-  </div>
+    <div class="diff-card">
+      <div class="diff-icon">🔣</div>
+      <div class="diff-title">Advanced Cron Syntax Support</div>
+      <div class="diff-desc">Supports special expressions such as <code>L</code>, <code>W</code>, and <code>#</code>, including patterns like <code>5L</code>, <code>15W</code>, and <code>1#2</code>. Platform warnings included.</div>
+    </div>
 </section>
 <section class="seo-section" aria-label="Cron examples">
 
@@ -745,6 +755,15 @@ Examples provided are for guidance and may require adaptation.
 CronRead Pro includes timezone conversion, cloud snippets and plain English parsing,
 while CronGuru mainly focuses on explanation.
 </p>
+
+<h2>Advanced Cron Syntax: L, W, and #</h2>
+<p>Beyond the standard five fields, many cron schedulers support extended special characters for more precise scheduling:</p>
+<ul>
+  <li><strong>L (Last)</strong> — Refers to the last day of the month or week. For example, <code>L</code> in the day-of-month field means the last day of the month. <code>5L</code> means the last Friday of the month.</li>
+  <li><strong>W (Nearest Weekday)</strong> — Finds the nearest weekday (Mon–Fri) to a given day. <code>15W</code> triggers on the weekday closest to the 15th of the month — avoiding weekends automatically.</li>
+  <li><strong>&#35; (Nth Weekday)</strong> — Specifies the Nth occurrence of a weekday in a month. <code>1#2</code> means the second Monday of the month. Useful for schedules like "every second Tuesday."</li>
+</ul>
+<p>CronRead Pro validates and interprets these advanced expressions and warns you when a target platform (such as Kubernetes or GitHub Actions) may not support them.</p>
 
 </section>
     <section class="seo-section" aria-label="Popular cron guides">
