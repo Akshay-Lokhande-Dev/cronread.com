@@ -1827,6 +1827,11 @@ function buildHumanText(parts) {
 
     // ── dow ──
     const dowPart = describeDow(dowF);
+    let implicitEveryDay = '';
+
+if (domF === '*' && dowF === '*' && monthF !== '*') {
+  implicitEveryDay = 'every day';
+}
 
     // ── Assemble time phrase ──
     let timePart = '';
