@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cron Expression Explainer: What Every Field Means (With Examples)</title>
+  <meta name="description" content="Understand every field, special character, and syntax variant in cron expressions. Includes 15 real-world examples, common mistakes, and a platform comparison." />
+  <meta name="keywords" content="cron expression explainer, cron syntax explained, how to read cron expressions, cron job examples, crontab guide" />
+  <link rel="canonical" href="https://cronread.com/blog/cron-expression-explainer" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Cron Expression Explainer: What Every Field Means" />
+  <meta property="og:description" content="Break down every cron field, special character, and platform variant. 15 copy-paste examples included." />
+  <meta property="og:url" content="https://cronread.com/blog/cron-expression-explainer" />
+  <meta property="og:type" content="article" />
+
+  <!-- Schema: Article + FAQ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Cron Expression Explainer: What Every Field Means (With Examples)",
+    "description": "A complete guide to reading and writing cron expressions, covering all fields, special characters, real-world examples, and platform differences.",
+    "author": { "@type": "Organization", "name": "CronRead" },
+    "publisher": { "@type": "Organization", "name": "CronRead", "url": "https://cronread.com" },
+    "mainEntityOfPage": "https://cronread.com/blog/cron-expression-explainer"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "What does * * * * * mean in cron?", "acceptedAnswer": { "@type": "Answer", "text": "It runs every minute of every hour of every day — the broadest possible cron schedule." } },
+      { "@type": "Question", "name": "What is the difference between 0 0 * * * and @daily?", "acceptedAnswer": { "@type": "Answer", "text": "They are identical — both run once a day at midnight. @daily is a named shortcut alias." } },
+      { "@type": "Question", "name": "Can I run a cron job every second?", "acceptedAnswer": { "@type": "Answer", "text": "Not with standard cron, which only supports minute-level precision. Quartz Scheduler supports seconds. For sub-second scheduling, use a dedicated task queue." } },
+      { "@type": "Question", "name": "Why is my cron job not running?", "acceptedAnswer": { "@type": "Answer", "text": "The most common causes are: wrong server time zone, an off-by-one error in the hour field, or a typo creating an invalid expression. Validate your expression at CronRead.com." } }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Fira+Code:wght@400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #080b0f;
+      --surface: #0f1318;
+      --surface2: #161b22;
+      --border: #1e2530;
+      --text: #c9d1d9;
+      --text-muted: #6e7a8a;
+      --text-bright: #f0f4f8;
+      --accent: #39d98a;
+      --accent-dim: rgba(57,217,138,0.12);
+      --accent2: #58a6ff;
+      --accent2-dim: rgba(88,166,255,0.1);
+      --warn: #ffa657;
+      --code-bg: #0d1117;
+      --radius: 8px;
+      --font-body: 'Lora', Georgia, serif;
+      --font-head: 'Syne', sans-serif;
+      --font-mono: 'Fira Code', 'Cascadia Code', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── LAYOUT ─── */
+    .page-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ─── HEADER ─── */
+    site-header {
+      display: block;
+      border-bottom: 1px solid var(--border);
+      padding: 18px 0;
+      margin-bottom: 0;
+    }
+    site-header .inner {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .logo span { color: var(--text-muted); font-weight: 400; }
+    .header-cta {
+      font-family: var(--font-head);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--bg);
+      background: var(--accent);
+      padding: 7px 16px;
+      border-radius: 40px;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: opacity .2s;
+    }
+    .header-cta:hover { opacity: 0.85; }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding: 72px 0 52px;
+      border-bottom: 1px solid var(--border);
+      animation: fadeUp .6s ease both;
+    }
+    .hero-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid rgba(57,217,138,0.25);
+      padding: 4px 12px;
+      border-radius: 40px;
+      display: inline-block;
+      margin-bottom: 24px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-family: var(--font-head);
+      font-size: clamp(2rem, 5vw, 2.9rem);
+      font-weight: 800;
+      color: var(--text-bright);
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+    h1 em { color: var(--accent); font-style: normal; }
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      line-height: 1.7;
+      font-family: var(--font-body);
+    }
+    .hero-meta {
+      display: flex;
+      gap: 20px;
+      margin-top: 28px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .hero-meta span::before { content: '// '; color: var(--border); }
+
+    /* ─── CONTENT ─── */
+    .content { padding: 52px 0; animation: fadeUp .7s .1s ease both; }
+
+    p { margin-bottom: 1.3em; color: var(--text); }
+
+    h2 {
+      font-family: var(--font-head);
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      letter-spacing: -0.025em;
+      margin: 2.8em 0 0.9em;
+      padding-top: 1em;
+      border-top: 1px solid var(--border);
+    }
+    h2:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+
+    h3 {
+      font-family: var(--font-head);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.01em;
+      margin: 2em 0 0.6em;
+    }
+
+    a { color: var(--accent2); text-decoration: underline; text-decoration-color: rgba(88,166,255,0.3); }
+    a:hover { text-decoration-color: var(--accent2); }
+
+    /* ─── CODE ─── */
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.82em;
+      background: var(--surface2);
+      color: var(--accent);
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      overflow-x: auto;
+      margin: 1.2em 0 1.6em;
+      position: relative;
+    }
+    pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 0.88rem;
+      color: #8bc0a8;
+      line-height: 1.9;
+    }
+    .comment { color: var(--text-muted); }
+    .expr { color: var(--accent); font-weight: 500; }
+    .label { color: var(--accent2); }
+
+    /* ─── ANATOMY BOX ─── */
+    .anatomy-box {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px 20px;
+      margin: 1.4em 0 2em;
+      overflow-x: auto;
+    }
+    .anatomy-box pre {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+    .anatomy-box pre code { font-size: 0.85rem; }
+
+    /* ─── TABLES ─── */
+    .table-wrap { overflow-x: auto; margin: 1.2em 0 2em; border-radius: var(--radius); border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: var(--surface2); }
+    th {
+      font-family: var(--font-head);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.92rem;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface2); }
+    td code { font-size: 0.8rem; }
+    td:first-child { font-family: var(--font-mono); color: var(--accent); font-size: 0.85rem; }
+
+    /* table where col 1 is not mono */
+    .plain-table td:first-child { font-family: var(--font-body); color: var(--text); font-size: 0.92rem; }
+    .plain-table td:nth-child(2) { font-family: var(--font-mono); color: var(--accent); font-size: 0.82rem; }
+
+    /* ─── EXAMPLE CARDS ─── */
+    .example-grid {
+      display: grid;
+      gap: 12px;
+      margin: 1.4em 0 2em;
+    }
+    .ex-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 16px;
+      align-items: start;
+      transition: border-color .2s;
+    }
+    .ex-card:hover { border-color: rgba(57,217,138,0.3); }
+    .ex-expr {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      color: var(--accent);
+      font-weight: 500;
+      grid-column: 1;
+    }
+    .ex-title {
+      font-family: var(--font-head);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      grid-column: 1;
+    }
+    .ex-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      grid-column: 1 / -1;
+      font-family: var(--font-body);
+      font-style: italic;
+    }
+
+    /* ─── MISTAKE CARDS ─── */
+    .mistake {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--warn);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      margin: 1em 0;
+    }
+    .mistake-title {
+      font-family: var(--font-head);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--warn);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mistake-title::before { content: '⚠'; font-style: normal; }
+    .mistake p { margin: 0; font-size: 0.92rem; color: var(--text); }
+    .mistake pre { margin: 12px 0 0; }
+
+    /* ─── SHORTCUT TABLE ─── */
+    .shortcut-table td:first-child { font-family: var(--font-mono); color: var(--accent); font-size: 0.85rem; }
+    .shortcut-table td:nth-child(2) { font-family: var(--font-mono); color: var(--text-muted); font-size: 0.82rem; }
+
+    /* ─── FAQ ─── */
+    .faq { margin: 1.4em 0 2em; }
+    details {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 10px;
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+    details[open] { border-color: rgba(57,217,138,0.3); }
+    summary {
+      font-family: var(--font-head);
+      font-size: 0.97rem;
+      font-weight: 600;
+      color: var(--text-bright);
+      padding: 18px 20px;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after {
+      content: '+';
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      transition: transform .2s;
+    }
+    details[open] summary::after { content: '−'; }
+    .faq-body {
+      padding: 0 20px 20px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      font-size: 0.94rem;
+      color: var(--text);
+    }
+    .faq-body p { margin-bottom: 0; }
+
+    /* ─── CTA BLOCK ─── */
+    .cta-block {
+      background: linear-gradient(135deg, rgba(57,217,138,0.07) 0%, rgba(88,166,255,0.05) 100%);
+      border: 1px solid rgba(57,217,138,0.25);
+      border-radius: 12px;
+      padding: 40px 36px;
+      text-align: center;
+      margin: 3em 0 1em;
+    }
+    .cta-block h2 {
+      border: none;
+      padding: 0;
+      margin: 0 0 12px;
+      font-size: 1.5rem;
+    }
+    .cta-block p {
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      font-size: 0.97rem;
+      font-family: var(--font-body);
+    }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: var(--bg);
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 0.97rem;
+      padding: 14px 32px;
+      border-radius: 40px;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: transform .15s, box-shadow .15s;
+      box-shadow: 0 0 24px rgba(57,217,138,0.2);
+    }
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 32px rgba(57,217,138,0.35);
+    }
+    .cta-btn::after { content: '→'; }
+    .cta-note {
+      margin-top: 14px !important;
+      font-size: 0.78rem !important;
+      color: var(--text-muted) !important;
+      font-family: var(--font-mono) !important;
+    }
+
+    /* inline CTA */
+    .inline-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      border: 1px solid rgba(57,217,138,0.3);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      padding: 6px 14px;
+      border-radius: 40px;
+      text-decoration: none;
+      transition: background .2s;
+    }
+    .inline-cta:hover { background: rgba(57,217,138,0.2); text-decoration: none; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    footer a { color: var(--text-muted); }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 600px) {
+      h1 { font-size: 1.85rem; }
+      h2 { font-size: 1.3rem; }
+      .cta-block { padding: 28px 20px; }
+      pre { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<site-header>
+  <div class="inner">
+    <a href="https://cronread.com" class="logo">CronRead<span>.com</span></a>
+    <a href="https://cronread.com" class="header-cta">Try the tool →</a>
+  </div>
+</site-header>
+
+<div class="page-wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-tag">// cron expression explainer</div>
+    <h1>What Every Cron Field <em>Actually</em> Means</h1>
+    <p class="hero-sub">Five fields, dozens of special characters, and platform differences no one documents clearly. This guide covers all of it — with 15 copy-paste examples and the mistakes that silently break jobs in production.</p>
+    <div class="hero-meta">
+      <span>~2,000 words</span>
+      <span>all skill levels</span>
+      <span>unix · quartz · aws · k8s</span>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <p>If you've ever stared at a string like <code>0 9 * * 1-5</code> and had no idea what it means, you're not alone. Cron expressions look cryptic at first — but once you understand the pattern, you can read and write them in seconds.</p>
+    <p>This guide breaks down every field, every special character, and gives you 15 real-world examples you can copy straight into your projects. And if you want an instant answer right now, paste any expression into <a href="https://cronread.com">CronRead.com</a> — it translates cron expressions into plain English in real time.</p>
+
+    <!-- SECTION 1 -->
+    <h2>What Is a Cron Expression?</h2>
+    <p>A cron expression is a short string of text that tells a computer <em>when</em> to run a scheduled task. It defines a recurring time schedule — like "every day at midnight" or "every 15 minutes on weekdays."</p>
+    <p>The name comes from <strong>cron</strong>, the Unix-based job scheduler that's been around since the 1970s. Today, cron syntax is used everywhere: Linux servers, AWS Lambda, GitHub Actions, Kubernetes, Node.js schedulers, and dozens of frameworks.</p>
+    <p>A standard cron expression looks like this:</p>
+
+    <div class="anatomy-box">
+      <pre><code><span class="comment">┌──────────── minute     (0–59)</span>
+<span class="comment">│ ┌────────── hour        (0–23)</span>
+<span class="comment">│ │ ┌──────── day of month (1–31)</span>
+<span class="comment">│ │ │ ┌────── month        (1–12)</span>
+<span class="comment">│ │ │ │ ┌──── day of week   (0–7, 0&7=Sunday)</span>
+<span class="comment">│ │ │ │ │</span>
+<span class="expr">* * * * *</span></code></pre>
+    </div>
+
+    <p>Five fields, separated by spaces. That's the whole structure.</p>
+
+    <!-- SECTION 2 -->
+    <h2>Anatomy of a Cron Expression: Field by Field</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Position</th><th>Field</th><th>Allowed Values</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Minute</td><td>0–59</td></tr>
+          <tr><td>2</td><td>Hour</td><td>0–23</td></tr>
+          <tr><td>3</td><td>Day of Month</td><td>1–31</td></tr>
+          <tr><td>4</td><td>Month</td><td>1–12 (or JAN–DEC)</td></tr>
+          <tr><td>5</td><td>Day of Week</td><td>0–7 (0 and 7 = Sunday, or SUN–SAT)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Each field answers one question: <em>when, within this unit of time, should the job run?</em> A <code>*</code> in any field means "every possible value" — so <code>* * * * *</code> means "run every minute of every day."</p>
+
+    <!-- SECTION 3 -->
+    <h2>Special Characters Explained</h2>
+    <p>This is where most people get stuck. Cron uses five special characters to express more complex schedules:</p>
+
+    <h3><code>*</code> &mdash; Every value</h3>
+    <p>The wildcard. Matches all values for this field.</p>
+    <pre><code><span class="expr">* * * * *</span>     <span class="comment">→ every minute</span>
+<span class="expr">0 * * * *</span>     <span class="comment">→ once per hour, on the hour</span></code></pre>
+
+    <h3><code>,</code> &mdash; List of values</h3>
+    <p>Lets you specify multiple discrete values in a single field.</p>
+    <pre><code><span class="expr">0 9,17 * * *</span>    <span class="comment">→ 9:00 AM and 5:00 PM every day</span>
+<span class="expr">0 0 1,15 * *</span>    <span class="comment">→ midnight on the 1st and 15th of each month</span></code></pre>
+
+    <h3><code>-</code> &mdash; Range of values</h3>
+    <p>Defines a continuous range between two values.</p>
+    <pre><code><span class="expr">0 9-17 * * *</span>     <span class="comment">→ every hour from 9 AM to 5 PM</span>
+<span class="expr">0 0 * * 1-5</span>      <span class="comment">→ midnight, Monday through Friday</span></code></pre>
+
+    <h3><code>/</code> &mdash; Step / increment</h3>
+    <p>Means "every Nth value." Used with <code>*</code> or a range.</p>
+    <pre><code><span class="expr">*/15 * * * *</span>     <span class="comment">→ every 15 minutes</span>
+<span class="expr">0 */2 * * *</span>      <span class="comment">→ every 2 hours</span>
+<span class="expr">0 0 1-31/2 * *</span>   <span class="comment">→ every other day, starting the 1st</span></code></pre>
+
+    <h3><code>?</code> &mdash; No specific value <small style="font-family:var(--font-body);font-weight:400;color:var(--text-muted)">(Quartz / extended format only)</small></h3>
+    <p>Used in day-of-month or day-of-week when you only want to specify one of the two. In Quartz Scheduler (common in Java environments), <code>?</code> signals "I don't care about this field."</p>
+    <pre><code><span class="expr">0 0 15 * ?</span>    <span class="comment">→ midnight on the 15th (any day of week)</span></code></pre>
+
+    <!-- SECTION 4 -->
+    <h2>15 Real-World Cron Expression Examples</h2>
+    <p>Use these as-is or adapt them to your needs. <a href="https://cronread.com" class="inline-cta">Paste into CronRead.com</a> to verify run times before deploying.</p>
+
+    <div class="example-grid">
+      <div class="ex-card"><div class="ex-expr">* * * * *</div><div class="ex-title">Every minute</div><div class="ex-note">Runs continuously. Useful for high-frequency polling.</div></div>
+      <div class="ex-card"><div class="ex-expr">*/5 * * * *</div><div class="ex-title">Every 5 minutes</div></div>
+      <div class="ex-card"><div class="ex-expr">*/15 * * * *</div><div class="ex-title">Every 15 minutes</div></div>
+      <div class="ex-card"><div class="ex-expr">0 * * * *</div><div class="ex-title">Every hour, on the hour</div></div>
+      <div class="ex-card"><div class="ex-expr">0 0 * * *</div><div class="ex-title">Every day at midnight</div></div>
+      <div class="ex-card"><div class="ex-expr">0 6 * * *</div><div class="ex-title">Every day at 6 AM</div></div>
+      <div class="ex-card"><div class="ex-expr">0 9 * * 1-5</div><div class="ex-title">Every weekday at 9 AM</div><div class="ex-note">Great for daily reports or standup reminders.</div></div>
+      <div class="ex-card"><div class="ex-expr">0 8 * * 1</div><div class="ex-title">Every Monday at 8 AM</div></div>
+      <div class="ex-card"><div class="ex-expr">0 0 1 * *</div><div class="ex-title">First day of every month at midnight</div></div>
+      <div class="ex-card"><div class="ex-expr">59 23 31 12 *</div><div class="ex-title">Last moment of the year</div></div>
+      <div class="ex-card"><div class="ex-expr">*/30 9-17 * * 1-5</div><div class="ex-title">Every 30 min during business hours</div><div class="ex-note">Fires on weekdays between 9 AM and 5 PM only.</div></div>
+      <div class="ex-card"><div class="ex-expr">0 2 * * 0</div><div class="ex-title">Every Sunday at 2 AM</div><div class="ex-note">Common for weekly maintenance windows.</div></div>
+      <div class="ex-card"><div class="ex-expr">0 0,12 * * *</div><div class="ex-title">Twice a day — midnight and noon</div></div>
+      <div class="ex-card"><div class="ex-expr">0 0 1 1,4,7,10 *</div><div class="ex-title">Every quarter</div><div class="ex-note">Fires on the 1st of January, April, July, and October.</div></div>
+      <div class="ex-card"><div class="ex-expr">*/10 8-20 * * *</div><div class="ex-title">Every 10 minutes during peak hours</div></div>
+    </div>
+
+    <!-- SECTION 5 -->
+    <h2>Common Mistakes (And How to Avoid Them)</h2>
+    <p>Most cron bugs come from a small set of recurring errors. Here's what to watch out for:</p>
+
+    <div class="mistake">
+      <div class="mistake-title">Confusing day-of-week numbering</div>
+      <p>Both <code>0</code> and <code>7</code> mean Sunday in standard cron — but some tools only accept <code>0</code>. Always verify the convention for your platform. <a href="https://cronread.com">CronRead.com</a> shows you exactly which day each number maps to.</p>
+    </div>
+
+    <div class="mistake">
+      <div class="mistake-title">Using <code>*/</code> when you mean a specific range</div>
+      <p><code>*/30</code> means "at :00 and :30." But <code>1-59/30</code> means "at :01 and :31." These look similar but behave differently. Make sure your starting point is intentional.</p>
+    </div>
+
+    <div class="mistake">
+      <div class="mistake-title">Specifying both day-of-month and day-of-week</div>
+      <p>In standard cron, if you set <em>both</em> fields (not <code>*</code>), the job runs when <em>either</em> condition is met — not both. This catches a lot of people off guard.</p>
+      <pre><code><span class="expr">0 0 1 * 1</span>   <span class="comment">→ runs midnight on the 1st AND every Monday</span>
+             <span class="comment">→ NOT just Mondays that fall on the 1st</span></code></pre>
+    </div>
+
+    <div class="mistake">
+      <div class="mistake-title">Off-by-one on hours (12-hour vs 24-hour)</div>
+      <p>Cron uses 24-hour time. <code>12</code> is noon, not midnight. Midnight is <code>0</code>. Writing <code>0 12 * * *</code> when you mean midnight is one of the most common production bugs in scheduled jobs.</p>
+    </div>
+
+    <div class="mistake">
+      <div class="mistake-title">Not accounting for time zones</div>
+      <p>Cron runs in the server's local time zone by default. If your server is UTC and your users are in EST, a job set for <code>0 9 * * *</code> fires at 4 AM their time. Be explicit about time zones — especially around daylight saving transitions.</p>
+    </div>
+
+    <!-- SECTION 6 -->
+    <h2>Cron Syntax by Platform</h2>
+    <p>Cron isn't a single universal standard. There are meaningful differences across systems:</p>
+
+    <h3>Standard Unix/Linux Cron</h3>
+    <p>Five fields. Day-of-week is 0–7 (both 0 and 7 = Sunday). No seconds field. Used in crontab files on Linux and macOS servers.</p>
+
+    <h3>Quartz Scheduler (Java)</h3>
+    <p>Six fields — adds a <strong>seconds</strong> field at the start: <code>seconds minutes hours day-of-month month day-of-week</code>. Supports <code>L</code> (last), <code>W</code> (nearest weekday), and <code>#</code> (nth weekday of month). Requires <code>?</code> when specifying one of day-of-month or day-of-week but not both.</p>
+    <pre><code><span class="label">Quartz:</span>   <span class="expr">0 0 9 * * MON-FRI</span>   <span class="comment">→ 9:00:00 AM, Mon–Fri</span>
+<span class="label">Standard:</span> <span class="expr">0 9 * * 1-5</span>         <span class="comment">→ same schedule, no seconds</span></code></pre>
+
+    <h3>AWS EventBridge / Lambda</h3>
+    <p>Six-field format: <code>minutes hours day-of-month month day-of-week year</code>. Requires <code>?</code> in either day-of-month or day-of-week. Does not support <code>*/</code> in the year field. Minimum rate is 1 minute.</p>
+
+    <h3>Kubernetes CronJob</h3>
+    <p>Uses standard five-field Unix cron syntax. Schedules run in the node's time zone unless a <code>timeZone</code> field is set in the spec (supported since Kubernetes 1.27).</p>
+
+    <h3>GitHub Actions</h3>
+    <p>Standard five-field syntax. All schedules run in UTC. Minimum interval is 5 minutes.</p>
+
+    <p>Not sure which format your system uses? <a href="https://cronread.com">CronRead.com</a> detects the format automatically and explains it in plain English.</p>
+
+    <!-- SECTION 7 -->
+    <h2>Quick Reference: Named Shortcuts</h2>
+    <p>Many cron systems support named shortcuts instead of expressions:</p>
+
+    <div class="table-wrap">
+      <table class="shortcut-table">
+        <thead><tr><th>Shortcut</th><th>Equivalent</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>@yearly</td><td>0 0 1 1 *</td><td>Once a year, Jan 1st at midnight</td></tr>
+          <tr><td>@monthly</td><td>0 0 1 * *</td><td>Once a month, 1st at midnight</td></tr>
+          <tr><td>@weekly</td><td>0 0 * * 0</td><td>Once a week, Sunday at midnight</td></tr>
+          <tr><td>@daily</td><td>0 0 * * *</td><td>Once a day at midnight</td></tr>
+          <tr><td>@hourly</td><td>0 * * * *</td><td>Once an hour, at the top of the hour</td></tr>
+          <tr><td>@reboot</td><td>—</td><td>Once, at system startup</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>These are supported in standard crontab and many frameworks. Quartz Scheduler does not support them.</p>
+
+    <!-- CTA MID -->
+    <div class="cta-block">
+      <h2>Paste Any Cron Expression. Get Plain English.</h2>
+      <p>No login. No setup. See the next 10 run times instantly.</p>
+      <a href="https://cronread.com" class="cta-btn">Try CronRead.com</a>
+      <p class="cta-note">// free · no account required</p>
+    </div>
+
+    <!-- SECTION 8 -->
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq">
+      <details open>
+        <summary>What does <code>* * * * *</code> mean?</summary>
+        <div class="faq-body"><p>It runs every minute of every hour of every day — the broadest possible cron schedule. A single asterisk in each position means "match every valid value for this field."</p></div>
+      </details>
+
+      <details>
+        <summary>What's the difference between <code>0 0 * * *</code> and <code>@daily</code>?</summary>
+        <div class="faq-body"><p>They are identical — both run once a day at midnight. <code>@daily</code> is simply a named shortcut alias available in systems that support it. Quartz Scheduler does not support this alias.</p></div>
+      </details>
+
+      <details>
+        <summary>Can I run a cron job every second?</summary>
+        <div class="faq-body"><p>Not with standard cron, which only supports minute-level precision. Quartz Scheduler adds a seconds field and supports sub-minute scheduling. For anything under one minute, you generally need a dedicated task queue rather than cron.</p></div>
+      </details>
+
+      <details>
+        <summary>How do I run a job on the last day of the month?</summary>
+        <div class="faq-body"><p>Standard cron has no "last day" operator. A common workaround is <code>0 0 28-31 * *</code> paired with a script that checks the date. Quartz Scheduler supports this natively with the <code>L</code> character: <code>0 0 L * ?</code>.</p></div>
+      </details>
+
+      <details>
+        <summary>Why is my cron job not running?</summary>
+        <div class="faq-body"><p>The most common causes are: wrong time zone on the server, an off-by-one error in the hour field (remember, cron uses 24-hour time and midnight is <code>0</code>), or a typo that creates an invalid expression. Paste your expression into <a href="https://cronread.com">CronRead.com</a> to validate it and see the next scheduled run times before deploying.</p></div>
+      </details>
+
+      <details>
+        <summary>What's the difference between standard cron and Quartz cron?</summary>
+        <div class="faq-body"><p>Quartz adds a <strong>seconds field</strong> at the beginning (making it 6 fields), and introduces special characters like <code>L</code>, <code>W</code>, and <code>#</code>. It also requires <code>?</code> instead of <code>*</code> in one of the day fields when the other is specified. Standard Unix cron has 5 fields and doesn't support these characters.</p></div>
+      </details>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <div class="page-wrap">
+    <p>© 2024 <a href="https://cronread.com">CronRead.com</a> &mdash; Cron expressions, explained in plain English.</p>
+  </div>
+</footer>
+
+</body>
+</html>
