@@ -1658,305 +1658,34 @@ function fmt12(h) {
   return `${n-12}:00 PM (UTC)`;
 }
 
-function ordinal(n) {
-  const i = parseInt(n);
-  const s = ['th','st','nd','rd'];
-  const v = i % 100;
-  return i + (s[(v-20)%10] || s[v] || s[0]);
-}
-
-function describeDow(dow) {
-  if (dow === '*' || dow === '?') return null;
-  if (dow === '1-5' || dow.toUpperCase() === 'MON-FRI') return 'Monday through Friday';
-  if (dow === '6,0' || dow === '0,6') return 'on weekends';
-
-  const namedDayMap = {SUN:0,MON:1,TUE:2,WED:3,THU:4,FRI:5,SAT:6};
-
-  const namedRange = dow.match(/^([A-Z]{3})-([A-Z]{3})$/i);
-  if (namedRange) {
-    const a = namedDayMap[namedRange[1].toUpperCase()];
-    const b = namedDayMap[namedRange[2].toUpperCase()];
-    if (a !== undefined && b !== undefined) return `${DOW_NAMES[a]} through ${DOW_NAMES[b]}`;
-    return dow;
-  }
-
-  if (dow.includes(',')) {
-    const parts = dow.split(',').map(d => {
-      const upper = d.trim().toUpperCase();
-      if (namedDayMap[upper] !== undefined) return DOW_NAMES[namedDayMap[upper]];
-      const n = parseInt(d);
-      return isNaN(n) ? d : DOW_NAMES[n];
-    });
-    const last = parts.pop();
-    return parts.length ? `on ${parts.join(', ')} and ${last}` : `every ${last}`;
-  }
-
-  const upper = dow.toUpperCase();
-  if (namedDayMap[upper] !== undefined) return `every ${DOW_NAMES[namedDayMap[upper]]}`;
-
-  // nth-weekday e.g. 1#2 = second Monday, MON#2 = second Monday
-  if (/^([A-Z]{3}|\d+)#(\d+)$/i.test(dow)) {
-    const [dayPart, nthPart] = dow.split('#');
-    const nth = parseInt(nthPart);
-    const namedDayMap2 = {SUN:0,MON:1,TUE:2,WED:3,THU:4,FRI:5,SAT:6};
-    const dayNum = namedDayMap2[dayPart.toUpperCase()] !== undefined
-      ? namedDayMap2[dayPart.toUpperCase()]
-      : parseInt(dayPart);
-    const ordinals = ['','first','second','third','fourth','fifth'];
-    const dayName = DOW_NAMES[dayNum] || dayPart;
-    return `on the ${ordinals[nth] || nth+'th'} ${dayName} of the month`;
-  }
-  // last-weekday e.g. 5L = last Friday
-  if (/^\d+L$/i.test(dow)) {
-    const d = parseInt(dow);
-    return `on the last ${DOW_NAMES[d] || 'day'} of the month`;
-  }
-
-  if (dow.includes('-')) {
-    const [a,b] = dow.split('-').map(Number);
-    return `${DOW_NAMES[a] || a} through ${DOW_NAMES[b] || b}`;
-  }
-
-  const n = parseInt(dow);
-  return isNaN(n) ? `on ${dow}` : `every ${DOW_NAMES[n] || dow}`;
-}
-
-function describeDom(dom) {
-  if (dom === '*' || dom === '?') return null;
-
-  if (/^\d+W$/.test(dom)) {
-    return `on the nearest weekday to the ${ordinal(dom.replace('W',''))} of the month`;
-  }
-
-  if (dom === 'L') return 'on the last day of the month';
-
-  if (dom.startsWith('*/'))
-    return `every ${dom.slice(2)} days`;
-
-  if (dom === '1')
-    return 'on the 1st of the month';
-
-  if (dom.includes(',')) {
-  return 'on ' + dom.split(',').map(d => {
-    if (d === 'L') return 'the last day of the month';
-    return ordinal(d);
-  }).join(', ');
-}
-
-  if (dom.includes('-'))
-    return `on days ${dom} of the month`;
-
-  return `on the ${ordinal(dom)} of the month`;
-}
-
-const NAMED_MONTH_MAP = {JAN:1,FEB:2,MAR:3,APR:4,MAY:5,JUN:6,JUL:7,AUG:8,SEP:9,OCT:10,NOV:11,DEC:12};
-
-function resolveMonthName(m) {
-  const trimmed = m.trim();
-  const upper = trimmed.toUpperCase();
-  if (NAMED_MONTH_MAP[upper]) return MONTH_NAMES[NAMED_MONTH_MAP[upper]];
-  const n = parseInt(trimmed);
-  return isNaN(n) ? trimmed : (MONTH_NAMES[n] || trimmed);
-}
-
-function describeMonth(month) {
-  if (month === '*') return null;
-  if (month.includes(',')) {
-    const names = month.split(',').map(resolveMonthName);
-    const last = names.pop();
-    return `only in ${names.join(', ')} and ${last}`;
-  }
-  if (month.includes('-')) {
-    const [a,b] = month.split('-');
-    return `from ${resolveMonthName(a)} to ${resolveMonthName(b)}`;
-  }
-  if (month.startsWith('*/')) return `every ${month.slice(2)} months`;
-  return `in ${resolveMonthName(month)}`;
-}
-
 // ══ CLEAN HUMAN TEXT BUILDER ══════════════════════════════
 function buildHumanText(parts) {
   try {
-    const [minF, hourF, domF, monthF, dowF] = parts.slice(0,5);
+    // 1. AWS 6-field format se standard 5-field nikal kar '?' ko '*' mein badalna
+    const cronExpr = parts.slice(0, 5).join(' ').replace(/\?/g, '*');
 
-    // ── Detect fixed single numeric minute and hour ──
-    const isFixedMinute = /^\d+$/.test(minF);
-    const isFixedHour   = /^\d+$/.test(hourF);
+    // 2. cronstrue ko apna "Primary Engine" banao
+    let text = cronstrue.toString(cronExpr, {
+        throwExceptionOnParseError: true,
+        verbose: false,              // False rakhne se ekdum neat and clean English aayegi
+        use24HourTimeFormat: false   // 12-hour AM/PM format
+    });
 
-    // ── minute ──
-    let minutePart = '';
-    if (minF === '*') {
-      minutePart = 'every minute';
-    } else if (minF.startsWith('*/')) {
-      minutePart = `every ${minF.slice(2)} minutes`;
-    } else if (minF.includes(',')) {
-      const mins = minF.split(',').map(m => parseInt(m.trim()));
-      const last = mins.pop();
-      minutePart = `at ${mins.join(', ')} and ${last} minutes past the hour`;
-    } else if (minF.includes('-')) {
-      minutePart = `from minute ${minF.replace('-',' to ')}`;
-    } else {
-      const m = parseInt(minF);
-      minutePart = m === 0 ? 'at the top of the hour' : `at ${m} minutes past the hour`;
-    }
+    // 3. Tera Custom Cloud-touch & Natural Phrasing (YE RAHA TERA REPLACE WALA CODE)
+    text = text.replace(/At 0 minutes past the hour/gi, "At the top of the hour");
+    text = text.replace(/Every hour, at the top of the hour/gi, "Every hour");
+    text = text.replace(/([0-9]{1,2}:[0-9]{2} [AP]M)/g, '$1 (UTC)');
+    text = text.replace(/\b(midnight|noon)\b/gi, '$1 (UTC)');
 
-    // ── hour ──
-    let hourPart = '';
-    if (hourF === '*') {
-      hourPart = '';
-    } else if (hourF.startsWith('*/')) {
-      hourPart = `every ${hourF.slice(2)} hours`;
-    } else if (/^\d+-\d+\/\d+$/.test(hourF)) {
-      const [range, step] = hourF.split('/');
-      const [a, b] = range.split('-').map(Number);
-      hourPart = `every ${step} hours from ${fmt12(a)} to ${fmt12(b)}`;
-    } else if (hourF.includes('-')) {
-      const [a, b] = hourF.split('-').map(Number);
-      hourPart = `between ${fmt12(a)} and ${fmt12(b)}`;
-    } else if (hourF.includes(',')) {
-      hourPart = 'at ' + hourF.split(',').map(h => fmt12(parseInt(h))).join(', ');
-    } else {
-      hourPart = `at ${fmt12(parseInt(hourF))}`;
-    }
-
-    // ── dom ──
-    const domPart = describeDom(domF);
-
-    // ── month ──
-    const monthPart = describeMonth(monthF);
-
-    // ── dow ──
-    const dowPart = describeDow(dowF);
-    let implicitEveryDay = '';
-
-if (domF === '*' && dowF === '*' && monthF !== '*') {
-  implicitEveryDay = 'every day';
-}
-
-    // ── Assemble time phrase ──
-    let timePart = '';
-    const isSpecificHour = hourF !== '*' && !hourF.includes('/') && !hourF.includes('-') && !hourF.includes(',');
-
-    // ── Fixed clock time: both minute and hour are single numeric values ──
-    if (isFixedMinute && isFixedHour) {
-      const h = parseInt(hourF);
-      const mn = parseInt(minF);
-      const mStr = String(mn).padStart(2, '0');
-      let clockTime;
-      if (h === 0 && mn === 0) {
-        clockTime = 'midnight (UTC)';
-      } else if (h === 12 && mn === 0) {
-        clockTime = 'noon (UTC)';
-      } else if (h === 0) {
-        clockTime = `12:${mStr} AM (UTC)`;
-      } else if (h < 12) {
-        clockTime = `${h}:${mStr} AM (UTC)`;
-      } else if (h === 12) {
-        clockTime = `12:${mStr} PM (UTC)`;
-      } else {
-        clockTime = `${h - 12}:${mStr} PM (UTC)`;
-      }
-      timePart = `at ${clockTime}`;
-    } else if (minutePart === 'every minute' && hourPart === '') {
-      timePart = 'every minute';
-    } else if (minutePart === 'every minute') {
-      timePart = `every minute, ${hourPart}`;
-    } else if (minutePart === 'at the top of the hour' && isSpecificHour) {
-      // e.g. "0 10 * * *" → "at 10:00 AM (UTC)"
-      const h = parseInt(hourF);
-      timePart = `at ${h < 12 ? h+':00 AM (UTC)' : h === 12 ? '12:00 PM (UTC)' : (h-12)+':00 PM (UTC)'}`;
-    } else if (minutePart === 'at the top of the hour') {
-      timePart = hourPart || 'at midnight';
-    } else {
-      timePart = hourPart ? `${minutePart}, ${hourPart}` : minutePart;
-    }
-
-    const chunks = [timePart];
-    if (implicitEveryDay) {
-  chunks.push(implicitEveryDay);
-}
-    if (domPart && dowPart) {
-      chunks.push(
-        domPart.replace(/^on /, '') +
-        ' OR ' +
-        dowPart.replace(/^every /, 'every ')
-      );
-    } else {
-      if (domPart) chunks.push(domPart);
-      if (dowPart) chunks.push(dowPart);
-    }
-    if (monthPart) chunks.push(monthPart);
-
-    const sentence = chunks.filter(Boolean).join(', ');
-    return sentence.charAt(0).toUpperCase() + sentence.slice(1);
+    // 4. First letter ko Capitalize karna
+    return text.charAt(0).toUpperCase() + text.slice(1);
 
   } catch(e) {
-    // Fallback to cronstrue if our builder hits an edge case
-    try { return cronstrue.toString(parts.slice(0,5).join(' ')); } catch(_) { return 'Valid cron expression'; }
+    // Agar koi ekdum ajeeb input aa jaye jo library bhi na samjhe, toh safe fallback
+    return 'Valid cron expression';
   }
 }
 
-// ══ HUMAN READABLE DESCRIPTION ═══════════════════════════
-// Format a minute field into a human list: "5,35" → ":05 and :35"
-function describeMinuteList(min) {
-  if (min === '0') return ':00';
-  if (!min.includes(',')) return ':' + String(parseInt(min)).padStart(2, '0');
-  const items = min.split(',').map(function(m) {
-    return ':' + String(parseInt(m.trim())).padStart(2, '0');
-  });
-  if (items.length === 1) return items[0];
-  const last = items.pop();
-  return items.join(', ') + ' and ' + last;
-}
-
-function describeHuman(parts){
-  return buildHumanText(parts);
-}
-function describeHour(h){
-
-if(h==='*') return 'every hour';
-
-if(h.startsWith('*/')){
- return `every ${h.slice(2)} hours`;
-}
-
-/* range/step explanation */
-if(/^\d+-\d+\/\d+$/.test(h)){
- const [range,step]=h.split('/');
- const [a,b]=range.split('-');
- return `every ${step} hours from ${fmtAMPM(a)} to ${fmtAMPM(b)}`;
-}
-
-if(h.includes('-')){
- const [a,b]=h.split('-');
- return `${fmt12(a)} to ${fmt12(b)}`;
-}
-
-if(h.includes(',')){
- return h.split(',').map(fmt12).join(', ');
-}
-
-return fmt12(h);
-
-}
-
-function expandTimes(min, hour) {
-  const hours = hour.includes(',') ? hour.split(',') : [hour];
-  const mins  = min.includes(',')  ? min.split(',')  : [min];
-  const pairs = [];
-  for (const h of hours) {
-    for (const m of mins) {
-      const hNum = parseInt(h);
-      const mStr = String(parseInt(m)).padStart(2,'0');
-      pairs.push(`${fmt12(hNum)} :${mStr}`);
-    }
-  }
-  return pairs.join(', ');
-}
-
-function fmtAMPM(n) {
-  return fmt12(parseInt(n));
-}
 
 // ══ FIELD BREAKDOWN ════════════════════════════════════════
 const FIELD_NAMES = ['Minute','Hour','Day','Month','Weekday'];
@@ -1980,9 +1709,30 @@ function renderFieldBreakdown(parts) {
 function describeField(val, idx) {
   if (val === '*' || val === '?') return 'every';
   if (val.startsWith('*/')) return `every ${val.slice(2)}`;
-  if (val.includes('-')) return `${val.split('-')[0]}–${val.split('-')[1]}`;
+  // Range+step e.g. 9-17/2 — must be checked before plain range
+  if (/^\d+-\d+\/\d+$/.test(val)) {
+    const [range, step] = val.split('/');
+    const [a, b] = range.split('-');
+    if (idx === 1) {
+      const aFmt = fmt12(parseInt(a)).replace(' (UTC)', '');
+      const bFmt = fmt12(parseInt(b)).replace(' (UTC)', '');
+      return `every ${step}h, ${aFmt}–${bFmt}`;
+    }
+    return `${a}–${b} every ${step}`;
+  }
+  // Plain range e.g. 9-17 or 1-5
+  if (val.includes('-')) {
+    const [a, b] = val.split('-');
+    if (idx === 1) {
+      // Format hour range endpoints as 12-hour clock times
+      const aFmt = fmt12(parseInt(a)).replace(' (UTC)', '');
+      const bFmt = fmt12(parseInt(b)).replace(' (UTC)', '');
+      return `${aFmt}–${bFmt}`;
+    }
+    return `${a}–${b}`;
+  }
   if (val.includes(',')) return `${val.split(',').length} values`;
-  if (idx === 1) return fmt12(val).replace(' UTC','');
+  if (idx === 1) return fmt12(val).replace(' (UTC)', '');
   if (idx === 4) return DOW_NAMES[parseInt(val)] || val;
   if (idx === 3) return MONTH_NAMES[parseInt(val)] || val;
   return val;
