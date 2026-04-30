@@ -233,33 +233,38 @@
 
 <!-- FAQ -->
 <section>
-  <h2>Frequently Asked Questions</h2>
-  <div class="faq-list">
-    <div class="faq-item">
-      <div class="faq-q">Is CronRead Pro completely free?</div>
-      <div class="faq-a">Yes. No account, no rate limits, no premium tier. Every feature — plain English parsing, snippet generation, timezone calculator, next run calculation — is free forever.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Does CronRead Pro store my cron expressions?</div>
-      <div class="faq-a">No. Everything runs in your browser. No data is sent to a server, no expressions are logged or stored. Your schedules are private.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Can I paste an AWS cron() expression directly?</div>
-      <div class="faq-a">Yes. Paste <code>cron(0 9 ? * MON-FRI *)</code> directly into CronRead Pro. It automatically strips the wrapper, drops the year field, and explains and validates the expression.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Does CronRead Pro support MON#2 and last-weekday (5L) syntax?</div>
-      <div class="faq-a">Yes. Both validation and explanation work for nth-weekday expressions like <code>MON#2</code> (second Monday of the month) and last-weekday expressions like <code>5L</code> (last Friday of the month). The next-run calculator also correctly computes these dates.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">What cron syntax does CronRead Pro support?</div>
-      <div class="faq-a">Standard 5-field POSIX cron, AWS 6-field EventBridge format, Quartz-style expressions, named months (JAN–DEC), named days (MON–SUN), ranges, steps, lists, nth-weekday (#), last-weekday (L), and last-day-of-month (L in DOM field). It also recognises macros like @weekly, @monthly, @reboot.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Can I use CronRead Pro offline?</div>
-      <div class="faq-a">After the first load, CronRead Pro works without a network connection. All parsing, validation, and snippet generation runs client-side in JavaScript.</div>
-    </div>
+<h2>Frequently Asked Questions</h2>
+<div class="faq-list">
+  <div class="faq-item">
+    <div class="faq-q">Is CronRead Pro completely free?</div>
+    <div class="faq-a">Yes. No account, no rate limits, no premium tier. Every feature — plain English parsing, snippet generation, timezone calculator, next run calculation — is free forever.</div>
   </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Does CronRead Pro store my cron expressions?</div>
+    <div class="faq-a">No. Everything runs in your browser. No data is sent to a server, no expressions are logged or stored. Your schedules are private.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Can I paste an AWS cron() expression directly?</div>
+    <div class="faq-a">Yes. Paste <code>cron(0 9 ? * MON-FRI *)</code> directly into CronRead Pro. It automatically strips the wrapper, drops the year field, and explains and validates the expression.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Does CronRead Pro support MON#2 and last-weekday (5L) syntax?</div>
+    <div class="faq-a">Yes. Both validation and explanation work for nth-weekday expressions like <code>MON#2</code> (second Monday of the month) and last-weekday expressions like <code>5L</code> (last Friday of the month). The next-run calculator also correctly computes these dates.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">What cron syntax does CronRead Pro support?</div>
+    <div class="faq-a">Standard 5-field POSIX cron, AWS 6-field EventBridge format, Quartz-style expressions, named months (JAN–DEC), named days (MON–SUN), ranges, steps, lists, nth-weekday (#), last-weekday (L), and last-day-of-month (L in DOM field). It also recognises macros like @weekly, @monthly, @reboot.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Can I use CronRead Pro offline?</div>
+    <div class="faq-a">After the first load, CronRead Pro works without a network connection. All parsing, validation, and snippet generation runs client-side in JavaScript.</div>
+  </div>
+</div>
 </section>
 
 <div class="cta-row" style="margin-top:3rem">
