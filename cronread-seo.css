@@ -6,7 +6,41 @@
 /* ── CSS Variables ─────────────────────────────────────────── */
 :root {
   --bg:       #ECEEF8;
-  --surface:  #FFFFFF;
+  --surface:  #FFFFFF;/* TABLE FIXES FOR SHARP TEXT */
+table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  font-size: 0.95rem; /* Halka sa bada kiya hai padhne ke liye */
+}
+
+thead { 
+  background: var(--surface2); /* Ya jo bhi tera light background ho */
+  border-bottom: 2px solid var(--border); 
+}
+
+th {
+  font-family: 'Syne', sans-serif; /* Ya jo bhi tera header font hai */
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #475569; /* Fika color hatakar bold slate color daala hai */
+  font-weight: 800; /* Font ko mota kiya hai taaki heading chhupe na */
+  padding: 1rem;
+  text-align: left;
+}
+
+td { 
+  padding: 1rem; 
+  border-bottom: 1px solid var(--border); 
+  vertical-align: top; 
+  color: #1e293b; /* Ekdum dark slate color jisse glare nahi aayega par text sharp dikhega */
+  font-weight: 500; /* Text thoda thick kiya hai readability ke liye */
+}
+
+td:first-child { 
+  font-weight: 700; /* Pehla column (jaise 'supercronic') thoda aur bold kar diya */
+  color: #0f172a; /* Isko completely dark kar diya */
+}
   --surface2: #F2F3FB;
   --border:   #DDE0F0;
   --text:     #0C0C20;
@@ -401,6 +435,7 @@ pre .label   { color: var(--purple); font-weight: 700; }
 .anatomy-box pre code { font-weight: 600; }
 
 /* ── Tables ────────────────────────────────────────────────── */
+/* ── Tables ────────────────────────────────────────────────── */
 .table-wrap {
   overflow-x: auto;
   margin: 1.8rem 0;
@@ -416,16 +451,17 @@ thead tr {
   background: var(--surface2);
   border-bottom: 2px solid var(--border);
 }
+
 th {
-  color: var(--muted);
+  color: #0C0C20; /* 🔥 FIXED: Fika hatakar ekdum Dark color kiya */
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px; /* 🔥 FIXED: Halka sa bada kiya */
   text-transform: uppercase;
   letter-spacing: .16em;
   padding: 14px 20px;
   text-align: left;
   white-space: nowrap;
-  font-weight: 700;
+  font-weight: 800; /* 🔥 FIXED: Heading ko aur bold kiya */
 }
 th:first-child { border-radius: 14px 0 0 0; }
 th:last-child  { border-radius: 0 14px 0 0; }
@@ -447,16 +483,17 @@ tbody tr:hover {
 
 td {
   padding: 16px 20px;
-  color: var(--text2);
+  color: #1e293b; /* 🔥 FIXED: Muted text hata kar sharp Dark Slate color daala */
   vertical-align: middle;
   line-height: 1.6;
-  font-size: .9rem;
+  font-size: .95rem; /* 🔥 FIXED: Readability ke liye text size badhaya */
+  font-weight: 500; /* 🔥 FIXED: Text halka sa thick kiya */
 }
 
 /* First column — label/command badge style */
 td:first-child {
-  font-weight: 600;
-  color: var(--text);
+  font-weight: 700; /* 🔥 FIXED: Extra bold for first column */
+  color: #0C0C20; /* 🔥 FIXED: Jet black */
   width: 1%;
   white-space: nowrap;
 }
@@ -478,26 +515,7 @@ td code {
 }
 
 /* Description column */
-td:last-child { color: var(--text2); font-weight: 400; }
-
-/* Link rows (e.g. guide tables) */
-td:first-child a {
-  color: var(--accent);
-  font-weight: 700;
-  text-decoration: none;
-  font-size: .925rem;
-  transition: color .15s;
-}
-td:first-child a:hover { color: var(--accent2); text-decoration: none; }
-
-td code { font-size: .78em; }
-.check   { color: var(--green);  font-weight: 700; }
-.cross   { color: var(--red);    font-weight: 700; }
-.partial { color: var(--yellow); font-weight: 600; }
-.plain-table td:first-child,
-.shortcut-table td:first-child { font-family: var(--mono); color: var(--code-text); font-size: .85em; font-weight: 700; }
-.plain-table td:nth-child(2),
-.shortcut-table td:nth-child(2) { color: var(--text2); }
+td:last-child { color: var(--text2); font-weight: 500; }
 
 /* ── Example / Ex blocks ───────────────────────────────────── */
 .ex {
