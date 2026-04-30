@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<title>50 Cron Expression Examples — Beginner to Advanced | CronRead Pro</title>
+<meta name="description" content="50 cron expression examples from beginner to advanced. Grouped by use case: every-minute, hourly, daily, weekly, monthly, weekdays, and complex schedules. With plain-English explanations.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://cronread.com/blog/cron-examples/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="50 Cron Expression Examples — CronRead Pro">
+<meta property="og:description" content="50 cron expression examples with plain-English explanations. Grouped by use case from simple intervals to complex multi-field schedules.">
+<meta property="og:url" content="https://cronread.com/blog/cron-examples/">
+<meta property="og:site_name" content="CronRead Pro">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/cronread-seo.css">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"What are the 5 fields in a cron expression?","acceptedAnswer":{"@type":"Answer","text":"A cron expression has 5 fields separated by spaces: minute (0-59), hour (0-23), day-of-month (1-31), month (1-12), and day-of-week (0-7, where 0 and 7 are both Sunday). Example: 0 9 * * 1-5 means 9 AM on weekdays."}},
+    {"@type":"Question","name":"What does */ mean in cron?","acceptedAnswer":{"@type":"Answer","text":"*/ means 'every N units'. So */15 in the minutes field means every 15 minutes (at :00, :15, :30, :45). */2 in the hours field means every 2 hours. The * means 'start from the minimum value' and / sets the step."}},
+    {"@type":"Question","name":"What does 0 0 * * * mean in cron?","acceptedAnswer":{"@type":"Answer","text":"0 0 * * * means midnight every day. Breaking it down: 0 (minute zero), 0 (hour zero = midnight), * (every day of month), * (every month), * (every day of week)."}},
+    {"@type":"Question","name":"How do I run a cron job every weekday?","acceptedAnswer":{"@type":"Answer","text":"Use 1-5 in the day-of-week field. For example: 0 9 * * 1-5 runs at 9 AM Monday through Friday. You can also use named days: 0 9 * * MON-FRI."}},
+    {"@type":"Question","name":"Can I use commas in a cron expression?","acceptedAnswer":{"@type":"Answer","text":"Yes. Commas create a list of values. 0 9,17 * * * runs at 9 AM and 5 PM. 0 0 1,15 * * runs at midnight on the 1st and 15th of each month. 0 0 * * 1,3,5 runs at midnight on Monday, Wednesday, and Friday."}}
+  ]
+}
+</script>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">CRONREAD</a>
+    <div class="nav-links">
+      <a href="/">Tool</a>
+      <a href="/blog/aws-eventbridge-cron-examples/">AWS</a>
+      <a href="/blog/kubernetes-cronjob-examples/">Kubernetes</a>
+      <a href="/blog/github-actions-cron-examples/">GitHub Actions</a>
+      <a href="/blog/cronguru-alternative/">vs CronGuru</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<div class="hero">
+  <div class="hero-tag">REFERENCE</div>
+  <h1>50 <span class="hl">Cron Expression</span><br>Examples Explained</h1>
+  <p class="hero-sub">From every-minute to complex multi-field schedules — 50 cron examples grouped by use case with plain-English explanations. Beginner-friendly with advanced patterns at the end.</p>
+  <div class="cta-row">
+    <a href="/" class="cta-btn">⚡ Test Any Cron Expression</a>
+  </div>
+</div>
+
+<section>
+  <h2>Cron Syntax Basics</h2>
+  <p>A cron expression has 5 space-separated fields. Each field controls a different time unit:</p>
+  <div class="field-grid">
+    <div class="field-box"><div class="field-name">Minute</div><div class="field-range">0–59</div></div>
+    <div class="field-box"><div class="field-name">Hour</div><div class="field-range">0–23</div></div>
+    <div class="field-box"><div class="field-name">Day/Month</div><div class="field-range">1–31</div></div>
+    <div class="field-box"><div class="field-name">Month</div><div class="field-range">1–12</div></div>
+    <div class="field-box"><div class="field-name">Day/Week</div><div class="field-range">0–7</div></div>
+  </div>
+  <p>Special characters: <code>*</code> (any), <code>*/N</code> (every N), <code>a-b</code> (range), <code>a,b</code> (list), <code>?</code> (no value, AWS only)</p>
+</section>
+
+<hr class="divider">
+
+<section>
+  <h2>Every N Minutes</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Expression</th><th>Meaning</th><th>Use case</th></tr></thead>
+      <tbody>
+        <tr><td>* * * * *</td><td>Every minute</td><td>Testing only — creates a run every 60 seconds</td></tr>
+        <tr><td>*/2 * * * *</td><td>Every 2 minutes</td><td>Frequent polling, near-real-time checks</td></tr>
+        <tr><td>*/5 * * * *</td><td>Every 5 minutes</td><td>Health checks, queue consumers</td></tr>
+        <tr><td>*/10 * * * *</td><td>Every 10 minutes</td><td>Cache invalidation, status updates</td></tr>
+        <tr><td>*/15 * * * *</td><td>Every 15 minutes</td><td>Data syncs, aggregations</td></tr>
+        <tr><td>*/30 * * * *</td><td>Every 30 minutes</td><td>Half-hourly reports, digest emails</td></tr>
+        <tr><td>0,30 * * * *</td><td>At :00 and :30 of every hour</td><td>Same as */30 but more explicit</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>Hourly Schedules</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Expression</th><th>Meaning</th><th>Use case</th></tr></thead>
+      <tbody>
+        <tr><td>0 * * * *</td><td>Every hour on the hour</td><td>Hourly aggregations, metric collection</td></tr>
+        <tr><td>30 * * * *</td><td>Every hour at :30</td><td>Offset hourly jobs to spread load</td></tr>
+        <tr><td>0 */2 * * *</td><td>Every 2 hours</td><td>Bi-hourly syncs, periodic tasks</td></tr>
+        <tr><td>0 */4 * * *</td><td>Every 4 hours</td><td>Runs at 0, 4, 8, 12, 16, 20</td></tr>
+        <tr><td>0 */6 * * *</td><td>Every 6 hours</td><td>Quarter-day jobs</td></tr>
+        <tr><td>0 0,6,12,18 * * *</td><td>At midnight, 6 AM, noon, 6 PM</td><td>Same as */6 but explicit times</td></tr>
+        <tr><td>0 9,17 * * *</td><td>At 9 AM and 5 PM</td><td>Morning and end-of-day triggers</td></tr>
+        <tr><td>0 8,12,17 * * *</td><td>Three times per day</td><td>Morning, noon, evening jobs</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>Daily Schedules</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Expression</th><th>Meaning</th><th>Use case</th></tr></thead>
+      <tbody>
+        <tr><td>0 0 * * *</td><td>Midnight every day</td><td>Daily cleanup, log rotation, snapshots</td></tr>
+        <tr><td>1 0 * * *</td><td>00:01 every day</td><td>After-midnight jobs (1 min offset avoids midnight rush)</td></tr>
+        <tr><td>0 1 * * *</td><td>1 AM every day</td><td>Low-traffic maintenance window</td></tr>
+        <tr><td>0 2 * * *</td><td>2 AM every day</td><td>Database backups, heavy processing</td></tr>
+        <tr><td>0 6 * * *</td><td>6 AM every day</td><td>Early morning pre-warm, report generation</td></tr>
+        <tr><td>0 9 * * *</td><td>9 AM every day</td><td>Daily digest emails, morning jobs</td></tr>
+        <tr><td>0 12 * * *</td><td>Noon every day</td><td>Midday jobs, lunch-hour processing</td></tr>
+        <tr><td>0 17 * * *</td><td>5 PM every day</td><td>End-of-business-day triggers</td></tr>
+        <tr><td>0 23 * * *</td><td>11 PM every day</td><td>Late-night jobs, pre-midnight tasks</td></tr>
+        <tr><td>59 23 * * *</td><td>11:59 PM every day</td><td>End-of-day final jobs</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>Weekday Schedules</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Expression</th><th>Meaning</th><th>Use case</th></tr></thead>
+      <tbody>
+        <tr><td>0 9 * * 1-5</td><td>9 AM Mon–Fri</td><td>Business hours jobs</td></tr>
+        <tr><td>0 0 * * 1-5</td><td>Midnight Mon–Fri</td><td>Nightly jobs, weekdays only</td></tr>
+        <tr><td>*/15 9-17 * * 1-5</td><td>Every 15 min, 9–5, weekdays</td><td>Business hours processing</td></tr>
+        <tr><td>0 8 * * 1</td><td>8 AM every Monday</td><td>Weekly kickoff, Monday digest</td></tr>
+        <tr><td>0 17 * * 5</td><td>5 PM every Friday</td><td>End-of-week reports, weekly archive</td></tr>
+        <tr><td>0 9 * * 0,6</td><td>9 AM weekends (Sat & Sun)</td><td>Weekend-only jobs</td></tr>
+        <tr><td>0 0 * * 0</td><td>Midnight Sunday</td><td>Weekly reset, weekly archiving</td></tr>
+        <tr><td>0 0 * * 1</td><td>Midnight Monday</td><td>Weekly billing cycle, start-of-week jobs</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>Monthly Schedules</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Expression</th><th>Meaning</th><th>Use case</th></tr></thead>
+      <tbody>
+        <tr><td>0 0 1 * *</td><td>Midnight on the 1st</td><td>Monthly billing, subscription renewal</td></tr>
+        <tr><td>0 0 15 * *</td><td>Midnight on the 15th</td><td>Mid-month payroll, billing</td></tr>
+        <tr><td>0 9 1,15 * *</td><td>9 AM on 1st and 15th</td><td>Semi-monthly jobs</td></tr>
+        <tr><td>0 0 1 1 *</td><td>Midnight Jan 1st</td><td>Annual reset, yearly archive</td></tr>
+        <tr><td>0 0 1 */3 *</td><td>First of every 3rd month</td><td>Quarterly jobs</td></tr>
+        <tr><td>0 0 1 1,4,7,10 *</td><td>First of Jan, Apr, Jul, Oct</td><td>Explicit quarterly schedule</td></tr>
+        <tr><td>0 0 28-31 * *</td><td>Days 28–31 of every month</td><td>Near-end-of-month jobs (be careful — not all months have 31 days)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>Advanced Patterns</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Expression</th><th>Meaning</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>5,35 * * * *</td><td>At :05 and :35 past every hour</td><td>Twice-hourly with offset</td></tr>
+        <tr><td>0 9-17 * * 1-5</td><td>Top of each hour, 9 AM–5 PM, weekdays</td><td>Business hours hourly job</td></tr>
+        <tr><td>*/15 9-17 * * 1-5</td><td>Every 15 min during business hours</td><td>Combine step + range for windows</td></tr>
+        <tr><td>0 0 * * MON#1</td><td>Midnight on the first Monday of the month</td><td><code>#</code> = nth weekday; supported by Quartz/AWS</td></tr>
+        <tr><td>0 10 * * MON#3</td><td>10 AM on the third Monday</td><td>Monthly team meetings</td></tr>
+        <tr><td>0 18 * * 5L</td><td>6 PM on the last Friday of the month</td><td><code>L</code> in DOW = last occurrence</td></tr>
+        <tr><td>0 0 L * *</td><td>Midnight on the last day of month</td><td><code>L</code> in DOM = last day</td></tr>
+        <tr><td>0 9 * 1,6,12 1-5</td><td>9 AM weekdays in Jan, Jun, Dec only</td><td>Combine month list with DOW</td></tr>
+        <tr><td>0 */3 8-20 * *</td><td>Every 3 hours from 8 AM to 8 PM</td><td>Runs at 8, 11, 14, 17, 20</td></tr>
+        <tr><td>0 0 1-7 * 1</td><td>Monday in the first week of month</td><td>First Monday approximation</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout callout-warn">
+    <strong style="color:var(--yellow)">⚠ Note:</strong> <code>#</code> (nth weekday) and <code>L</code> (last) are Quartz extensions, not standard Linux cron. They're supported by AWS EventBridge, Kubernetes (partially), and Quartz schedulers — but not by standard Unix crontab.
+  </div>
+</section>
+
+<hr class="divider">
+
+<section>
+  <h2>Frequently Asked Questions</h2>
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q">What are the 5 fields in a cron expression?</div>
+      <div class="faq-a">In order: <strong>minute</strong> (0–59), <strong>hour</strong> (0–23), <strong>day of month</strong> (1–31), <strong>month</strong> (1–12), <strong>day of week</strong> (0–7, where both 0 and 7 mean Sunday). Example: <code>0 9 * * 1-5</code> = 9 AM on weekdays.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What does */ mean in a cron expression?</div>
+      <div class="faq-a"><code>*/N</code> means "every N units". <code>*/15</code> in minutes = every 15 minutes. <code>*/2</code> in hours = every 2 hours. The <code>*</code> starts from the minimum value and increments by N.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What does 0 0 * * * mean?</div>
+      <div class="faq-a">It means midnight every day: minute 0, hour 0, every day of month, every month, every day of week.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How do I run a job every weekday?</div>
+      <div class="faq-a">Use <code>1-5</code> in the day-of-week field. <code>0 9 * * 1-5</code> runs at 9 AM Monday through Friday. You can also write <code>MON-FRI</code> on platforms that support named days.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What is the difference between 0 and 7 for Sunday?</div>
+      <div class="faq-a">Both <code>0</code> and <code>7</code> represent Sunday in most cron implementations. This is a historical quirk — different systems standardised on different values. Use <code>0</code> for maximum compatibility.</div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-row" style="margin-top:3rem">
+  <a href="/" class="cta-btn">⚡ Validate Any Cron Expression</a>
+</div>
+
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="/">CronRead</a> |
+    <a href="/blog/aws-eventbridge-cron-examples/">AWS EventBridge</a> |
+    <a href="/blog/kubernetes-cronjob-examples/">Kubernetes</a> |
+    <a href="/blog/github-actions-cron-examples/">GitHub Actions</a> |
+    <a href="/blog/cronguru-alternative/">vs CronGuru</a>
+  </div>
+  <p style="margin-top:.5rem">© 2026 CronRead · Always verify cron schedules in production.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<title>Crontab vs Systemd Timer — Which Should You Use? | CronRead</title>
+<meta name="description" content="Crontab vs systemd timers: side-by-side comparison with examples. When to use each, how to convert crontab to systemd timer, and which is better for your use case.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://cronread.com/blog/crontab-vs-systemd-timer/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Crontab vs Systemd Timer — Full Comparison | CronRead">
+<meta property="og:description" content="Compare crontab and systemd timers with real examples. Convert cron expressions to systemd OnCalendar syntax and understand the trade-offs.">
+<meta property="og:url" content="https://cronread.com/blog/crontab-vs-systemd-timer/">
+<meta property="og:site_name" content="CronRead">
+<meta property="og:image" content="https://cronread.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Crontab vs Systemd Timer — CronRead">
+<meta name="twitter:description" content="Full comparison with examples. When to use cron, when to use systemd timers, and how to convert between them."  >
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/cronread-seo.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Should I use crontab or systemd timers?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use crontab for quick personal jobs, portability across Unix systems, and when you need minimal setup. Use systemd timers when you need missed-run catching (runs after reboot if the timer was missed), dependency management, detailed logging via journalctl, fine-grained control over the execution environment, or integration with other systemd services."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the equivalent of cron's @daily in systemd?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In systemd timer files, use OnCalendar=daily. Other equivalents: @hourly = OnCalendar=hourly, @weekly = OnCalendar=weekly, @monthly = OnCalendar=monthly, @reboot = OnBootSec=0. Systemd's calendar expressions are more flexible and human-readable than cron's 5-field syntax."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can systemd timers catch up on missed runs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Add Persistent=true to your [Timer] section. If the system was off when a timer was supposed to fire, systemd will run the job once the system boots and the missed time is detected. Cron does not do this by default — if the machine is off at the scheduled time, the job is silently skipped."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">CRONREAD</a>
+    <div class="nav-links">
+      <a href="/">Tool</a>
+      <a href="/cron-examples/">Examples</a>
+      <a href="/blog/linux-crontab-examples/">Linux Crontab</a>
+      <a href="/aws-eventbridge-cron-examples/">AWS</a>
+      <a href="/kubernetes-cronjob-examples/">Kubernetes</a>
+      <a href="/github-actions-cron-examples/">GitHub Actions</a>
+      <a href="/cronguru-alternative/">vs CronGuru</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ── HERO ── -->
+  <div class="hero">
+    <div class="hero-tag">CRON VS SYSTEMD</div>
+    <h1>Crontab vs<br><span class="hl">Systemd Timers</span></h1>
+    <p class="hero-sub">Full comparison with real examples — when to use crontab, when to use systemd timers, how to convert between them, and a side-by-side syntax reference for common scheduling patterns.</p>
+    <div class="cta-row">
+      <a href="/" class="cta-btn">⚡ Validate a Cron Expression</a>
+      <a href="#comparison" class="cta-secondary">See Comparison ↓</a>
+    </div>
+  </div>
+
+  <!-- ── QUICK ANSWER ── -->
+  <section>
+    <h2>Quick Answer: When to Use Each</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Use crontab when…</th><th>Use systemd timers when…</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>You need quick setup with minimal files</td><td>You need missed runs to fire after reboot (<code>Persistent=true</code>)</td></tr>
+          <tr><td>The script runs on multiple Unix/Linux systems</td><td>You want logging via <code>journalctl</code> without extra config</td></tr>
+          <tr><td>You're working in a container or non-systemd system</td><td>The job should only run after another service is ready</td></tr>
+          <tr><td>You just need a per-user job without root</td><td>You need precise resource limits (CPU, memory) on the job</td></tr>
+          <tr><td>The team is more familiar with cron</td><td>You want to test the schedule with <code>systemd-analyze calendar</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── SIDE BY SIDE COMPARISON ── -->
+  <section id="comparison">
+    <h2>Side-by-Side: Cron vs Systemd Timer</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Feature</th><th>crontab</th><th>systemd timer</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Setup complexity</td><td>Low — one file</td><td>Medium — two files (.timer + .service)</td></tr>
+          <tr><td>Logging</td><td>Email or log file (manual setup)</td><td>Automatic via <code>journalctl</code></td></tr>
+          <tr><td>Missed run recovery</td><td>❌ No (job skipped if machine was off)</td><td>✅ Yes (<code>Persistent=true</code>)</td></tr>
+          <tr><td>Dependency management</td><td>❌ None</td><td>✅ <code>After=network.target</code>, etc.</td></tr>
+          <tr><td>Per-user jobs (no root)</td><td>✅ Yes (<code>crontab -e</code>)</td><td>✅ Yes (user systemd units)</td></tr>
+          <tr><td>Resource limits</td><td>❌ None</td><td>✅ <code>CPUQuota</code>, <code>MemoryMax</code>, etc.</td></tr>
+          <tr><td>Randomized delay</td><td>❌ Not built-in</td><td>✅ <code>RandomizedDelaySec</code></td></tr>
+          <tr><td>Dry-run / test</td><td>Manual (run script, check date)</td><td><code>systemd-analyze calendar "..."</code></td></tr>
+          <tr><td>Portability</td><td>✅ Any Unix/Linux</td><td>systemd-based Linux only</td></tr>
+          <tr><td>Container support</td><td>✅ Works in containers</td><td>❌ Not for containers (no systemd in containers)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── CONVERSION EXAMPLES ── -->
+  <section>
+    <h2>Converting Cron Expressions to Systemd OnCalendar</h2>
+    <p>Systemd timers use <code>OnCalendar=</code> in the <code>[Timer]</code> section. The syntax is different but more readable than cron's 5-field format.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Schedule</th><th>Cron expression</th><th>Systemd OnCalendar</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Every minute</td><td><code>* * * * *</code></td><td><code>*:*:00</code></td></tr>
+          <tr><td>Every 5 minutes</td><td><code>*/5 * * * *</code></td><td><code>*:0/5:00</code></td></tr>
+          <tr><td>Every hour</td><td><code>0 * * * *</code></td><td><code>hourly</code> or <code>*:00:00</code></td></tr>
+          <tr><td>Every day at midnight</td><td><code>0 0 * * *</code></td><td><code>daily</code> or <code>*-*-* 00:00:00</code></td></tr>
+          <tr><td>Every day at 2:30 AM</td><td><code>30 2 * * *</code></td><td><code>*-*-* 02:30:00</code></td></tr>
+          <tr><td>Weekdays at 9 AM</td><td><code>0 9 * * 1-5</code></td><td><code>Mon..Fri *-*-* 09:00:00</code></td></tr>
+          <tr><td>Every Monday at 8 AM</td><td><code>0 8 * * 1</code></td><td><code>Mon *-*-* 08:00:00</code></td></tr>
+          <tr><td>1st of month at midnight</td><td><code>0 0 1 * *</code></td><td><code>*-*-01 00:00:00</code></td></tr>
+          <tr><td>Every week (Sunday)</td><td><code>0 0 * * 0</code></td><td><code>weekly</code> or <code>Sun *-*-* 00:00:00</code></td></tr>
+          <tr><td>On boot</td><td><code>@reboot</code></td><td><code>OnBootSec=0</code> (different section)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── CRONTAB EXAMPLE ── -->
+  <section>
+    <h2>Crontab: Full Example</h2>
+    <pre># /etc/cron.d/backup-job or crontab -e
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=""
+
+# Daily database backup at 2 AM
+0 2 * * *  root  /usr/local/bin/db-backup.sh >> /var/log/db-backup.log 2>&1</pre>
+  </section>
+
+  <!-- ── SYSTEMD TIMER EXAMPLE ── -->
+  <section>
+    <h2>Systemd Timer: Equivalent Setup</h2>
+    <p>A systemd timer requires two files: a <code>.service</code> unit (what to run) and a <code>.timer</code> unit (when to run it).</p>
+
+    <h3>Step 1: Service unit — <code>/etc/systemd/system/db-backup.service</code></h3>
+    <pre>[Unit]
+Description=Daily Database Backup
+After=network.target
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/usr/local/bin/db-backup.sh
+StandardOutput=journal
+StandardError=journal</pre>
+
+    <h3>Step 2: Timer unit — <code>/etc/systemd/system/db-backup.timer</code></h3>
+    <pre>[Unit]
+Description=Run db-backup daily at 2 AM
+
+[Timer]
+OnCalendar=*-*-* 02:00:00
+Persistent=true         # Run after reboot if missed
+RandomizedDelaySec=300  # Add up to 5min random delay
+
+[Install]
+WantedBy=timers.target</pre>
+
+    <h3>Step 3: Enable and start the timer</h3>
+    <pre>sudo systemctl daemon-reload
+sudo systemctl enable db-backup.timer
+sudo systemctl start db-backup.timer
+
+# Check status
+systemctl status db-backup.timer
+systemctl list-timers --all</pre>
+
+    <h3>Check logs</h3>
+    <pre># All output from the job — no log file setup needed
+journalctl -u db-backup.service
+
+# Follow logs in real time
+journalctl -u db-backup.service -f
+
+# Logs from the last run only
+journalctl -u db-backup.service --since "1 day ago"</pre>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── PERSISTENT ── -->
+  <section>
+    <h2>Missed Run Recovery with Persistent=true</h2>
+    <p>This is one of systemd timers' biggest advantages over cron. With <code>Persistent=true</code>, systemd records the last time the timer fired. If the system was powered off during a scheduled run, the timer fires once immediately on the next boot.</p>
+
+    <pre>[Timer]
+OnCalendar=daily
+Persistent=true   # Fire on boot if last run was missed</pre>
+
+    <p>This is critical for jobs like nightly backups on machines that aren't always on (laptops, development servers). With cron, if the machine is off at 2 AM, the backup simply never runs. With a persistent systemd timer, it runs as soon as you boot the next morning.</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── TEST SYSTEMD CALENDAR ── -->
+  <section>
+    <h2>Testing Systemd Calendar Expressions</h2>
+    <p>Systemd ships with a built-in tool to validate calendar expressions and preview the next run times:</p>
+
+    <pre># Test a calendar expression
+systemd-analyze calendar "Mon..Fri *-*-* 09:00:00"
+
+# Output:
+#   Original form: Mon..Fri *-*-* 09:00:00
+# Normalized form: Mon..Fri *-*-* 09:00:00
+#     Next elapse: Mon 2026-05-04 09:00:00 IST
+#        (in UTC): Mon 2026-05-04 03:30:00 UTC
+#       From now: 3 days 21h left
+
+# Test @shortcuts
+systemd-analyze calendar daily
+systemd-analyze calendar weekly</pre>
+
+    <div class="callout">
+      <strong>Tip:</strong> <code>systemd-analyze calendar</code> is the systemd equivalent of a cron tester. Use it before enabling a timer to confirm it fires when you expect.
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── FAQ ── -->
+  <section>
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">Is systemd replacing cron on modern Linux?</div>
+        <div class="faq-a">Systemd timers are increasingly preferred on systems that already use systemd (most modern Debian/Ubuntu/Fedora/RHEL systems). However, cron is still widely used, ships by default, and is not going anywhere. Many sysadmins use both — cron for personal scripts and systemd timers for system services.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Do I need root to create a systemd timer?</div>
+        <div class="faq-a">No. User-level timers go in <code>~/.config/systemd/user/</code> and are managed with <code>systemctl --user</code>. System-level timers (for all users, run as root or a service account) go in <code>/etc/systemd/system/</code> and require root.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I use systemd timers in Docker?</div>
+        <div class="faq-a">No — systemd requires the init system, which Docker containers don't run. For container scheduling, use <a href="/blog/docker-cron-job-examples/">supercronic or ofelia inside Docker</a>, or Kubernetes CronJobs if you're on Kubernetes.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How do I list all active systemd timers?</div>
+        <div class="faq-a">Run <code>systemctl list-timers</code> to see all active timers and their next fire times. Add <code>--all</code> to include inactive timers.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RELATED ── -->
+  <section>
+    <h2>Related Guides</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Guide</th><th>What you'll find</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="/blog/linux-crontab-examples/">Linux Crontab Examples</a></td><td>30+ crontab examples, @shortcuts, output logging</td></tr>
+          <tr><td><a href="/blog/docker-cron-job-examples/">Docker Cron Job Examples</a></td><td>supercronic, ofelia, Dockerfile cron patterns</td></tr>
+          <tr><td><a href="/kubernetes-cronjob-examples/">Kubernetes CronJob Examples</a></td><td>K8s CronJob YAML, concurrencyPolicy, history</td></tr>
+          <tr><td><a href="/blog/cron-expression-tester/">Cron Expression Tester</a></td><td>Validate any cron expression online for free</td></tr>
+          <tr><td><a href="/blog/cron-syntax-guide/">Cron Syntax Guide</a></td><td>Full reference for all cron fields and operators</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="cta-row" style="margin-top:3rem">
+    <a href="/" class="cta-btn">⚡ Validate Your Cron Expression</a>
+  </div>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="footer-links">
+    <a href="/">CronRead</a> |
+    <a href="/cron-examples/">Cron Examples</a> |
+    <a href="/blog/linux-crontab-examples/">Linux Crontab</a> |
+    <a href="/blog/docker-cron-job-examples/">Docker Cron</a> |
+    <a href="/blog/crontab-vs-systemd-timer/">Crontab vs Systemd</a> |
+    <a href="/aws-eventbridge-cron-examples/">AWS EventBridge</a> |
+    <a href="/kubernetes-cronjob-examples/">Kubernetes</a> |
+    <a href="/github-actions-cron-examples/">GitHub Actions</a>
+  </div>
+  <p style="margin-top:.6rem">© 2026 CronRead · Always verify cron schedules before deploying to production.</p>
+</footer>
+
+</body>
+</html>

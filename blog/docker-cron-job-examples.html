@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<title>Docker Cron Job Examples — Schedule Jobs in Containers | CronRead</title>
+<meta name="description" content="Complete guide to running cron jobs in Docker. Dockerfile crontab setup, docker-compose cron containers, supercronic, ofelia scheduler, and production-ready examples.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://cronread.com/blog/docker-cron-job-examples/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker Cron Job Examples — Schedule Jobs in Containers | CronRead">
+<meta property="og:description" content="Run cron jobs in Docker containers. Dockerfile crontab, supercronic, ofelia, docker-compose scheduling patterns and production examples.">
+<meta property="og:url" content="https://cronread.com/blog/docker-cron-job-examples/">
+<meta property="og:site_name" content="CronRead">
+<meta property="og:image" content="https://cronread.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Docker Cron Job Examples — CronRead">
+<meta name="twitter:description" content="Run cron jobs in Docker: Dockerfile setup, supercronic, ofelia, and docker-compose patterns.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/cronread-seo.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I run a cron job in a Docker container?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "There are three main approaches: (1) Install cron in your Dockerfile, copy a crontab file, and run cron in the foreground as the CMD. (2) Use supercronic, a cron-compatible binary built for containers that logs to stdout/stderr. (3) Use a separate scheduler container like ofelia or mcuadros/ofelia that manages schedules for other containers via Docker labels or a config file."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why shouldn't I run cron as a background process in Docker?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Docker containers expect a single foreground process as PID 1. If cron runs in the background and your main process exits, the container stops. Also, classic cron daemons don't log to stdout/stderr — they send mail or log to files — which means cron job output is invisible to 'docker logs'. Use supercronic or run cron in the foreground to avoid these issues."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is supercronic and why use it instead of cron in Docker?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Supercronic is a crontab-compatible job runner designed specifically for containers. Unlike traditional cron, supercronic logs all job output to stdout/stderr (visible via docker logs), runs as a foreground process (correct for PID 1), handles signals properly for clean container shutdown, and doesn't require root. It's the recommended replacement for cron in containerized environments."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What timezone does Docker cron use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Docker containers default to UTC regardless of the host timezone. To set a timezone, either set the TZ environment variable in your docker run command or Dockerfile (e.g. ENV TZ=America/New_York), or mount the host timezone file with -v /etc/localtime:/etc/localtime:ro."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">CRONREAD</a>
+    <div class="nav-links">
+      <a href="/">Tool</a>
+      <a href="/cron-examples/">Examples</a>
+      <a href="/aws-eventbridge-cron-examples/">AWS</a>
+      <a href="/kubernetes-cronjob-examples/">Kubernetes</a>
+      <a href="/github-actions-cron-examples/">GitHub Actions</a>
+      <a href="/blog/linux-crontab-examples/">Linux Crontab</a>
+      <a href="/cronguru-alternative/">vs CronGuru</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ── HERO ── -->
+  <div class="hero">
+    <div class="hero-tag">DOCKER SCHEDULING GUIDE</div>
+    <h1>Docker Cron Job<br><span class="hl">Examples &amp; Patterns</span></h1>
+    <p class="hero-sub">Production-ready patterns for scheduling cron jobs in Docker containers — native cron in Dockerfile, supercronic for container-native logging, ofelia for multi-container scheduling, and docker-compose examples.</p>
+    <div class="cta-row">
+      <a href="/" class="cta-btn">⚡ Validate Your Cron Expression</a>
+      <a href="#approach1" class="cta-secondary">Jump to Examples ↓</a>
+    </div>
+  </div>
+
+  <!-- ── COMPARISON ── -->
+  <section>
+    <h2>Which Approach Should You Use?</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Approach</th><th>Best for</th><th>docker logs</th><th>Root required</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Native cron in Dockerfile</td><td>Simple setups, Alpine/Debian base images</td><td>Needs workaround</td><td>Usually yes</td></tr>
+          <tr><td><strong>supercronic</strong></td><td>Most containers — recommended default</td><td>✅ Yes (stdout)</td><td>No</td></tr>
+          <tr><td>ofelia</td><td>Multi-container scheduling from one place</td><td>✅ Yes</td><td>Docker socket access</td></tr>
+          <tr><td>External scheduler (K8s, AWS)</td><td>Orchestrated / cloud environments</td><td>✅ Yes</td><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <strong>Recommendation:</strong> For new projects, use <strong>supercronic</strong>. It's a drop-in crontab replacement that solves all the classic Docker cron gotchas (logging, PID 1, signal handling) without changing your cron expression syntax.
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── APPROACH 1: NATIVE CRON ── -->
+  <section id="approach1">
+    <h2>Approach 1: Native cron in a Dockerfile</h2>
+    <p>Install cron in your image, copy a crontab file, and run <code>cron -f</code> (foreground) as the container's main process. Works well for simple Alpine or Debian-based images.</p>
+
+    <h3>Debian/Ubuntu base</h3>
+    <pre>FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y cron && rm -rf /var/lib/apt/lists/*
+
+# Copy your script
+COPY backup.sh /usr/local/bin/backup.sh
+RUN chmod +x /usr/local/bin/backup.sh
+
+# Copy crontab file
+COPY crontab /etc/cron.d/myapp-cron
+RUN chmod 0644 /etc/cron.d/myapp-cron
+RUN crontab /etc/cron.d/myapp-cron
+
+# Create log file
+RUN touch /var/log/cron.log
+
+# Run cron in foreground
+CMD ["cron", "-f"]</pre>
+
+    <p>Your <code>crontab</code> file:</p>
+    <pre># Run backup every day at 2 AM and log output
+0 2 * * *  root  /usr/local/bin/backup.sh >> /var/log/cron.log 2>&1
+
+# Keep the log file visible in docker logs (tail it)
+# Or use a log shipper — see the gotcha below</pre>
+
+    <div class="callout callout-warn">
+      <strong style="color:var(--yellow)">⚠ Logging gotcha:</strong> Native cron writes job output to <code>/var/log/cron.log</code>, not stdout. It won't appear in <code>docker logs</code> unless you forward it. Add this to your CMD to forward logs:<br><br>
+      <code>CMD cron -f &amp; tail -f /var/log/cron.log</code><br><br>
+      Note: this requires a wrapper like <code>bash -c</code> since CMD only runs one process.
+    </div>
+
+    <h3>Alpine base</h3>
+    <pre>FROM alpine:3.19
+
+# Install busybox crond (already in alpine) + bash
+RUN apk add --no-cache bash
+
+COPY backup.sh /usr/local/bin/backup.sh
+RUN chmod +x /usr/local/bin/backup.sh
+
+# Alpine crontab format — no username field
+RUN echo "0 2 * * * /usr/local/bin/backup.sh" >> /etc/crontabs/root
+
+# Run crond in foreground (-f) with logging (-l 2)
+CMD ["crond", "-f", "-l", "2"]</pre>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── APPROACH 2: SUPERCRONIC ── -->
+  <section id="approach2">
+    <h2>Approach 2: supercronic (Recommended)</h2>
+    <p>Supercronic is a container-native cron replacement. It reads standard crontab files, logs to stdout/stderr (so <code>docker logs</code> works), handles SIGTERM cleanly, and doesn't need root.</p>
+
+    <h3>Install supercronic in your Dockerfile</h3>
+    <pre>FROM debian:bookworm-slim
+
+# Install supercronic
+ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/latest/download/supercronic-linux-amd64 \
+    SUPERCRONIC=/usr/local/bin/supercronic
+
+RUN apt-get update && apt-get install -y curl && \
+    curl -fsSL "$SUPERCRONIC_URL" -o "$SUPERCRONIC" && \
+    chmod +x "$SUPERCRONIC" && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy your scripts
+COPY my-job.sh /usr/local/bin/my-job.sh
+RUN chmod +x /usr/local/bin/my-job.sh
+
+# Copy crontab (standard 5-field format)
+COPY crontab /app/crontab
+
+# Run supercronic as PID 1
+CMD ["/usr/local/bin/supercronic", "/app/crontab"]</pre>
+
+    <p>Your <code>crontab</code> file (standard format — no username field):</p>
+    <pre># Run my-job every day at 2 AM
+0 2 * * *  /usr/local/bin/my-job.sh
+
+# Check API health every 5 minutes
+*/5 * * * *  curl -sf https://api.example.com/health || echo "API DOWN"
+
+# Weekly cleanup on Sundays at 3 AM
+0 3 * * 0  find /data/tmp -mtime +7 -delete</pre>
+
+    <div class="callout">
+      <strong>Why supercronic is better for Docker:</strong> All output goes to stdout/stderr automatically, so <code>docker logs mycontainer</code> shows your cron job output. No file tailing, no mail, no configuration needed.
+    </div>
+
+    <h3>Multi-stage build with supercronic</h3>
+    <pre>FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y curl
+RUN curl -fsSL https://github.com/aptible/supercronic/releases/latest/download/supercronic-linux-amd64 \
+    -o /supercronic && chmod +x /supercronic
+
+FROM python:3.12-slim
+COPY --from=downloader /supercronic /usr/local/bin/supercronic
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+
+COPY crontab /app/crontab
+CMD ["/usr/local/bin/supercronic", "/app/crontab"]</pre>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── APPROACH 3: OFELIA ── -->
+  <section id="approach3">
+    <h2>Approach 3: ofelia — Multi-Container Scheduler</h2>
+    <p>Ofelia is a Docker-native job scheduler that runs as a sidecar container and manages cron schedules for your other containers. No cron inside your app images — you define schedules in <code>docker-compose.yml</code> labels.</p>
+
+    <h3>docker-compose.yml with ofelia labels</h3>
+    <pre>version: "3.8"
+
+services:
+  # Your application
+  app:
+    image: myapp:latest
+    labels:
+      # Run backup script every day at 2 AM
+      ofelia.enabled: "true"
+      ofelia.job-exec.backup.schedule: "0 2 * * *"
+      ofelia.job-exec.backup.command: "/usr/local/bin/backup.sh"
+      # Run DB cleanup every Sunday at 3 AM
+      ofelia.job-exec.db-cleanup.schedule: "0 3 * * 0"
+      ofelia.job-exec.db-cleanup.command: "python /app/cleanup.py"
+
+  # Ofelia scheduler — runs alongside your app
+  ofelia:
+    image: mcuadros/ofelia:latest
+    depends_on:
+      - app
+    command: daemon --docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro</pre>
+
+    <h3>Ofelia with a config file</h3>
+    <pre>[job-exec "daily-backup"]
+schedule = @daily
+container = myapp
+command = /usr/local/bin/backup.sh
+
+[job-exec "hourly-sync"]
+schedule = @hourly
+container = myapp
+command = python /app/sync.py
+
+[job-run "weekly-report"]
+schedule = 0 8 * * 1
+image = myreporter:latest
+command = python /report.py --week</pre>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── DOCKER COMPOSE STANDALONE ── -->
+  <section>
+    <h2>Dedicated Cron Container in docker-compose</h2>
+    <p>A clean pattern: keep your cron jobs in a separate service from your main application. They share the same image but have different entry points.</p>
+
+    <pre>version: "3.8"
+
+services:
+  app:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+
+  # Separate container just for cron jobs
+  cron:
+    build: .
+    command: ["/usr/local/bin/supercronic", "/app/crontab"]
+    volumes:
+      - .:/app
+      - ./data:/data
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://user:pass@db:5432/mydb
+      - TZ=UTC
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass</pre>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── TIMEZONE ── -->
+  <section>
+    <h2>Timezone in Docker Cron Jobs</h2>
+    <p>Docker containers default to <strong>UTC</strong> regardless of the host machine's timezone. To set a timezone:</p>
+
+    <h3>Option 1: TZ environment variable (recommended)</h3>
+    <pre># In Dockerfile
+ENV TZ=America/New_York
+
+# Or in docker run
+docker run -e TZ=America/New_York myimage
+
+# Or in docker-compose.yml
+environment:
+  - TZ=Europe/London</pre>
+
+    <h3>Option 2: Mount host timezone files</h3>
+    <pre># docker run
+docker run -v /etc/localtime:/etc/localtime:ro \
+           -v /etc/timezone:/etc/timezone:ro \
+           myimage
+
+# docker-compose.yml
+volumes:
+  - /etc/localtime:/etc/localtime:ro
+  - /etc/timezone:/etc/timezone:ro</pre>
+
+    <div class="callout callout-warn">
+      <strong style="color:var(--yellow)">⚠ Check which timezone your cron uses:</strong> Some cron implementations inside containers use a hardcoded UTC even when TZ is set. Always verify with a test job that echoes <code>$(date)</code> and check the output via <code>docker logs</code>.
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── COMMON MISTAKES ── -->
+  <section>
+    <h2>Common Mistakes with Docker Cron Jobs</h2>
+
+    <div class="callout callout-warn">
+      <strong style="color:var(--yellow)">Mistake 1: Running cron in the background</strong><br>
+      Using <code>CMD ["bash", "-c", "cron && myapp"]</code> makes cron a background process. If cron fails, the container keeps running without scheduling. Run cron as PID 1 with <code>cron -f</code> or use supercronic.
+    </div>
+    <div class="callout callout-warn" style="margin-top:.6rem">
+      <strong style="color:var(--yellow)">Mistake 2: No output in docker logs</strong><br>
+      Classic cron daemons write to syslog or a log file, not stdout. Use supercronic, or manually forward logs: <code>tail -F /var/log/cron.log &</code> in your entrypoint.
+    </div>
+    <div class="callout callout-warn" style="margin-top:.6rem">
+      <strong style="color:var(--yellow)">Mistake 3: Environment variables not available to cron</strong><br>
+      Cron doesn't inherit Docker's environment variables. Pass them explicitly in your crontab entry or use a wrapper script that sources the environment. Supercronic inherits the container's environment automatically.
+    </div>
+    <div class="callout callout-warn" style="margin-top:.6rem">
+      <strong style="color:var(--yellow)">Mistake 4: Missing newline at end of crontab</strong><br>
+      The last line of a crontab file must end with a newline. Without it, the last job is silently ignored. Always add a blank line at the end of your crontab file.
+    </div>
+    <div class="callout callout-warn" style="margin-top:.6rem">
+      <strong style="color:var(--yellow)">Mistake 5: PATH not set</strong><br>
+      Cron's PATH is minimal. Your commands may not be found. Either use full paths (<code>/usr/local/bin/python3</code>) or set PATH in the crontab: <code>PATH=/usr/local/bin:/usr/bin:/bin</code>.
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── FAQ ── -->
+  <section>
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">Can I run cron jobs in a Docker container?</div>
+        <div class="faq-a">Yes, but native cron needs extra setup to work well in containers (logging, PID 1, environment variables). The recommended approach is to use supercronic, which is a drop-in crontab replacement built for containers.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How do I see cron job output in docker logs?</div>
+        <div class="faq-a">Use supercronic — it sends all job output to stdout/stderr by default, so <code>docker logs yourcontainer</code> shows everything. With native cron, you need to tail a log file to stdout in your CMD.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Does Docker cron run in UTC?</div>
+        <div class="faq-a">Yes by default. Set the <code>TZ</code> environment variable in your Dockerfile or docker-compose to override, e.g. <code>TZ=America/Chicago</code>.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is the difference between supercronic and ofelia?</div>
+        <div class="faq-a">Supercronic runs inside your container and handles jobs for that single container. Ofelia runs as a separate sidecar container and can schedule jobs across multiple containers in your docker-compose setup using Docker labels or a config file.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Should I use Kubernetes CronJobs instead?</div>
+        <div class="faq-a">If you're already on Kubernetes, yes — <a href="/kubernetes-cronjob-examples/">Kubernetes CronJobs</a> are the right solution. They handle scheduling, history, retries, and concurrency control natively. Docker-level cron is best for plain Docker or docker-compose environments.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RELATED ── -->
+  <section>
+    <h2>Related Guides</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Guide</th><th>What you'll learn</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="/kubernetes-cronjob-examples/">Kubernetes CronJob Examples</a></td><td>K8s-native scheduling, YAML specs, concurrencyPolicy</td></tr>
+          <tr><td><a href="/blog/linux-crontab-examples/">Linux Crontab Examples</a></td><td>Standard crontab syntax, @shortcuts, environment variables</td></tr>
+          <tr><td><a href="/cron-examples/">Cron Expression Examples</a></td><td>50+ ready-to-use cron expressions with descriptions</td></tr>
+          <tr><td><a href="/aws-eventbridge-cron-examples/">AWS EventBridge Cron</a></td><td>Schedule AWS Lambda or ECS tasks with cron</td></tr>
+          <tr><td><a href="/blog/cron-expression-tester/">Cron Expression Tester</a></td><td>Validate any cron expression before deploying</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="cta-row" style="margin-top:3rem">
+    <a href="/" class="cta-btn">⚡ Validate Your Docker Cron Expression</a>
+  </div>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="footer-links">
+    <a href="/">CronRead</a> |
+    <a href="/cron-examples/">Cron Examples</a> |
+    <a href="/blog/linux-crontab-examples/">Linux Crontab</a> |
+    <a href="/blog/docker-cron-job-examples/">Docker Cron</a> |
+    <a href="/aws-eventbridge-cron-examples/">AWS EventBridge</a> |
+    <a href="/kubernetes-cronjob-examples/">Kubernetes</a> |
+    <a href="/github-actions-cron-examples/">GitHub Actions</a> |
+    <a href="/cronguru-alternative/">vs CronGuru</a>
+  </div>
+  <p style="margin-top:.6rem">© 2026 CronRead · Always verify cron schedules before deploying to production.</p>
+</footer>
+
+</body>
+</html>

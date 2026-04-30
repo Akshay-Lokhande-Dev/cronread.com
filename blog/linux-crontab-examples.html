@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<title>Linux Crontab Examples — 30+ Real crontab -e Schedules | CronRead</title>
+<meta name="description" content="30+ Linux crontab examples with real commands. Learn crontab -e syntax, special strings (@daily, @reboot), environment variables, crontab -l, and common scheduling patterns for sysadmins.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://cronread.com/blog/linux-crontab-examples/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux Crontab Examples — 30+ Real crontab -e Schedules | CronRead">
+<meta property="og:description" content="30+ Linux crontab examples with real commands. crontab -e syntax, @daily shortcuts, environment variables, and production-ready cron schedules for sysadmins.">
+<meta property="og:url" content="https://cronread.com/blog/linux-crontab-examples/">
+<meta property="og:site_name" content="CronRead">
+<meta property="og:image" content="https://cronread.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Linux Crontab Examples — CronRead">
+<meta name="twitter:description" content="30+ crontab examples: @daily shortcuts, environment vars, log rotation, backups, and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/cronread-seo.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I edit my crontab on Linux?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Run 'crontab -e' in your terminal. This opens your user's crontab file in the default editor (usually nano or vi). Each line is one scheduled job. Save and exit to install the new schedule. To view your current crontab without editing, use 'crontab -l'."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the crontab syntax?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Each crontab line has 5 time fields followed by the command: minute (0-59), hour (0-23), day-of-month (1-31), month (1-12), day-of-week (0-7, where 0 and 7 are Sunday). Use * for 'any', */n for 'every n', and comma-separated values for multiple values. Example: '0 2 * * *  /usr/bin/backup.sh' runs backup.sh every day at 2 AM."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What timezone does cron use on Linux?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "By default, cron uses the system timezone set in /etc/timezone or via the TZ environment variable. You can set CRON_TZ or TZ at the top of your crontab file to override the timezone for all jobs in that file, e.g. TZ=America/New_York."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I redirect cron job output to a log file?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Append >> /path/to/logfile.log 2>&1 to your cron command. The 2>&1 redirects stderr to stdout so both are captured. Example: '0 2 * * * /usr/bin/backup.sh >> /var/log/backup.log 2>&1'. To suppress all output (no email, no log): '0 2 * * * /usr/bin/backup.sh > /dev/null 2>&1'."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does @reboot do in crontab?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "@reboot runs the command once when the cron daemon starts, which is typically at system boot. It is equivalent to no time-based schedule. Example: '@reboot /usr/local/bin/start-myapp.sh' starts your application every time the machine boots."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">CRONREAD</a>
+    <div class="nav-links">
+      <a href="/">Tool</a>
+      <a href="/cron-examples/">Examples</a>
+      <a href="/aws-eventbridge-cron-examples/">AWS</a>
+      <a href="/kubernetes-cronjob-examples/">Kubernetes</a>
+      <a href="/github-actions-cron-examples/">GitHub Actions</a>
+      <a href="/blog/linux-crontab-examples/" class="active">Linux Crontab</a>
+      <a href="/cronguru-alternative/">vs CronGuru</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ── HERO ── -->
+  <div class="hero">
+    <div class="hero-tag">LINUX CRONTAB GUIDE</div>
+    <h1>Linux Crontab<br><span class="hl">Examples &amp; Reference</span></h1>
+    <p class="hero-sub">30+ real Linux crontab examples with working commands — backups, log rotation, scripts, system maintenance, @reboot jobs, environment variables, and everything you need for crontab -e.</p>
+    <div class="cta-row">
+      <a href="/" class="cta-btn">⚡ Validate Your Cron Expression</a>
+      <a href="#examples" class="cta-secondary">Jump to Examples ↓</a>
+    </div>
+  </div>
+
+  <!-- ── QUICK REFERENCE ── -->
+  <section>
+    <h2>Crontab Syntax Quick Reference</h2>
+    <p>Every crontab line follows this format:</p>
+    <pre># ┌──────── minute (0–59)
+# │ ┌────── hour (0–23)
+# │ │ ┌──── day of month (1–31)
+# │ │ │ ┌── month (1–12)
+# │ │ │ │ ┌ day of week (0–7, 0 and 7 = Sunday)
+# │ │ │ │ │
+  * * * * *  command-to-run</pre>
+
+    <div class="callout">
+      <strong>Common operators:</strong><br>
+      <code>*</code> — any value &nbsp;|&nbsp;
+      <code>*/5</code> — every 5 &nbsp;|&nbsp;
+      <code>1,3,5</code> — 1, 3, and 5 &nbsp;|&nbsp;
+      <code>1-5</code> — 1 through 5 &nbsp;|&nbsp;
+      <code>0</code> — exactly zero (midnight, January, Sunday)
+    </div>
+
+    <h3>Essential crontab commands</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Command</th><th>What it does</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>crontab -e</code></td><td>Edit your crontab (creates if none exists)</td></tr>
+          <tr><td><code>crontab -l</code></td><td>List your current crontab</td></tr>
+          <tr><td><code>crontab -r</code></td><td>Remove your entire crontab (careful!)</td></tr>
+          <tr><td><code>crontab -u username -e</code></td><td>Edit another user's crontab (requires root)</td></tr>
+          <tr><td><code>sudo crontab -e</code></td><td>Edit root's crontab</td></tr>
+          <tr><td><code>systemctl status cron</code></td><td>Check if the cron daemon is running (Debian/Ubuntu)</td></tr>
+          <tr><td><code>systemctl status crond</code></td><td>Check cron daemon (RHEL/CentOS/Fedora)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── SPECIAL STRINGS ── -->
+  <section>
+    <h2>@shortcut Strings (Special Schedules)</h2>
+    <p>Instead of five time fields, cron supports human-readable shortcuts. These are clearer and less error-prone for common patterns.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Shortcut</th><th>Equivalent cron</th><th>Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>@reboot</code></td><td>(none)</td><td>Once, at startup / cron daemon start</td></tr>
+          <tr><td><code>@yearly</code> or <code>@annually</code></td><td><code>0 0 1 1 *</code></td><td>Once a year, Jan 1 at midnight</td></tr>
+          <tr><td><code>@monthly</code></td><td><code>0 0 1 * *</code></td><td>Once a month, 1st day at midnight</td></tr>
+          <tr><td><code>@weekly</code></td><td><code>0 0 * * 0</code></td><td>Once a week, Sunday at midnight</td></tr>
+          <tr><td><code>@daily</code> or <code>@midnight</code></td><td><code>0 0 * * *</code></td><td>Once a day at midnight</td></tr>
+          <tr><td><code>@hourly</code></td><td><code>0 * * * *</code></td><td>Once an hour, at the top of the hour</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <pre># Run a database backup once daily at midnight
+@daily /usr/local/bin/db-backup.sh >> /var/log/db-backup.log 2>&1
+
+# Start a custom service at boot
+@reboot /usr/local/bin/start-myservice.sh
+
+# Monthly report generation on the 1st
+@monthly /usr/local/bin/generate-monthly-report.sh</pre>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── EXAMPLES ── -->
+  <section id="examples">
+    <h2>30+ Linux Crontab Examples</h2>
+
+    <h3>Every N minutes / hours</h3>
+    <div class="ex">
+      <div class="ex-label">Every 5 minutes</div>
+      <div class="ex-cron">*/5 * * * *</div>
+      <div class="ex-desc">Useful for health checks, polling tasks, or short-interval monitoring scripts.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Every 15 minutes</div>
+      <div class="ex-cron">*/15 * * * *</div>
+      <div class="ex-desc">Common for syncing data, cache refresh, or fetching external API updates.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Every 30 minutes</div>
+      <div class="ex-cron">*/30 * * * *</div>
+      <div class="ex-desc">Ideal for incremental backups or sending digest notifications.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Every hour on the hour</div>
+      <div class="ex-cron">0 * * * *</div>
+      <div class="ex-desc">Hourly tasks like log archiving or report generation.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Every 2 hours</div>
+      <div class="ex-cron">0 */2 * * *</div>
+      <div class="ex-desc">Runs at 0:00, 2:00, 4:00 … 22:00.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Every 6 hours</div>
+      <div class="ex-cron">0 */6 * * *</div>
+      <div class="ex-desc">Runs at midnight, 6 AM, noon, and 6 PM. Good for periodic data pulls.</div>
+    </div>
+
+    <h3>Daily jobs</h3>
+    <div class="ex">
+      <div class="ex-label">Every day at midnight</div>
+      <div class="ex-cron">0 0 * * *</div>
+      <div class="ex-desc">Classic daily job schedule. Equivalent to @daily or @midnight.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Every day at 2:30 AM</div>
+      <div class="ex-cron">30 2 * * *</div>
+      <div class="ex-desc">Off-peak time for heavier jobs like database dumps or full backups.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Every day at 8:00 AM</div>
+      <div class="ex-cron">0 8 * * *</div>
+      <div class="ex-desc">Morning jobs like sending daily digest emails or generating reports.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Twice a day (midnight and noon)</div>
+      <div class="ex-cron">0 0,12 * * *</div>
+      <div class="ex-desc">Runs at 12:00 AM and 12:00 PM. Use comma for multiple specific hours.</div>
+    </div>
+
+    <h3>Weekday jobs</h3>
+    <div class="ex">
+      <div class="ex-label">Weekdays only at 9 AM</div>
+      <div class="ex-cron">0 9 * * 1-5</div>
+      <div class="ex-desc">Monday through Friday at 9:00 AM. 1=Monday, 5=Friday.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Monday morning report</div>
+      <div class="ex-cron">0 7 * * 1</div>
+      <div class="ex-desc">Every Monday at 7 AM — generate weekly summary before the team starts work.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Weekends only at 4 AM</div>
+      <div class="ex-cron">0 4 * * 6,0</div>
+      <div class="ex-desc">Saturday (6) and Sunday (0) at 4:00 AM for weekend maintenance jobs.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Every Friday at 5 PM</div>
+      <div class="ex-cron">0 17 * * 5</div>
+      <div class="ex-desc">End-of-week cleanup, archive jobs, or weekly report delivery.</div>
+    </div>
+
+    <h3>Monthly &amp; yearly jobs</h3>
+    <div class="ex">
+      <div class="ex-label">1st of every month at midnight</div>
+      <div class="ex-cron">0 0 1 * *</div>
+      <div class="ex-desc">Monthly billing runs, statement generation, or log archiving.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Last day of the month — workaround</div>
+      <div class="ex-cron">0 23 28-31 * *</div>
+      <div class="ex-desc">Runs on 28th–31st, depending on month length. Add a date check in your script for accuracy.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Every quarter (Jan, Apr, Jul, Oct)</div>
+      <div class="ex-cron">0 0 1 1,4,7,10 *</div>
+      <div class="ex-desc">First day of each quarter at midnight. Good for quarterly reporting jobs.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Once a year on Jan 1</div>
+      <div class="ex-cron">0 0 1 1 *</div>
+      <div class="ex-desc">Equivalent to @yearly — annual cleanup, archiving, or reset jobs.</div>
+    </div>
+
+    <h3>Real-world command examples</h3>
+    <div class="ex">
+      <div class="ex-label">Daily MySQL backup</div>
+      <div class="ex-cron">0 2 * * *  mysqldump -u root -p'secret' mydb > /backups/mydb-$(date +\%F).sql</div>
+      <div class="ex-desc">Creates a dated SQL dump every day at 2 AM. Note: escape % as \% in crontab.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Clear tmp files weekly</div>
+      <div class="ex-cron">0 3 * * 0  find /tmp -type f -mtime +7 -delete</div>
+      <div class="ex-desc">Deletes files in /tmp older than 7 days every Sunday at 3 AM.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Sync files to S3 every hour</div>
+      <div class="ex-cron">0 * * * *  aws s3 sync /data/uploads s3://my-bucket/uploads --delete</div>
+      <div class="ex-desc">Keeps an S3 bucket in sync with a local directory every hour.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Restart service daily</div>
+      <div class="ex-cron">30 4 * * *  systemctl restart myapp.service</div>
+      <div class="ex-desc">Restarts a systemd service at 4:30 AM daily as a memory-leak workaround.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Rotate logs and compress</div>
+      <div class="ex-cron">0 0 * * *  logrotate /etc/logrotate.conf</div>
+      <div class="ex-desc">Runs logrotate manually at midnight (typically already done by the system, but useful for custom configs).</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Ping monitoring check</div>
+      <div class="ex-cron">*/5 * * * *  curl -sf https://mysite.com/health || echo "DOWN $(date)" >> /var/log/health.log</div>
+      <div class="ex-desc">Checks a health endpoint every 5 minutes and logs failures.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Run Python script on reboot</div>
+      <div class="ex-cron">@reboot  /usr/bin/python3 /home/ubuntu/myapp/run.py >> /var/log/myapp.log 2>&1</div>
+      <div class="ex-desc">Starts a Python process every time the server reboots.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Send disk usage report daily</div>
+      <div class="ex-cron">0 8 * * *  df -h | mail -s "Disk Usage Report" admin@example.com</div>
+      <div class="ex-desc">Emails a disk usage summary every morning at 8 AM.</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── ENVIRONMENT VARIABLES ── -->
+  <section>
+    <h2>Setting Environment Variables in Crontab</h2>
+    <p>Cron runs with a minimal environment — <code>$PATH</code> is limited and most shell variables are absent. Always set variables at the top of your crontab:</p>
+
+    <pre>SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=admin@example.com
+HOME=/root
+TZ=America/New_York
+
+# Jobs below inherit the above variables
+0 9 * * 1-5  /usr/local/bin/weekday-job.sh</pre>
+
+    <div class="callout">
+      <strong>Key environment variables for crontab:</strong><br>
+      <code>SHELL</code> — which shell runs your commands (default: /bin/sh)<br>
+      <code>PATH</code> — extend this to find your binaries without full paths<br>
+      <code>MAILTO</code> — email address for cron output; set to <code>""</code> to silence all email<br>
+      <code>TZ</code> or <code>CRON_TZ</code> — override timezone for this crontab file<br>
+      <code>HOME</code> — home directory used by cron jobs
+    </div>
+
+    <div class="callout callout-warn">
+      <strong style="color:var(--yellow)">⚠ The % gotcha:</strong> Percent signs (<code>%</code>) in crontab commands are interpreted as newlines by cron. Always escape them as <code>\%</code>. This affects <code>date +%F</code>, <code>printf</code>, and any other command using <code>%</code>.
+      <br><br>
+      Example: <code>date +\%Y-\%m-\%d</code> not <code>date +%Y-%m-%d</code>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── OUTPUT & LOGGING ── -->
+  <section>
+    <h2>Handling Output &amp; Logging</h2>
+    <p>By default, cron emails all stdout/stderr output to the local user. In most server setups this fills up a mail spool nobody reads. Here are the common patterns:</p>
+
+    <pre># Discard all output (no log, no email)
+0 2 * * *  /usr/bin/cleanup.sh > /dev/null 2>&1
+
+# Log stdout only, discard stderr
+0 2 * * *  /usr/bin/myjob.sh >> /var/log/myjob.log
+
+# Log both stdout and stderr (append)
+0 2 * * *  /usr/bin/myjob.sh >> /var/log/myjob.log 2>&1
+
+# Log both with timestamps using bash -c
+0 2 * * *  bash -c '/usr/bin/myjob.sh >> /var/log/myjob.log 2>&1; echo "Done at $(date)"'
+
+# Suppress email for all jobs in this crontab
+MAILTO=""
+
+# Email output to a specific address per-job
+0 2 * * *  MAILTO=ops@example.com /usr/bin/critical-job.sh</pre>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── SYSTEM CRONTAB ── -->
+  <section>
+    <h2>System-Wide Crontab: /etc/cron.d/ and /etc/crontab</h2>
+    <p>Beyond per-user crontabs, Linux has system crontab locations. These include an extra <strong>username field</strong> before the command:</p>
+
+    <pre># /etc/crontab or files in /etc/cron.d/
+# Format: minute hour dom month dow USER command
+
+0 2 * * *  root  /usr/local/bin/system-backup.sh
+*/5 * * * *  www-data  /usr/bin/php /var/www/html/cron.php > /dev/null 2>&1</pre>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Location</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>/etc/crontab</code></td><td>Main system crontab — requires username field</td></tr>
+          <tr><td><code>/etc/cron.d/</code></td><td>Directory for package-installed cron jobs — requires username field</td></tr>
+          <tr><td><code>/etc/cron.daily/</code></td><td>Drop scripts here — run daily by <code>run-parts</code></td></tr>
+          <tr><td><code>/etc/cron.hourly/</code></td><td>Scripts run every hour</td></tr>
+          <tr><td><code>/etc/cron.weekly/</code></td><td>Scripts run weekly</td></tr>
+          <tr><td><code>/etc/cron.monthly/</code></td><td>Scripts run monthly</td></tr>
+          <tr><td><code>/var/spool/cron/crontabs/</code></td><td>Per-user crontabs (don't edit directly)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── TROUBLESHOOTING ── -->
+  <section>
+    <h2>Troubleshooting: Why Isn't My Cron Job Running?</h2>
+
+    <div class="callout callout-warn">
+      <strong style="color:var(--yellow)">1. Cron daemon not running</strong><br>
+      Check with <code>systemctl status cron</code> (Debian/Ubuntu) or <code>systemctl status crond</code> (RHEL/CentOS). Start it with <code>systemctl start cron</code>.
+    </div>
+
+    <div class="callout callout-warn" style="margin-top:.6rem">
+      <strong style="color:var(--yellow)">2. PATH is too short</strong><br>
+      Cron's default PATH is usually just <code>/usr/bin:/bin</code>. If your command isn't there, use the full path (e.g. <code>/usr/local/bin/python3</code>) or set PATH at the top of your crontab.
+    </div>
+
+    <div class="callout callout-warn" style="margin-top:.6rem">
+      <strong style="color:var(--yellow)">3. Unescaped % signs</strong><br>
+      The <code>%</code> character is special in crontab. Escape every one as <code>\%</code> — this catches many broken <code>date</code> commands.
+    </div>
+
+    <div class="callout callout-warn" style="margin-top:.6rem">
+      <strong style="color:var(--yellow)">4. Script not executable</strong><br>
+      Run <code>chmod +x /path/to/yourscript.sh</code>. Alternatively call it as <code>bash /path/to/yourscript.sh</code>.
+    </div>
+
+    <div class="callout callout-warn" style="margin-top:.6rem">
+      <strong style="color:var(--yellow)">5. Wrong timezone</strong><br>
+      Cron uses the system timezone. Check with <code>timedatectl</code>. Set TZ in your crontab if you need a specific zone.
+    </div>
+
+    <div class="callout callout-warn" style="margin-top:.6rem">
+      <strong style="color:var(--yellow)">6. Syntax error in crontab</strong><br>
+      Validate with CronRead before saving. A line with bad syntax is silently skipped. Check <code>/var/log/syslog</code> or <code>/var/log/cron</code> for cron error messages.
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── FAQ ── -->
+  <section>
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">How do I edit my crontab?</div>
+        <div class="faq-a">Run <code>crontab -e</code> in your terminal. This opens the crontab in your default editor. Each line is one scheduled job. Save and quit to install. To list your current crontab: <code>crontab -l</code>.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What timezone does cron use?</div>
+        <div class="faq-a">The system timezone by default (check with <code>timedatectl</code>). Override per-file with <code>TZ=America/New_York</code> or <code>CRON_TZ=Europe/London</code> at the top of your crontab.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How do I stop cron from emailing me?</div>
+        <div class="faq-a">Add <code>MAILTO=""</code> at the top of your crontab to suppress all emails. For individual jobs, redirect output to <code>/dev/null</code>: <code>command > /dev/null 2>&1</code>.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is the difference between crontab -e and /etc/crontab?</div>
+        <div class="faq-a"><code>crontab -e</code> edits the per-user crontab (jobs run as that user, no username field needed). <code>/etc/crontab</code> and files in <code>/etc/cron.d/</code> are system-wide and require a username field in every job line.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I run a cron job every second?</div>
+        <div class="faq-a">No. The minimum granularity in standard cron is one minute. For sub-minute scheduling, use a workaround (run a 1-minute job that sleeps and loops internally) or switch to a different tool like <code>systemd timers</code> or a task queue.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How do I view cron logs?</div>
+        <div class="faq-a">On Debian/Ubuntu check <code>/var/log/syslog</code> and grep for "cron". On RHEL/CentOS check <code>/var/log/cron</code>. You can also use <code>journalctl -u cron</code> or <code>journalctl -u crond</code> on systemd-based systems.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RELATED ── -->
+  <section>
+    <h2>Related Guides</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Guide</th><th>What you'll learn</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="/cron-examples/">Cron Expression Examples</a></td><td>50+ cron expression patterns with human-readable descriptions</td></tr>
+          <tr><td><a href="/kubernetes-cronjob-examples/">Kubernetes CronJob Examples</a></td><td>YAML CronJob specs, concurrencyPolicy, history limits</td></tr>
+          <tr><td><a href="/github-actions-cron-examples/">GitHub Actions Cron Examples</a></td><td>Scheduled workflows, UTC gotcha, workflow_dispatch</td></tr>
+          <tr><td><a href="/aws-eventbridge-cron-examples/">AWS EventBridge Cron</a></td><td>AWS 6-field cron syntax, rate() expressions</td></tr>
+          <tr><td><a href="/blog/cron-syntax-guide/">Cron Syntax Guide</a></td><td>Deep-dive into every cron field and operator</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="cta-row" style="margin-top:3rem">
+    <a href="/" class="cta-btn">⚡ Validate Your Crontab Expression</a>
+  </div>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="footer-links">
+    <a href="/">CronRead</a> |
+    <a href="/cron-examples/">Cron Examples</a> |
+    <a href="/blog/linux-crontab-examples/">Linux Crontab</a> |
+    <a href="/aws-eventbridge-cron-examples/">AWS EventBridge</a> |
+    <a href="/kubernetes-cronjob-examples/">Kubernetes</a> |
+    <a href="/github-actions-cron-examples/">GitHub Actions</a> |
+    <a href="/cronguru-alternative/">vs CronGuru</a>
+  </div>
+  <p style="margin-top:.6rem">© 2026 CronRead · Always verify cron schedules before deploying to production.</p>
+</footer>
+
+</body>
+</html>

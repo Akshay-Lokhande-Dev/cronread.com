@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<title>Cron Expression Tester — Validate &amp; Debug Cron Online | CronRead</title>
+<meta name="description" content="Free online cron expression tester. Instantly validate cron syntax, see the next 10 run times, debug common errors, and understand what your cron expression means in plain English.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://cronread.com/blog/cron-expression-tester/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cron Expression Tester — Validate &amp; Debug Cron Online | CronRead">
+<meta property="og:description" content="Free online cron tester. Paste any cron expression and instantly see next run times, plain-English description, and field-by-field validation.">
+<meta property="og:url" content="https://cronread.com/blog/cron-expression-tester/">
+<meta property="og:site_name" content="CronRead">
+<meta property="og:image" content="https://cronread.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cron Expression Tester — CronRead">
+<meta name="twitter:description" content="Validate cron syntax instantly. See next 10 run times and a plain-English description of any cron expression.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/cronread-seo.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I test a cron expression?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Paste your cron expression into an online cron tester like CronRead. A good tester shows you the next scheduled run times in human-readable form, explains each field, and catches syntax errors before you deploy. Always test before saving to crontab or any scheduler."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I validate cron syntax?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A valid standard cron expression has exactly 5 space-separated fields: minute (0-59), hour (0-23), day-of-month (1-31), month (1-12), and day-of-week (0-7). AWS EventBridge uses 6 fields (adds seconds or year). Use a validator tool to check each field and see the next run times."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does */5 mean in a cron expression?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "*/5 means 'every 5 units' in whatever field it appears. In the minute field, */5 means every 5 minutes (0, 5, 10, 15…). In the hour field, */5 means every 5 hours (0, 5, 10, 15, 20). The */ syntax is called a step value."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does my cron expression not run when expected?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Common reasons: (1) Timezone mismatch — cron may run in UTC while you expected local time. (2) The expression has a syntax error that causes it to be silently skipped. (3) Both day-of-month and day-of-week are set — cron uses OR logic between them. (4) Escaped % characters in commands. Use a cron tester to see actual next run times."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">CRONREAD</a>
+    <div class="nav-links">
+      <a href="/">Tool</a>
+      <a href="/cron-examples/">Examples</a>
+      <a href="/aws-eventbridge-cron-examples/">AWS</a>
+      <a href="/kubernetes-cronjob-examples/">Kubernetes</a>
+      <a href="/github-actions-cron-examples/">GitHub Actions</a>
+      <a href="/blog/linux-crontab-examples/">Linux Crontab</a>
+      <a href="/cronguru-alternative/">vs CronGuru</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ── HERO ── -->
+  <div class="hero">
+    <div class="hero-tag">CRON TESTER &amp; VALIDATOR</div>
+    <h1>Cron Expression<br><span class="hl">Tester &amp; Validator</span></h1>
+    <p class="hero-sub">Paste any cron expression and instantly see what it means, when it will next run, and whether the syntax is valid. Supports standard 5-field cron, AWS EventBridge 6-field, Quartz 7-field, and @shortcuts.</p>
+    <div class="cta-row">
+      <a href="/" class="cta-btn">⚡ Open the Cron Tester</a>
+      <a href="#how-it-works" class="cta-secondary">How it works ↓</a>
+    </div>
+  </div>
+
+  <!-- ── HOW IT WORKS ── -->
+  <section id="how-it-works">
+    <h2>How to Test a Cron Expression</h2>
+    <p>CronRead's cron tester works in three steps:</p>
+    <ol>
+      <li><strong>Paste your cron expression</strong> into the input box. Supports standard 5-field, AWS 6-field, Quartz 7-field, and @shortcut strings like <code>@daily</code>.</li>
+      <li><strong>Read the plain-English description</strong> — the tester immediately translates your expression into a human-readable sentence so you can confirm it matches your intent.</li>
+      <li><strong>Check the next 10 run times</strong> — see exact timestamps for the next scheduled executions, in your local timezone or UTC.</li>
+    </ol>
+
+    <div class="callout">
+      <strong>Tip:</strong> Always run your cron expression through a tester before deploying. A misplaced space or wrong field order can silently schedule a job for the wrong time — or prevent it from running entirely.
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── WHAT GOOD TESTER DOES ── -->
+  <section>
+    <h2>What a Cron Expression Tester Should Show You</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Feature</th><th>Why it matters</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Plain-English description</td><td>Confirms your expression does what you think it does</td></tr>
+          <tr><td>Next 10 run times</td><td>Reveals unexpected patterns (e.g. runs on Feb 30 never fire)</td></tr>
+          <tr><td>Field-by-field breakdown</td><td>Shows exactly what each part of the expression means</td></tr>
+          <tr><td>Timezone conversion</td><td>Critical for GitHub Actions (UTC-only) and AWS EventBridge</td></tr>
+          <tr><td>Error highlighting</td><td>Pinpoints which field has an invalid value or syntax</td></tr>
+          <tr><td>AWS/Quartz mode toggle</td><td>Different platforms use different field counts and rules</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── COMMON EXPRESSIONS TO TEST ── -->
+  <section>
+    <h2>Common Cron Expressions to Test</h2>
+    <p>Copy any of these into the tester to see an example of how it works:</p>
+
+    <div class="ex">
+      <div class="ex-label">Every 5 minutes</div>
+      <div class="ex-cron">*/5 * * * *</div>
+      <div class="ex-desc">Fires at :00, :05, :10, :15 … :55 of every hour, every day.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Every day at midnight</div>
+      <div class="ex-cron">0 0 * * *</div>
+      <div class="ex-desc">Once a day at 00:00:00. Equivalent to @daily or @midnight.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Weekdays at 9 AM</div>
+      <div class="ex-cron">0 9 * * 1-5</div>
+      <div class="ex-desc">Monday through Friday at 09:00. 1=Monday, 5=Friday.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">First of every month at 2 AM</div>
+      <div class="ex-cron">0 2 1 * *</div>
+      <div class="ex-desc">Once a month — the 1st day at 02:00:00.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">Every 15 minutes during business hours</div>
+      <div class="ex-cron">*/15 9-17 * * 1-5</div>
+      <div class="ex-desc">Every 15 minutes between 9 AM and 5 PM, Mon–Fri only.</div>
+    </div>
+    <div class="ex">
+      <div class="ex-label">AWS EventBridge: daily at 6 AM UTC</div>
+      <div class="ex-cron">0 6 * * ? *</div>
+      <div class="ex-desc">AWS uses 6 fields. The <code>?</code> in day-of-week means "no specific value" (required when day-of-month is set).</div>
+    </div>
+
+    <div class="cta-row" style="margin-top: 1.5rem">
+      <a href="/" class="cta-btn">⚡ Test These in CronRead</a>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── CRON FORMATS EXPLAINED ── -->
+  <section>
+    <h2>Cron Formats: 5-Field, 6-Field, and 7-Field</h2>
+    <p>Different platforms use different cron formats. A good cron tester needs to know which format you're using:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Format</th><th>Fields</th><th>Used by</th><th>Example</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Standard (POSIX)</td>
+            <td>5</td>
+            <td>Linux crontab, Kubernetes, GitHub Actions</td>
+            <td><code>0 2 * * *</code></td>
+          </tr>
+          <tr>
+            <td>AWS EventBridge</td>
+            <td>6</td>
+            <td>AWS EventBridge Scheduler, CloudWatch Events</td>
+            <td><code>0 2 * * ? *</code></td>
+          </tr>
+          <tr>
+            <td>Quartz (Java)</td>
+            <td>6–7</td>
+            <td>Spring Boot, Quartz Scheduler, many Java apps</td>
+            <td><code>0 0 2 * * ?</code></td>
+          </tr>
+          <tr>
+            <td>Jenkins</td>
+            <td>5 (with H)</td>
+            <td>Jenkins pipeline triggers</td>
+            <td><code>H 2 * * *</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-warn">
+      <strong style="color:var(--yellow)">⚠ AWS EventBridge difference:</strong> AWS requires either day-of-month OR day-of-week to be set — not both. Use <code>?</code> for the one you're not setting. A standard cron tester will reject valid AWS expressions if it doesn't understand this rule.
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── DEBUGGING GUIDE ── -->
+  <section>
+    <h2>Debugging Common Cron Errors</h2>
+
+    <h3>Expression is valid but fires at the wrong time</h3>
+    <p>This is almost always a timezone issue. The tester shows times in your local timezone by default, but your server or scheduler may run in UTC. Use the timezone selector in CronRead to switch to UTC and verify the actual fire time.</p>
+
+    <h3>Day-of-month and day-of-week conflict</h3>
+    <p>In standard cron, if you set both day-of-month and day-of-week (i.e. neither is <code>*</code>), cron uses OR logic — the job fires if either condition matches. This surprises many users. Example: <code>0 0 1 * 1</code> runs on the 1st of every month AND every Monday, not only on Mondays that are the 1st.</p>
+
+    <h3>Expression never fires</h3>
+    <p>Check for impossible dates like February 30th (<code>0 0 30 2 *</code>) — this expression will never fire. A next-run-time calculator immediately reveals this because it will show no upcoming runs.</p>
+
+    <h3>Job runs unexpectedly often</h3>
+    <p>A common mistake: <code>* * * * *</code> runs every single minute. If you meant "once per hour", you need <code>0 * * * *</code> (minute field must be 0, not *).</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── FAQ ── -->
+  <section>
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">How do I test a cron expression for free?</div>
+        <div class="faq-a">Use CronRead — paste your expression in the tool at the top of this page. It shows next run times, plain-English description, and field validation instantly, for free, with no sign-up.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I test AWS EventBridge cron expressions?</div>
+        <div class="faq-a">Yes. AWS EventBridge uses 6-field cron with different rules for <code>?</code> and <code>L</code>. CronRead supports AWS mode — see the <a href="/aws-eventbridge-cron-examples/">AWS EventBridge guide</a> for the differences.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is the difference between a cron tester and a cron expression generator?</div>
+        <div class="faq-a">A tester validates an expression you already have and shows next run times. A generator helps you build an expression from a human-readable description (e.g. "every weekday at 9 AM"). CronRead does both.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Does */5 in the minute field mean every 5 minutes starting from midnight?</div>
+        <div class="faq-a">Yes — <code>*/5</code> in the minute field runs at minutes 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55. It always starts from 0 (the lowest value in the field's range).</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can cron run more than once a minute?</div>
+        <div class="faq-a">No — the finest granularity in standard cron is 1 minute. For sub-minute scheduling, use systemd timers, a task queue, or a custom scheduling loop inside your script.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RELATED ── -->
+  <section>
+    <h2>Related Cron Tools &amp; Guides</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Resource</th><th>What you'll find</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="/cron-examples/">Cron Expression Examples</a></td><td>50+ ready-to-copy cron expressions with descriptions</td></tr>
+          <tr><td><a href="/blog/linux-crontab-examples/">Linux Crontab Examples</a></td><td>Real crontab commands, @shortcuts, output logging</td></tr>
+          <tr><td><a href="/aws-eventbridge-cron-examples/">AWS EventBridge Cron</a></td><td>6-field AWS cron syntax, rate() vs cron(), examples</td></tr>
+          <tr><td><a href="/kubernetes-cronjob-examples/">Kubernetes CronJob Examples</a></td><td>CronJob YAML, concurrencyPolicy, timezone field</td></tr>
+          <tr><td><a href="/blog/cron-syntax-guide/">Cron Syntax Guide</a></td><td>Full reference for every field and operator</td></tr>
+          <tr><td><a href="/cronguru-alternative/">CronGuru Alternative</a></td><td>How CronRead compares to CronGuru and other tools</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="cta-row" style="margin-top:3rem">
+    <a href="/" class="cta-btn">⚡ Test Your Cron Expression Now</a>
+  </div>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="footer-links">
+    <a href="/">CronRead</a> |
+    <a href="/cron-examples/">Cron Examples</a> |
+    <a href="/blog/linux-crontab-examples/">Linux Crontab</a> |
+    <a href="/aws-eventbridge-cron-examples/">AWS EventBridge</a> |
+    <a href="/kubernetes-cronjob-examples/">Kubernetes</a> |
+    <a href="/github-actions-cron-examples/">GitHub Actions</a> |
+    <a href="/cronguru-alternative/">vs CronGuru</a>
+  </div>
+  <p style="margin-top:.6rem">© 2026 CronRead · Always verify cron schedules before deploying to production.</p>
+</footer>
+
+</body>
+</html>
