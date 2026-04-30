@@ -11,30 +11,30 @@
   <meta property="og:type" content="article">
   <link rel="canonical" href="https://cronread.com/blog/aws-eventbridge-cron-expression-guide">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       /* EYE-CARE LIGHT THEME */
-      --bg: #fafafa; /* Soft off-white to reduce glare */
-      --surface: #ffffff; /* Pure white for cards to create depth */
-      --surface2: #f1f5f9; /* Soft gray for tables/code */
-      --border: #cbd5e1; /* Darker border for better definition */
-      --text: #0f172a; /* Deep slate, almost black for crisp text */
-      --text-muted: #334155; /* Darker muted text so it doesn't look dull */
-      --accent: #d97706; /* Richer orange */
-      --accent2: #b45309;
+      --bg: #f7f8ff;
+      --surface: #ffffff;
+      --surface2: #eef0fb;
+      --border: #dde2f4;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --accent: #4f46e5;
+      --accent2: #7c3aed;
       --green: #059669;
       --blue: #2563eb;
       --purple: #7c3aed;
-      --code-text: #b91c1c; /* Sharp dark red for code */
-      --code-bg: #f8fafc;
+      --code-text: #4f46e5;
+      --code-bg: #eef0fb;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 18px; scroll-behavior: smooth; }
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Fraunces', Georgia, serif;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
       line-height: 1.75;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased; /* Makes fonts crisp and sharp */
@@ -55,7 +55,7 @@
       box-shadow: 0 1px 2px rgba(0,0,0,0.02);
     }
     .nav-logo {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-weight: 600;
       font-size: 1.1rem;
       color: var(--accent);
@@ -68,7 +68,7 @@
       padding: 0.4rem 1rem;
       border-radius: 6px;
       text-decoration: none;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.8rem;
       font-weight: 600;
       transition: background 0.2s;
@@ -99,7 +99,7 @@
       background: rgba(217,119,6,0.1);
       border: 1px solid rgba(217,119,6,0.2);
       color: var(--accent);
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.75rem;
       padding: 0.3rem 0.8rem;
       border-radius: 100px;
@@ -118,7 +118,7 @@
     }
     .hero h1 span { color: var(--accent); }
     .hero-meta {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.8rem;
       color: var(--text-muted);
       display: flex;
@@ -150,7 +150,7 @@
       font-weight: 700;
       margin: 2rem 0 0.75rem;
       color: var(--accent);
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
     }
     p { margin-bottom: 1.25rem; color: var(--text); font-weight: 400; }
     a { color: var(--blue); text-decoration: underline; font-weight: 600; }
@@ -159,7 +159,7 @@
 
     /* CODE */
     code {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       background: var(--surface2);
       border: 1px solid var(--border);
       padding: 0.15em 0.45em;
@@ -176,7 +176,7 @@
       padding: 1.5rem;
       overflow-x: auto;
       margin: 1.5rem 0;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.9rem;
       line-height: 1.6;
     }
@@ -190,7 +190,7 @@
     table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
     thead { background: var(--surface2); border-bottom: 2px solid var(--border); }
     th {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.06em;
@@ -206,7 +206,7 @@
     }
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: var(--bg); }
-    td:first-child { font-family: 'IBM Plex Mono', monospace; color: var(--code-text); font-size: 0.85rem; font-weight: 600; }
+    td:first-child { font-family: 'JetBrains Mono', monospace; color: var(--code-text); font-size: 0.85rem; font-weight: 600; }
 
     /* CALLOUT */
     .callout {
@@ -223,7 +223,7 @@
     .callout.warning { border-left-color: var(--code-text); }
     .callout.success { border-left-color: var(--green); }
     .callout-title {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
@@ -242,7 +242,7 @@
       border-radius: 10px;
       padding: 2rem;
       margin: 2rem 0;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.9rem;
       box-shadow: 0 1px 3px rgba(0,0,0,0.02);
     }
@@ -285,13 +285,13 @@
       box-shadow: 0 1px 2px rgba(0,0,0,0.02);
     }
     .example-card:hover { border-color: var(--accent); box-shadow: 0 4px 6px rgba(0,0,0,0.04); }
-    .ex-expr { font-family: 'IBM Plex Mono', monospace; color: var(--text); font-size: 0.9rem; font-weight: 700; }
+    .ex-expr { font-family: 'JetBrains Mono', monospace; color: var(--text); font-size: 0.9rem; font-weight: 700; }
     .ex-desc { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem; }
     .ex-badge {
       background: rgba(5,150,105,0.1);
       border: 1px solid rgba(5,150,105,0.2);
       color: var(--green);
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.65rem;
       padding: 0.2rem 0.5rem;
       border-radius: 4px;
@@ -310,7 +310,7 @@
       margin: 3rem 0;
     }
     .cta-box h3 {
-      font-family: 'Fraunces', serif;
+      font-family: 'Inter', sans-serif;
       color: var(--text);
       font-size: 1.4rem;
       margin-bottom: 0.75rem;
@@ -324,7 +324,7 @@
       padding: 0.75rem 2rem;
       border-radius: 8px;
       text-decoration: none;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-weight: 600;
       font-size: 0.9rem;
       transition: background 0.2s, transform 0.1s;
@@ -341,7 +341,7 @@
       box-shadow: 0 1px 2px rgba(0,0,0,0.02);
     }
     .toc-title {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
@@ -369,7 +369,7 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.02);
     }
     .compare-card h4 {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.85rem;
       color: var(--text-muted);
       margin-bottom: 1rem;
@@ -386,7 +386,7 @@
       border-top: 1px solid var(--border);
       padding: 2rem;
       text-align: center;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.8rem;
       color: var(--text-muted);
     }
@@ -414,6 +414,34 @@
     "url": "https://cronread.com/blog/aws-eventbridge-cron-expression-guide"
   }
   </script>
+
+<style>
+/* ── Vivid Enhancements ─── */
+body {
+  background-image: radial-gradient(circle at 15% 10%, rgba(124,58,237,.05) 0%, transparent 50%),
+                    radial-gradient(circle at 85% 90%, rgba(79,70,229,.04) 0%, transparent 50%);
+}
+nav {
+  background: linear-gradient(135deg, #0f1117 0%, #1a1036 100%) !important;
+  box-shadow: 0 2px 20px rgba(79,70,229,.2) !important;
+  border-bottom-color: rgba(124,58,237,.3) !important;
+}
+pre {
+  background: #eef0fb !important;
+  border-color: #dde2f4 !important;
+  color: #4f46e5 !important;
+  position: relative;
+  overflow: hidden;
+}
+pre::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #4f46e5, #7c3aed);
+  border-radius: 11px 11px 0 0;
+}
+</style>
 </head>
 <body>
 

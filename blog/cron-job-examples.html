@@ -11,32 +11,32 @@
   <meta property="og:type" content="article">
   <link rel="canonical" href="https://cronread.com/blog/cron-job-examples">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
     :root {
       /* SOFT PAPER / HIGH-CONTRAST THEME (Matches Syntax Guide) */
-      --bg: #f9fafb;          
-      --surface: #ffffff;     
-      --surface2: #f1f5f9;
-      --border: #e2e8f0;
-      
-      --text: #1e293b;        
-      --text-muted: #475569;  
-      --heading: #0f172a;     
-      
-      --accent: #ea580c; 
-      --accent2: #c2410c;
-      --accent-light: #fff7ed;
-      
-      --blue: #2563eb; 
+      --bg: #f7f8ff;
+      --surface: #ffffff;
+      --surface2: #eef0fb;
+      --border: #dde2f4;
+
+      --text: #0f172a;
+      --text-muted: #475569;
+      --heading: #0f172a;
+
+      --accent: #4f46e5;
+      --accent2: #7c3aed;
+      --accent-light: #eef0fb;
+
+      --blue: #2563eb;
       --green: #059669;
       --purple: #7c3aed;
       --yellow: #d97706;
       --red: #dc2626;
-      
-      --code-bg: #f1f5f9;
-      --code-text: #991b1b;
+
+      --code-bg: #eef0fb;
+      --code-text: #4f46e5;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -44,7 +44,7 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Fraunces', Georgia, serif;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
       line-height: 1.8;
       font-weight: 400;
       -webkit-font-smoothing: antialiased;
@@ -65,7 +65,7 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.02);
     }
     .nav-logo {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-weight: 600;
       font-size: 1.1rem;
       color: var(--heading);
@@ -79,7 +79,7 @@
       padding: 0.4rem 1rem;
       border-radius: 6px;
       text-decoration: none;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.8rem;
       font-weight: 600;
       transition: background 0.2s;
@@ -100,7 +100,7 @@
       background: var(--accent-light);
       border: 1px solid #fed7aa;
       color: var(--accent);
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.72rem;
       padding: 0.3rem 0.8rem;
       border-radius: 100px;
@@ -126,7 +126,7 @@
       gap: 2rem;
       justify-content: center;
       flex-wrap: wrap;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.8rem;
       color: var(--text-muted);
       border-top: 1px solid var(--border);
@@ -148,7 +148,7 @@
       position: relative;
     }
     h3 {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 1.1rem;
       font-weight: 600;
       margin: 2.5rem 0 1rem;
@@ -169,7 +169,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.02);
     }
     .toc-title {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
@@ -184,7 +184,7 @@
 
     /* CODE */
     code {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       background: var(--code-bg);
       border: 1px solid var(--border);
       color: var(--code-text);
@@ -200,7 +200,7 @@
       padding: 1.5rem;
       overflow-x: auto;
       margin: 1.5rem 0;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.85rem;
       line-height: 1.7;
     }
@@ -229,7 +229,7 @@
       background: var(--surface2);
       border-right: 1px solid var(--border);
       padding: 1rem 1.25rem;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.85rem;
       font-weight: 600;
       color: var(--code-text);
@@ -242,11 +242,11 @@
       flex-direction: column;
       justify-content: center;
     }
-    .ex-desc { font-size: 0.95rem; color: var(--heading); font-weight: 600; font-family: 'Fraunces', serif; }
-    .ex-detail { font-size: 0.8rem; color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; margin-top: 0.2rem; }
+    .ex-desc { font-size: 0.95rem; color: var(--heading); font-weight: 600; font-family: 'Inter', sans-serif; }
+    .ex-detail { font-size: 0.8rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; margin-top: 0.2rem; }
     .ex-tag {
       display: inline-block;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.65rem;
       font-weight: 600;
       padding: 0.15rem 0.5rem;
@@ -278,7 +278,7 @@
     .callout-warn { border-left-color: var(--yellow); }
     .callout-info { border-left-color: var(--blue); }
     .callout-label {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
@@ -294,7 +294,7 @@
     table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
     thead { background: var(--surface2); border-bottom: 1px solid var(--border); }
     th {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -304,7 +304,7 @@
     }
     td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text); }
     tr:last-child td { border-bottom: none; }
-    td:first-child { font-family: 'IBM Plex Mono', monospace; color: var(--accent); font-size: 0.85rem; font-weight: 600; }
+    td:first-child { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 0.85rem; font-weight: 600; }
 
     /* SYNTAX VISUAL */
     .syntax-box {
@@ -313,7 +313,7 @@
       border-radius: 10px;
       padding: 2rem;
       margin: 1.5rem 0;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       box-shadow: 0 1px 2px rgba(0,0,0,0.02);
     }
     .syn-top { color: var(--heading); font-size: 1.2rem; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 1.5rem; text-align: center; }
@@ -345,7 +345,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.02);
     }
     .cta-strip h3 { 
-      font-family: 'Fraunces', serif;
+      font-family: 'Inter', sans-serif;
       font-size: 1.5rem; 
       margin-bottom: 0.75rem; 
       color: var(--heading);
@@ -353,7 +353,7 @@
       text-transform: none;
       letter-spacing: normal;
     }
-    .cta-strip p { color: var(--text-muted); margin-bottom: 1.5rem; font-weight: 500; font-family: 'Fraunces', serif; }
+    .cta-strip p { color: var(--text-muted); margin-bottom: 1.5rem; font-weight: 500; font-family: 'Inter', sans-serif; }
     .cta-btn {
       display: inline-block;
       background: var(--accent);
@@ -361,7 +361,7 @@
       padding: 0.85rem 2rem;
       border-radius: 6px;
       text-decoration: none;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-weight: 600;
       font-size: 0.9rem;
       transition: background 0.2s;
@@ -374,7 +374,7 @@
       border-top: 1px solid var(--border);
       padding: 2rem;
       text-align: center;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.85rem;
       color: var(--text-muted);
     }
@@ -402,6 +402,34 @@
     "url": "https://cronread.com/blog/cron-job-examples"
   }
   </script>
+
+<style>
+/* ── Vivid Enhancements ─── */
+body {
+  background-image: radial-gradient(circle at 15% 10%, rgba(124,58,237,.05) 0%, transparent 50%),
+                    radial-gradient(circle at 85% 90%, rgba(79,70,229,.04) 0%, transparent 50%);
+}
+nav {
+  background: linear-gradient(135deg, #0f1117 0%, #1a1036 100%) !important;
+  box-shadow: 0 2px 20px rgba(79,70,229,.2) !important;
+  border-bottom-color: rgba(124,58,237,.3) !important;
+}
+pre {
+  background: #eef0fb !important;
+  border-color: #dde2f4 !important;
+  color: #4f46e5 !important;
+  position: relative;
+  overflow: hidden;
+}
+pre::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #4f46e5, #7c3aed);
+  border-radius: 11px 11px 0 0;
+}
+</style>
 </head>
 <body>
 
