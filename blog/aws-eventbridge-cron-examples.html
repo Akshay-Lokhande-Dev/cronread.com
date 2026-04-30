@@ -239,25 +239,31 @@ resource "aws_lambda_permission" "allow_eventbridge" {
   <h2>Frequently Asked Questions</h2>
   <div class="faq-list">
     <div class="faq-item">
+    
       <div class="faq-q">What is the difference between cron() and rate() in AWS EventBridge?</div>
       <div class="faq-a"><code>rate()</code> defines a fixed interval — <code>rate(5 minutes)</code>, <code>rate(1 hour)</code>. <code>cron()</code> uses a 6-field expression for exact scheduling. Use <code>rate()</code> for simple repeating intervals; use <code>cron()</code> when you need to control the exact time, day, or month a rule fires.</div>
     </div>
+    
     <div class="faq-item">
       <div class="faq-q">Why does AWS EventBridge use 6 fields?</div>
       <div class="faq-a">AWS adds a Year field as the 6th field. This allows you to schedule one-time events at a specific year, or use <code>*</code> to match all years. The field order is: minutes, hours, day-of-month, month, day-of-week, year.</div>
     </div>
+    
     <div class="faq-item">
       <div class="faq-q">What does ? mean in AWS EventBridge cron?</div>
       <div class="faq-a"><code>?</code> means "no specific value". You must put <code>?</code> in either day-of-month or day-of-week (but not both). If you're scheduling by day-of-week (<code>MON-FRI</code>), day-of-month must be <code>?</code>. If scheduling by day-of-month (<code>15</code>), day-of-week must be <code>?</code>.</div>
     </div>
+    
     <div class="faq-item">
       <div class="faq-q">Why is my EventBridge rule not firing at the expected time?</div>
       <div class="faq-a">Most likely a UTC offset issue. EventBridge runs all schedules in UTC. If you're in UTC+5:30 (IST) and want 9 AM local time, the UTC time is 3:30 AM — so you'd use <code>cron(30 3 ? * * *)</code>. Use <a href="../index.html" CronRead Pro's timezone calculator</a> to find the right UTC time for your timezone.</div>
     </div>
+    
     <div class="faq-item">
       <div class="faq-q">Can I paste an EventBridge cron() expression into CronRead Pro?</div>
       <div class="faq-a">Yes. Paste the full expression including the <code>cron()</code> wrapper — CronRead Pro strips it automatically and handles the 6-field format.</div>
     </div>
+    
   </div>
 </section>
 
