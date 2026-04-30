@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>50+ Cron Job Examples – Copy-Paste Crontab Expressions | CronRead</title>
+  <meta name="description" content="50+ real-world cron job examples with copy-paste crontab expressions. Covers Linux cron, AWS cron, and AWS EventBridge 6-field format with full explanations.">
+  <meta name="keywords" content="cron job examples, cron examples, crontab examples, cron example, cron jobs example, cron job example">
+  <meta property="og:title" content="50+ Cron Job Examples – Copy-Paste Crontab Expressions">
+  <meta property="og:description" content="50+ real-world cron job examples with copy-paste expressions for Linux crontab and AWS EventBridge.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://cronread.com/blog/cron-job-examples">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* SOFT PAPER / HIGH-CONTRAST THEME (Matches Syntax Guide) */
+      --bg: #f9fafb;          
+      --surface: #ffffff;     
+      --surface2: #f1f5f9;
+      --border: #e2e8f0;
+      
+      --text: #1e293b;        
+      --text-muted: #475569;  
+      --heading: #0f172a;     
+      
+      --accent: #ea580c; 
+      --accent2: #c2410c;
+      --accent-light: #fff7ed;
+      
+      --blue: #2563eb; 
+      --green: #059669;
+      --purple: #7c3aed;
+      --yellow: #d97706;
+      --red: #dc2626;
+      
+      --code-bg: #f1f5f9;
+      --code-text: #991b1b;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 18px; scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Fraunces', Georgia, serif;
+      line-height: 1.8;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .nav-logo {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--heading);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-cta {
+      background: var(--accent);
+      color: #fff !important;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--accent2); }
+
+    /* HERO */
+    .hero {
+      background: radial-gradient(ellipse at 50% 0%, #fff7ed 0%, #f9fafb 60%);
+      border-bottom: 1px solid var(--border);
+      padding: 6rem 2rem 5rem;
+      text-align: center;
+      position: relative;
+    }
+    .hero-inner { max-width: 820px; margin: 0 auto; }
+    .hero-tag {
+      display: inline-block;
+      background: var(--accent-light);
+      border: 1px solid #fed7aa;
+      color: var(--accent);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 100px;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(234, 88, 12, 0.05);
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 1.25rem;
+      color: var(--heading);
+      letter-spacing: -0.02em;
+    }
+    .hero h1 em { color: var(--accent); font-style: normal; }
+    .hero p { color: var(--text-muted); max-width: 650px; margin: 0 auto 2rem; font-size: 1.1rem; font-weight: 500; }
+    
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      padding-top: 2rem;
+      margin-top: 2.5rem;
+    }
+    .hero-stat strong { display: block; color: var(--heading); font-size: 1.6rem; margin-bottom: 0.1rem; font-weight: 700; }
+
+    /* LAYOUT */
+    .layout { max-width: 860px; margin: 0 auto; padding: 3rem 2rem; }
+
+    /* TYPOGRAPHY */
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 3.5rem 0 1rem;
+      color: var(--heading);
+      letter-spacing: -0.02em;
+      position: relative;
+    }
+    h3 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 2.5rem 0 1rem;
+      color: var(--heading);
+    }
+    p { margin-bottom: 1.25rem; color: var(--text); }
+    a { color: var(--blue); font-weight: 600; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    strong { color: var(--heading); font-weight: 600; }
+
+    /* TOC */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0 3rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+    }
+    .toc-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+      font-weight: 600;
+    }
+    .toc ol { padding-left: 1.4rem; }
+    .toc li { margin-bottom: 0.6rem; font-size: 0.95rem; font-weight: 600; color: var(--text); }
+    .toc a { color: var(--blue); text-decoration: none; transition: color 0.2s; }
+    .toc a:hover { text-decoration: underline; color: #1d4ed8; }
+
+    /* CODE */
+    code {
+      font-family: 'IBM Plex Mono', monospace;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      color: var(--code-text);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      font-size: 0.85em;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      padding: 1.5rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+    pre .c { color: var(--text-muted); font-style: italic; }
+    pre .g { color: var(--green); font-weight: 600; }
+    pre .b { color: var(--blue); }
+    pre .y { color: var(--yellow); }
+    pre .o { color: var(--accent); }
+
+    /* BIG EXAMPLE TABLE */
+    .ex-section { margin: 1.5rem 0; }
+    .ex-item {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 0.85rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: var(--surface);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .ex-item:hover { border-color: var(--accent); box-shadow: 0 4px 6px rgba(0,0,0,0.04); }
+    .ex-code {
+      background: var(--surface2);
+      border-right: 1px solid var(--border);
+      padding: 1rem 1.25rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--code-text);
+      display: flex;
+      align-items: center;
+    }
+    .ex-info {
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .ex-desc { font-size: 0.95rem; color: var(--heading); font-weight: 600; font-family: 'Fraunces', serif; }
+    .ex-detail { font-size: 0.8rem; color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; margin-top: 0.2rem; }
+    .ex-tag {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      margin-top: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      width: fit-content;
+      border: 1px solid transparent;
+    }
+    .tag-linux { background: #e0f2fe; color: #1d4ed8; border-color: #bae6fd; }
+    .tag-aws { background: #fff7ed; color: #ea580c; border-color: #ffedd5; }
+    .tag-both { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+
+    /* CALLOUT */
+    .callout {
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 2rem 0;
+      border-left: 4px solid var(--accent);
+      border: 1px solid var(--border);
+      border-left-width: 4px;
+      font-size: 0.95rem;
+      color: var(--heading);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .callout-tip { border-left-color: var(--green); }
+    .callout-warn { border-left-color: var(--yellow); }
+    .callout-info { border-left-color: var(--blue); }
+    .callout-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+    }
+    .callout-tip .callout-label { color: var(--green); }
+    .callout-warn .callout-label { color: var(--yellow); }
+    .callout-info .callout-label { color: var(--blue); }
+
+    /* TABLE */
+    .table-wrap { overflow-x: auto; margin: 1.5rem 0; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    thead { background: var(--surface2); border-bottom: 1px solid var(--border); }
+    th {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--heading);
+      padding: 1rem;
+      text-align: left;
+    }
+    td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text); }
+    tr:last-child td { border-bottom: none; }
+    td:first-child { font-family: 'IBM Plex Mono', monospace; color: var(--accent); font-size: 0.85rem; font-weight: 600; }
+
+    /* SYNTAX VISUAL */
+    .syntax-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 2rem;
+      margin: 1.5rem 0;
+      font-family: 'IBM Plex Mono', monospace;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .syn-top { color: var(--heading); font-size: 1.2rem; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 1.5rem; text-align: center; }
+    .syn-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+    }
+    .syn-field {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.6rem 0.4rem;
+      text-align: center;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .syn-name { color: var(--accent); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    .syn-range { color: var(--text-muted); font-size: 0.65rem; margin-top: 0.3rem; font-weight: 600; }
+
+    /* CTA STRIP (Matching cta-box from syntax guide) */
+    .cta-strip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--accent);
+      border-radius: 12px;
+      padding: 2.5rem;
+      text-align: center;
+      margin: 3rem 0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+    }
+    .cta-strip h3 { 
+      font-family: 'Fraunces', serif;
+      font-size: 1.5rem; 
+      margin-bottom: 0.75rem; 
+      color: var(--heading);
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: normal;
+    }
+    .cta-strip p { color: var(--text-muted); margin-bottom: 1.5rem; font-weight: 500; font-family: 'Fraunces', serif; }
+    .cta-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff !important;
+      padding: 0.85rem 2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+    .cta-btn:hover { background: var(--accent2); }
+
+    /* FOOTER */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    footer a { color: var(--heading); text-decoration: none; font-weight: 600; }
+    footer a:hover { text-decoration: underline; color: var(--accent); }
+
+    @media (max-width: 640px) {
+      .ex-item { grid-template-columns: 1fr; }
+      .ex-code { border-right: none; border-bottom: 1px solid var(--border); }
+      .syn-grid { grid-template-columns: repeat(3, 1fr); }
+      .hero { padding: 4rem 1.25rem 3rem; }
+      .layout { padding: 2rem 1.25rem; }
+      .hero-stats { gap: 1rem; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "50+ Cron Job Examples – Copy-Paste Crontab Expressions",
+    "description": "50+ real-world cron job examples with copy-paste crontab expressions for Linux and AWS.",
+    "author": { "@type": "Organization", "name": "CronRead" },
+    "publisher": { "@type": "Organization", "name": "CronRead", "url": "https://cronread.com" },
+    "url": "https://cronread.com/blog/cron-job-examples"
+  }
+  </script>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="https://cronread.com">Cron<span>Read</span></a>
+  <a class="nav-cta" href="https://cronread.com">Generate Cron →</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Reference Guide</div>
+    <h1>50+ Cron Job <em>Examples</em><br>You Can Copy Right Now</h1>
+    <p class="sub">Real crontab expressions for Linux, AWS EventBridge, and everything in between. Each one explained so you actually understand it — not just copy it blindly.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><strong>50+</strong>copy-paste examples</div>
+      <div class="hero-stat"><strong>2</strong>formats covered</div>
+      <div class="hero-stat"><strong>8</strong>categories</div>
+      <div class="hero-stat"><strong>2026</strong>up to date</div>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <div class="toc">
+    <div class="toc-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg> Table of Contents</div>
+    <ol>
+      <li><a href="#cron-basics">Cron Expression Basics (Quick Review)</a></li>
+      <li><a href="#every-minute">Every N Minutes Examples</a></li>
+      <li><a href="#hourly">Hourly Examples</a></li>
+      <li><a href="#daily">Daily Examples</a></li>
+      <li><a href="#weekly">Weekly Examples</a></li>
+      <li><a href="#monthly">Monthly Examples</a></li>
+      <li><a href="#advanced">Advanced & Special Examples</a></li>
+      <li><a href="#aws-examples">AWS EventBridge Specific Examples</a></li>
+      <li><a href="#real-world">Real-World Scenario Examples</a></li>
+    </ol>
+  </div>
+
+  <!-- INTRO -->
+  <p>Cron jobs are the backbone of automated computing. From simple scripts that run every 5 minutes to complex quarterly billing cycles, cron expressions control when your automation fires. But writing them from scratch can be frustrating — one wrong character and your job runs at 3 AM instead of 3 PM.</p>
+  <p>This guide gives you <strong>50+ copy-paste cron job examples</strong> organized by use case, with plain-English explanations for every single one. We cover both <strong>standard Linux crontab</strong> (5-field) and <strong>AWS EventBridge</strong> (6-field) formats.</p>
+
+  <!-- SECTION 1 -->
+  <h2 id="cron-basics">Cron Expression Basics (Quick Review)</h2>
+  <p>If you already know cron syntax, skip ahead. If not, here's what you need to know before diving into examples.</p>
+
+  <p>A standard Linux cron expression has <strong>5 fields</strong>, read left to right:</p>
+
+  <div class="syntax-box">
+    <div class="syn-top">*  *  *  *  *</div>
+    <div class="syn-grid">
+      <div class="syn-field">
+        <div class="syn-name">Minute</div>
+        <div class="syn-range">0–59</div>
+      </div>
+      <div class="syn-field">
+        <div class="syn-name">Hour</div>
+        <div class="syn-range">0–23</div>
+      </div>
+      <div class="syn-field">
+        <div class="syn-name">Day (Month)</div>
+        <div class="syn-range">1–31</div>
+      </div>
+      <div class="syn-field">
+        <div class="syn-name">Month</div>
+        <div class="syn-range">1–12</div>
+      </div>
+      <div class="syn-field">
+        <div class="syn-name">Day (Week)</div>
+        <div class="syn-range">0–7</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Symbol</th><th>Meaning</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>*</td><td>Any value</td><td><code>* * * * *</code> — every minute</td></tr>
+        <tr><td>-</td><td>Range</td><td><code>9-17</code> — hours 9 through 17</td></tr>
+        <tr><td>,</td><td>List</td><td><code>1,15</code> — 1st and 15th</td></tr>
+        <tr><td>/</td><td>Step</td><td><code>*/5</code> — every 5 units</td></tr>
+        <tr><td>L</td><td>Last (not all implementations)</td><td>Last day of month</td></tr>
+        <tr><td>@yearly</td><td>Shortcut for once a year</td><td>= <code>0 0 1 1 *</code></td></tr>
+        <tr><td>@monthly</td><td>Shortcut for once a month</td><td>= <code>0 0 1 * *</code></td></tr>
+        <tr><td>@weekly</td><td>Shortcut for once a week</td><td>= <code>0 0 * * 0</code></td></tr>
+        <tr><td>@daily</td><td>Shortcut for once a day</td><td>= <code>0 0 * * *</code></td></tr>
+        <tr><td>@hourly</td><td>Shortcut for once an hour</td><td>= <code>0 * * * *</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-tip">
+    <div class="callout-label">💡 Quick Read Trick</div>
+    Read a cron expression right to left: "year → month → day-of-week → day-of-month → hour → minute". It helps parse complex expressions faster. For example <code>0 9 * * 1</code> = "minute 0, hour 9, any day-of-month, any month, Monday" = <em>every Monday at 9:00 AM</em>.
+  </div>
+
+  <!-- SECTION 2 -->
+  <h2 id="every-minute">Every N Minutes Examples</h2>
+  <p>These are the most common cron expressions for polling systems, health checks, and lightweight recurring tasks.</p>
+
+  <div class="ex-section">
+    <div class="ex-item">
+      <div class="ex-code">* * * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every single minute</div>
+        <div class="ex-detail">60 times per hour, 1,440 times per day</div>
+        <span class="ex-tag tag-both">Linux & AWS</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">*/2 * * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every 2 minutes</div>
+        <div class="ex-detail">Runs at :00, :02, :04, :06...</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">*/5 * * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every 5 minutes</div>
+        <div class="ex-detail">Runs at :00, :05, :10, :15... — very common for health checks</div>
+        <span class="ex-tag tag-both">Linux & AWS</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">*/10 * * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every 10 minutes</div>
+        <div class="ex-detail">6 times per hour</div>
+        <span class="ex-tag tag-both">Linux & AWS</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">*/15 * * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every 15 minutes</div>
+        <div class="ex-detail">Quarter-hour intervals: :00, :15, :30, :45</div>
+        <span class="ex-tag tag-both">Linux & AWS</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">*/30 * * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every 30 minutes</div>
+        <div class="ex-detail">Twice per hour: :00 and :30</div>
+        <span class="ex-tag tag-both">Linux & AWS</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0-59/20 * * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every 20 minutes</div>
+        <div class="ex-detail">Runs at :00, :20, :40</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <h2 id="hourly">Hourly Examples</h2>
+  <p>Hourly cron jobs are perfect for aggregation tasks, syncing data from external APIs, or generating rollup reports.</p>
+
+  <div class="ex-section">
+    <div class="ex-item">
+      <div class="ex-code">0 * * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every hour at :00</div>
+        <div class="ex-detail">Exactly at the top of every hour</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">30 * * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every hour at :30</div>
+        <div class="ex-detail">Half-past every hour — stagger from top-of-hour crowd</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 */2 * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every 2 hours</div>
+        <div class="ex-detail">Midnight, 2 AM, 4 AM, 6 AM... 22:00</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 */4 * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every 4 hours</div>
+        <div class="ex-detail">00:00, 04:00, 08:00, 12:00, 16:00, 20:00</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 */6 * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every 6 hours</div>
+        <div class="ex-detail">4 times a day: midnight, 6 AM, noon, 6 PM</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 9-17 * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every hour, 9 AM to 5 PM only</div>
+        <div class="ex-detail">Great for business-hours-only jobs</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <h2 id="daily">Daily Examples</h2>
+  <p>Daily cron jobs are ideal for database backups, daily report generation, cleanup tasks, and digest emails.</p>
+
+  <div class="ex-section">
+    <div class="ex-item">
+      <div class="ex-code">0 0 * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every day at midnight</div>
+        <div class="ex-detail">Also written as @daily or @midnight</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 1 * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every day at 1:00 AM</div>
+        <div class="ex-detail">Good for after-midnight jobs to avoid midnight congestion</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 2 * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every day at 2:00 AM</div>
+        <div class="ex-detail">Classic time for database backups (low traffic)</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 6 * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every day at 6:00 AM</div>
+        <div class="ex-detail">Early morning — reports ready before the team wakes up</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 9 * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every day at 9:00 AM</div>
+        <div class="ex-detail">Start-of-business-day trigger</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 12 * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every day at noon</div>
+        <div class="ex-detail">Midday sync, lunch-hour processing</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 18 * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every day at 6:00 PM</div>
+        <div class="ex-detail">End-of-business-day processing</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 23 * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every day at 11:00 PM</div>
+        <div class="ex-detail">Pre-midnight — last cleanup before the day ends</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">30 23 * * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every day at 11:30 PM</div>
+        <div class="ex-detail">30 minutes before midnight for nightly close-outs</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <h2 id="weekly">Weekly Examples</h2>
+  <p>Weekly cron jobs are perfect for weekly digests, Monday morning kickoff tasks, and weekend maintenance windows.</p>
+
+  <div class="ex-section">
+    <div class="ex-item">
+      <div class="ex-code">0 0 * * 0</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every Sunday at midnight</div>
+        <div class="ex-detail">Also written as @weekly</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 9 * * 1</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every Monday at 9 AM</div>
+        <div class="ex-detail">Weekly kickoff — great for sending Monday morning summaries</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 17 * * 5</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every Friday at 5 PM</div>
+        <div class="ex-detail">End-of-week wrap-up report</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 9 * * 1-5</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every weekday at 9 AM (Mon–Fri)</div>
+        <div class="ex-detail">Business days only</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 10 * * 6,0</div>
+      <div class="ex-info">
+        <div class="ex-desc">Weekends only at 10 AM (Sat & Sun)</div>
+        <div class="ex-detail">Weekend-specific processing</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 2 * * 0</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every Sunday at 2 AM</div>
+        <div class="ex-detail">Weekly maintenance window — database optimization, index rebuilds</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-strip">
+    <h3>Not sure if your cron expression is right?</h3>
+    <p>Paste it into CronRead and instantly see a human-readable explanation, the next 5 run times, and validation for both Linux and AWS formats.</p>
+    <a class="cta-btn" href="https://cronread.com">Read & Validate Your Cron →</a>
+  </div>
+
+  <!-- SECTION 6 -->
+  <h2 id="monthly">Monthly Examples</h2>
+  <p>Monthly cron jobs are essential for billing cycles, monthly reports, archive generation, and data retention policies.</p>
+
+  <div class="ex-section">
+    <div class="ex-item">
+      <div class="ex-code">0 0 1 * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">First day of every month at midnight</div>
+        <div class="ex-detail">Also written as @monthly</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 9 1 * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">First day of every month at 9 AM</div>
+        <div class="ex-detail">Monthly report, invoice generation</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 0 15 * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">15th of every month at midnight</div>
+        <div class="ex-detail">Mid-month billing check, payroll</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 0 1,15 * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">1st and 15th of every month at midnight</div>
+        <div class="ex-detail">Bi-monthly: twice a month</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 0 28 * *</div>
+      <div class="ex-info">
+        <div class="ex-desc">28th of every month at midnight</div>
+        <div class="ex-detail">Safe last-of-month alternative (works in February too)</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7 -->
+  <h2 id="advanced">Advanced & Special Examples</h2>
+
+  <div class="ex-section">
+    <div class="ex-item">
+      <div class="ex-code">0 0 1 1 *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Once a year — January 1st at midnight</div>
+        <div class="ex-detail">Also written as @yearly or @annually</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 9 1 1,4,7,10 *</div>
+      <div class="ex-info">
+        <div class="ex-desc">Quarterly — first day of Jan, Apr, Jul, Oct at 9 AM</div>
+        <div class="ex-detail">Perfect for quarterly financial reports</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 8-18 * * 1-5</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every hour from 8 AM to 6 PM, weekdays only</div>
+        <div class="ex-detail">Business hours monitoring</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">*/5 9-17 * * 1-5</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every 5 min, 9 AM–5 PM, Mon–Fri only</div>
+        <div class="ex-detail">Business-hours high-frequency polling</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">0 0 * * 1#1</div>
+      <div class="ex-info">
+        <div class="ex-desc">First Monday of every month at midnight</div>
+        <div class="ex-detail"># notation (not all cron implementations support this)</div>
+        <span class="ex-tag tag-linux">Linux</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 8 -->
+  <h2 id="aws-examples">AWS EventBridge Specific Examples</h2>
+  <p>AWS EventBridge uses a <strong>6-field format</strong> wrapped in <code>cron()</code>. The fields are: <code>Minutes Hours Day-of-month Month Day-of-week Year</code>. Note that one of Day-of-month or Day-of-week must always be <code>?</code>.</p>
+
+  <div class="callout callout-warn">
+    <div class="callout-label">⚠ AWS Cron is Different</div>
+    Don't paste Linux cron expressions directly into AWS EventBridge. The field order looks similar but there are critical differences: Sunday = 1 (not 0), an extra Year field, and the <code>?</code> rule for DOM/DOW. Always verify when migrating.
+  </div>
+
+  <div class="ex-section">
+    <div class="ex-item">
+      <div class="ex-code">cron(*/5 * * * ? *)</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every 5 minutes</div>
+        <div class="ex-detail">AWS format with required ? for day-of-week</div>
+        <span class="ex-tag tag-aws">AWS Only</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">cron(0 * * * ? *)</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every hour at :00</div>
+        <div class="ex-detail">Hourly in AWS EventBridge format</div>
+        <span class="ex-tag tag-aws">AWS Only</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">cron(0 0 * * ? *)</div>
+      <div class="ex-info">
+        <div class="ex-desc">Every day at midnight UTC</div>
+        <div class="ex-detail">Daily AWS job</div>
+        <span class="ex-tag tag-aws">AWS Only</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">cron(0 9 ? * MON-FRI *)</div>
+      <div class="ex-info">
+        <div class="ex-desc">Weekdays at 9 AM UTC</div>
+        <div class="ex-detail">? is on Day-of-month since we specified Day-of-week</div>
+        <span class="ex-tag tag-aws">AWS Only</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">cron(0 0 1 * ? *)</div>
+      <div class="ex-info">
+        <div class="ex-desc">First of every month at midnight UTC</div>
+        <div class="ex-detail">Monthly job in AWS format</div>
+        <span class="ex-tag tag-aws">AWS Only</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">cron(0 0 L * ? *)</div>
+      <div class="ex-info">
+        <div class="ex-desc">Last day of every month at midnight</div>
+        <div class="ex-detail">L = last day — very useful for end-of-month billing</div>
+        <span class="ex-tag tag-aws">AWS Only</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">cron(0 9 ? * 2#1 *)</div>
+      <div class="ex-info">
+        <div class="ex-desc">First Monday of every month at 9 AM</div>
+        <div class="ex-detail">2#1 = Monday (#1 = first occurrence). In AWS, MON=2</div>
+        <span class="ex-tag tag-aws">AWS Only</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">cron(0 0 1 1,4,7,10 ? *)</div>
+      <div class="ex-info">
+        <div class="ex-desc">Quarterly — Jan, Apr, Jul, Oct 1st at midnight</div>
+        <div class="ex-detail">Q1/Q2/Q3/Q4 trigger</div>
+        <span class="ex-tag tag-aws">AWS Only</span>
+      </div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-code">cron(0 0 1 1 ? 2027)</div>
+      <div class="ex-info">
+        <div class="ex-desc">One-time: Jan 1, 2027 at midnight</div>
+        <div class="ex-detail">AWS supports scheduled one-time future events via Year field</div>
+        <span class="ex-tag tag-aws">AWS Only</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-label">💡 CronRead Supports Both Formats</div>
+    Our cron generator at <a href="https://cronread.com">CronRead.com</a> generates expressions in both Linux 5-field format and AWS EventBridge 6-field format. Including the 6th Year field and the <code>cron()</code> wrapper that AWS requires.
+  </div>
+
+  <!-- SECTION 9 -->
+  <h2 id="real-world">Real-World Scenario Examples</h2>
+  <p>Here are complete real-world scenarios with the exact cron expression you'd use:</p>
+
+  <h3>📧 Daily Email Digest at 7 AM</h3>
+  <pre><span class="c"># Linux</span>
+<span class="g">0 7 * * *</span>  /path/to/send_digest.sh
+
+<span class="c"># AWS EventBridge</span>
+<span class="y">cron(0 7 * * ? *)</span></pre>
+
+  <h3>🗄 Database Backup Every Night at 2 AM</h3>
+  <pre><span class="c"># Linux</span>
+<span class="g">0 2 * * *</span>  /scripts/backup_db.sh >> /var/log/backup.log 2>&1
+
+<span class="c"># AWS EventBridge (triggers Lambda)</span>
+<span class="y">cron(0 2 * * ? *)</span></pre>
+
+  <h3>📊 Weekly Report Every Monday at 8 AM</h3>
+  <pre><span class="c"># Linux</span>
+<span class="g">0 8 * * 1</span>  python3 /scripts/generate_weekly_report.py
+
+<span class="c"># AWS EventBridge</span>
+<span class="y">cron(0 8 ? * MON *)</span></pre>
+
+  <h3>🧹 Clear Temp Files Every Sunday Night</h3>
+  <pre><span class="c"># Linux</span>
+<span class="g">0 23 * * 0</span>  find /tmp -type f -mtime +7 -delete
+
+<span class="c"># AWS EventBridge</span>
+<span class="y">cron(0 23 ? * SUN *)</span></pre>
+
+  <h3>💳 Monthly Invoice Generation (1st of month)</h3>
+  <pre><span class="c"># Linux</span>
+<span class="g">0 6 1 * *</span>  node /app/generate-invoices.js
+
+<span class="c"># AWS EventBridge</span>
+<span class="y">cron(0 6 1 * ? *)</span></pre>
+
+  <h3>🔄 API Data Sync Every 15 Minutes, Business Hours Only</h3>
+  <pre><span class="c"># Linux — every 15 min, 8 AM to 8 PM, weekdays</span>
+<span class="g">*/15 8-20 * * 1-5</span>  python3 /scripts/sync_api.py
+
+<span class="c"># AWS EventBridge (no time-range filtering in cron — use Lambda logic)</span>
+<span class="y">cron(*/15 * ? * MON-FRI *)</span>  <span class="c"># run every 15 min on weekdays, filter hours in code</span></pre>
+
+  <h3>🔐 SSL Certificate Renewal Check (Monthly)</h3>
+  <pre><span class="c"># Linux — 1st of month at 3 AM</span>
+<span class="g">0 3 1 * *</span>  /usr/local/bin/certbot renew --quiet
+
+<span class="c"># AWS EventBridge</span>
+<span class="y">cron(0 3 1 * ? *)</span></pre>
+
+  <h3>📦 Quarterly Data Archive (Q1/Q2/Q3/Q4)</h3>
+  <pre><span class="c"># Linux — 1st of Jan, Apr, Jul, Oct at midnight</span>
+<span class="g">0 0 1 1,4,7,10 *</span>  /scripts/archive_data.sh
+
+<span class="c"># AWS EventBridge</span>
+<span class="y">cron(0 0 1 1,4,7,10 ? *)</span></pre>
+
+  <div class="cta-strip">
+    <h3>⚙ Build any of these expressions visually</h3>
+    <p>Don't want to write cron syntax by hand? Use CronRead's visual generator to build the exact expression you need — with a plain-English preview of when it will run.</p>
+    <a class="cta-btn" href="https://cronread.com">Open Free Cron Generator →</a>
+  </div>
+
+  <h2>Quick Reference: Linux vs AWS Format</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Goal</th><th>Linux Crontab</th><th>AWS EventBridge</th></tr></thead>
+      <tbody>
+        <tr><td>Every 5 minutes</td><td><code>*/5 * * * *</code></td><td><code>cron(*/5 * * * ? *)</code></td></tr>
+        <tr><td>Every hour</td><td><code>0 * * * *</code></td><td><code>cron(0 * * * ? *)</code></td></tr>
+        <tr><td>Daily midnight</td><td><code>0 0 * * *</code></td><td><code>cron(0 0 * * ? *)</code></td></tr>
+        <tr><td>Weekdays 9 AM</td><td><code>0 9 * * 1-5</code></td><td><code>cron(0 9 ? * MON-FRI *)</code></td></tr>
+        <tr><td>Monthly 1st</td><td><code>0 0 1 * *</code></td><td><code>cron(0 0 1 * ? *)</code></td></tr>
+        <tr><td>First Mon of month</td><td><code>0 0 * * 1#1</code></td><td><code>cron(0 0 ? * 2#1 *)</code></td></tr>
+        <tr><td>Last day of month</td><td>Varies by OS</td><td><code>cron(0 0 L * ? *)</code></td></tr>
+        <tr><td>Once a year</td><td><code>0 0 1 1 *</code></td><td><code>cron(0 0 1 1 ? *)</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 <a href="https://cronread.com">CronRead.com</a> — Cron Expression Generator & Reference</p>
+  <p style="margin-top:0.5rem;">
+    <a href="https://cronread.com/blog/cron-job-examples">Cron Examples</a> ·
+    <a href="https://cronread.com/blog/cron-syntax-guide">Cron Syntax</a> ·
+    <a href="https://cronread.com/blog/aws-eventbridge-cron-expression-guide">AWS EventBridge</a>
+  </p>
+</footer>
+
+</body>
+</html>

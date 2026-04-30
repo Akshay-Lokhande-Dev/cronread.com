@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AWS EventBridge Cron Expression Guide (6-Field Syntax & Examples) | CronRead</title>
+  <meta name="description" content="Master AWS EventBridge cron expressions. Learn the 6-field syntax, handling wildcards, UTC timezones, and see 30+ real examples for Lambda scheduling.">
+  <meta name="keywords" content="aws eventbridge cron, aws crontab, aws eventbridge cron expression, eventbridge scheduler cron, aws cron syntax">
+  <meta property="og:title" content="AWS EventBridge Cron Expression Guide – Complete Tutorial">
+  <meta property="og:description" content="Master AWS EventBridge cron expressions with 30+ real examples and a complete 6-field syntax breakdown.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://cronread.com/blog/aws-eventbridge-cron-expression-guide">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* EYE-CARE LIGHT THEME */
+      --bg: #fafafa; /* Soft off-white to reduce glare */
+      --surface: #ffffff; /* Pure white for cards to create depth */
+      --surface2: #f1f5f9; /* Soft gray for tables/code */
+      --border: #cbd5e1; /* Darker border for better definition */
+      --text: #0f172a; /* Deep slate, almost black for crisp text */
+      --text-muted: #334155; /* Darker muted text so it doesn't look dull */
+      --accent: #d97706; /* Richer orange */
+      --accent2: #b45309;
+      --green: #059669;
+      --blue: #2563eb;
+      --purple: #7c3aed;
+      --code-text: #b91c1c; /* Sharp dark red for code */
+      --code-bg: #f8fafc;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 18px; scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Fraunces', Georgia, serif;
+      line-height: 1.75;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased; /* Makes fonts crisp and sharp */
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .nav-logo {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-cta {
+      background: var(--accent);
+      color: #fff;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--accent2); }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -20%;
+      width: 60%;
+      height: 200%;
+      background: radial-gradient(ellipse, rgba(217,119,6,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-tag {
+      display: inline-block;
+      background: rgba(217,119,6,0.1);
+      border: 1px solid rgba(217,119,6,0.2);
+      color: var(--accent);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 100px;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 5vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.2;
+      max-width: 780px;
+      margin: 0 auto 1.5rem;
+      letter-spacing: -0.02em;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .hero-meta span::before { content: '// '; }
+
+    /* LAYOUT */
+    .layout {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    /* ARTICLE CONTENT */
+    h2 {
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin: 3rem 0 1rem;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 2rem 0 0.75rem;
+      color: var(--accent);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    p { margin-bottom: 1.25rem; color: var(--text); font-weight: 400; }
+    a { color: var(--blue); text-decoration: underline; font-weight: 600; }
+    a:hover { color: var(--accent); }
+    strong { color: var(--text); font-weight: 700; }
+
+    /* CODE */
+    code {
+      font-family: 'IBM Plex Mono', monospace;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 0.15em 0.45em;
+      border-radius: 4px;
+      font-size: 0.85em;
+      color: var(--code-text);
+      font-weight: 600;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      padding: 1.5rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    pre .comment { color: var(--text-muted); font-style: italic; }
+    pre .field { color: var(--blue); font-weight: 600; }
+    pre .value { color: var(--green); font-weight: 600; }
+    pre .label { color: var(--purple); font-weight: 600; }
+
+    /* TABLE */
+    .table-wrap { overflow-x: auto; margin: 1.5rem 0; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    thead { background: var(--surface2); border-bottom: 2px solid var(--border); }
+    th {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      padding: 0.85rem 1rem;
+      text-align: left;
+      font-weight: 700;
+    }
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg); }
+    td:first-child { font-family: 'IBM Plex Mono', monospace; color: var(--code-text); font-size: 0.85rem; font-weight: 600; }
+
+    /* CALLOUT */
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 2rem 0;
+      font-size: 0.95rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .callout.info { border-left-color: var(--blue); }
+    .callout.warning { border-left-color: var(--code-text); }
+    .callout.success { border-left-color: var(--green); }
+    .callout-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+    .callout.info .callout-title { color: var(--blue); }
+    .callout.warning .callout-title { color: var(--code-text); }
+    .callout.success .callout-title { color: var(--green); }
+
+    /* SYNTAX DIAGRAM */
+    .syntax-diagram {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 2rem;
+      margin: 2rem 0;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.9rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .syntax-expr {
+      font-size: 1.2rem;
+      letter-spacing: 0.08em;
+      margin-bottom: 1.5rem;
+      color: var(--text);
+      font-weight: 700;
+      text-align: center;
+    }
+    .syntax-fields {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.5rem;
+    }
+    .syntax-field {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.6rem 0.4rem;
+      text-align: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .sf-name { color: var(--blue); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.3rem; font-weight: 700; }
+    .sf-range { color: var(--text-muted); font-size: 0.65rem; font-weight: 600; }
+
+    /* EXAMPLES GRID */
+    .examples-grid { display: grid; gap: 1rem; margin: 1.5rem 0; }
+    .example-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.5rem;
+      align-items: center;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .example-card:hover { border-color: var(--accent); box-shadow: 0 4px 6px rgba(0,0,0,0.04); }
+    .ex-expr { font-family: 'IBM Plex Mono', monospace; color: var(--text); font-size: 0.9rem; font-weight: 700; }
+    .ex-desc { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem; }
+    .ex-badge {
+      background: rgba(5,150,105,0.1);
+      border: 1px solid rgba(5,150,105,0.2);
+      color: var(--green);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      white-space: nowrap;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    /* CTA BOX */
+    .cta-box {
+      background: linear-gradient(135deg, rgba(217,119,6,0.08), rgba(217,119,6,0.02));
+      border: 1px solid rgba(217,119,6,0.2);
+      border-radius: 12px;
+      padding: 2.5rem;
+      text-align: center;
+      margin: 3rem 0;
+    }
+    .cta-box h3 {
+      font-family: 'Fraunces', serif;
+      color: var(--text);
+      font-size: 1.4rem;
+      margin-bottom: 0.75rem;
+      font-weight: 700;
+    }
+    .cta-box p { color: var(--text-muted); margin-bottom: 1.5rem; }
+    .cta-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .cta-btn:hover { background: var(--accent2); color: #fff; transform: translateY(-1px); }
+
+    /* TOC */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .toc-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    .toc ol { padding-left: 1.4rem; color: var(--text); }
+    .toc li { margin-bottom: 0.4rem; font-size: 0.95rem; }
+    .toc a { color: var(--blue); text-decoration: none; font-weight: 600; }
+    .toc a:hover { text-decoration: underline; color: var(--accent); }
+
+    /* COMPARISON */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .compare-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .compare-card h4 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+    }
+    .compare-card.highlight { border-color: var(--accent); box-shadow: 0 4px 12px rgba(217,119,6,0.1); }
+    .compare-card.highlight h4 { color: var(--accent); }
+
+    /* FOOTER */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    footer a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      .syntax-fields { grid-template-columns: repeat(3, 1fr); }
+      .compare-grid { grid-template-columns: 1fr; }
+      .hero { padding: 3rem 1.25rem 2.5rem; }
+      .layout { padding: 2rem 1.25rem; }
+      h2 { font-size: 1.4rem; }
+    }
+  </style>
+
+  <!-- Article Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "AWS EventBridge Cron Expression Guide – Complete Tutorial with Examples",
+    "description": "Master AWS EventBridge cron expressions with this complete guide. Learn the 6-field syntax, see 30+ real examples.",
+    "author": { "@type": "Organization", "name": "CronRead" },
+    "publisher": { "@type": "Organization", "name": "CronRead", "url": "https://cronread.com" },
+    "url": "https://cronread.com/blog/aws-eventbridge-cron-expression-guide"
+  }
+  </script>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="https://cronread.com">⏱ CronRead</a>
+  <a class="nav-cta" href="https://cronread.com">Generate Cron Expression →</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-tag">AWS Guide</div>
+  <h1>AWS EventBridge <span>Cron Expression</span> Guide</h1>
+  <p style="color:var(--text-muted);max-width:600px;margin:0 auto 1.5rem;font-size:1rem;">Everything you need to know about writing, reading, and debugging cron expressions for AWS EventBridge Scheduler — including the 6-field format AWS uses.</p>
+  <div class="hero-meta">
+    <span>2,800+ words</span>
+    <span>30+ examples</span>
+    <span>Updated April 2026</span>
+  </div>
+</header>
+
+<div class="layout">
+
+  <div class="toc">
+    <div class="toc-title">📋 Table of Contents</div>
+    <ol>
+      <li><a href="#what-is-eventbridge">What is AWS EventBridge Scheduler?</a></li>
+      <li><a href="#cron-vs-rate">Cron vs Rate Expressions</a></li>
+      <li><a href="#6-field-syntax">The 6-Field AWS Cron Syntax Explained</a></li>
+      <li><a href="#field-values">Field Values, Wildcards & Special Characters</a></li>
+      <li><a href="#30-examples">30 Real AWS EventBridge Cron Examples</a></li>
+      <li><a href="#aws-vs-standard">AWS Crontab vs Standard Linux Crontab</a></li>
+      <li><a href="#common-mistakes">Common Mistakes & How to Fix Them</a></li>
+      <li><a href="#use-cases">Real-World Use Cases</a></li>
+      <li><a href="#faq">Frequently Asked Questions</a></li>
+      <li><a href="#generator">Generate Your AWS Cron Expression</a></li>
+    </ol>
+  </div>
+
+  <!-- SECTION 1 -->
+  <h2 id="what-is-eventbridge">What is AWS EventBridge Scheduler?</h2>
+  <p>AWS EventBridge Scheduler is Amazon's fully managed, serverless scheduling service. It lets you schedule tasks — running a Lambda function, invoking an API, triggering an ECS task — at a specific time or on a recurring basis, without managing any infrastructure.</p>
+  <p>Unlike older AWS solutions like CloudWatch Events (which EventBridge replaced), EventBridge Scheduler is purpose-built for scheduling. It supports <strong>two types of schedule expressions</strong>: <em>rate expressions</em> (simple recurring intervals) and <em>cron expressions</em> (fine-grained, calendar-based control).</p>
+  <p>If you need your Lambda to run every 5 minutes, a rate expression works. But if you need it to run <strong>every Monday at 9:00 AM UTC, except in December</strong> — that's where AWS cron expressions shine.</p>
+
+  <div class="callout success">
+    <div class="callout-title">✓ Free Tier</div>
+    AWS EventBridge Scheduler includes 14 million invocations per month in the free tier. Beyond that, it costs $1 per million invocations — making it extremely affordable for most production workloads.
+  </div>
+
+  <p>EventBridge Scheduler can invoke over <strong>270 AWS service targets</strong> and more than 6,000 API operations. This means you can schedule not just Lambda, but also SQS, SNS, Step Functions, ECS, Glue, and virtually any AWS service that has an API.</p>
+
+  <!-- SECTION 2 -->
+  <h2 id="cron-vs-rate">Cron vs Rate Expressions in EventBridge</h2>
+  <p>Before diving into cron syntax, it's worth understanding when to use which:</p>
+
+  <div class="compare-grid">
+    <div class="compare-card">
+      <h4>Rate Expression</h4>
+      <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:0.75rem;">Simple repeating intervals. Easy to write but limited control.</p>
+      <pre style="margin:0;font-size:0.8rem;">rate(5 minutes)
+rate(1 hour)
+rate(7 days)</pre>
+      <p style="font-size:0.85rem;margin-top:0.75rem;color:var(--text-muted);">✓ Good for: heartbeats, polling, simple cleanup jobs</p>
+    </div>
+    <div class="compare-card highlight">
+      <h4>Cron Expression ← This Guide</h4>
+      <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:0.75rem;">Calendar-based precision. Run at exact times, specific days, months.</p>
+      <pre style="margin:0;font-size:0.8rem;">cron(0 9 ? * MON-FRI *)
+cron(30 18 1 * ? *)
+cron(0 0 1 1 ? *)</pre>
+      <p style="font-size:0.85rem;margin-top:0.75rem;color:var(--text-muted);">✓ Good for: business logic, reports, billing cycles, backups</p>
+    </div>
+  </div>
+
+  <p>Both are wrapped in <code>cron(...)</code> or <code>rate(...)</code> when entered in the AWS console or via CloudFormation/CDK. The <code>cron()</code> wrapper is unique to AWS — standard Linux crontab does not use it.</p>
+
+  <!-- SECTION 3 -->
+  <h2 id="6-field-syntax">The 6-Field AWS Cron Syntax Explained</h2>
+  <p>This is the most important thing to understand about AWS EventBridge cron: <strong>it uses 6 fields, not 5</strong> like standard Linux/Unix cron. The extra field is a <em>Year</em> field at the end.</p>
+
+  <div class="syntax-diagram">
+    <div class="syntax-expr">cron( Minutes  Hours  Day-of-month  Month  Day-of-week  Year )</div>
+    <div class="syntax-fields">
+      <div class="syntax-field">
+        <div class="sf-name">Minutes</div>
+        <div class="sf-range">0–59</div>
+      </div>
+      <div class="syntax-field">
+        <div class="sf-name">Hours</div>
+        <div class="sf-range">0–23</div>
+      </div>
+      <div class="syntax-field">
+        <div class="sf-name">Day-of-Month</div>
+        <div class="sf-range">1–31</div>
+      </div>
+      <div class="syntax-field">
+        <div class="sf-name">Month</div>
+        <div class="sf-range">1–12</div>
+      </div>
+      <div class="syntax-field">
+        <div class="sf-name">Day-of-Week</div>
+        <div class="sf-range">1–7 (SUN=1)</div>
+      </div>
+      <div class="syntax-field">
+        <div class="sf-name">Year</div>
+        <div class="sf-range">1970–2199</div>
+      </div>
+    </div>
+  </div>
+
+  <p>Here's a concrete example. This expression runs every weekday (Monday–Friday) at 9:00 AM UTC:</p>
+  <pre>cron(<span class="value">0</span> <span class="value">9</span> <span class="field">?</span> <span class="field">*</span> <span class="label">MON-FRI</span> <span class="field">*</span>)
+<span class="comment">     │   │   │   │     │        └── Year: every year</span>
+<span class="comment">     │   │   │   │     └────────── Day-of-week: Monday to Friday</span>
+<span class="comment">     │   │   │   └──────────────── Month: every month</span>
+<span class="comment">     │   │   └──────────────────── Day-of-month: ? (not specified)</span>
+<span class="comment">     │   └──────────────────────── Hours: 9 AM UTC</span>
+<span class="comment">     └──────────────────────────── Minutes: at :00</span></pre>
+
+  <div class="callout warning">
+    <div class="callout-title">⚠ Critical Rule</div>
+    In AWS EventBridge, you <strong>cannot specify both</strong> Day-of-month and Day-of-week at the same time. One of them must always be <code>?</code> (meaning "no specific value"). This is different from standard cron and trips up many developers.
+  </div>
+
+  <!-- SECTION 4 -->
+  <h2 id="field-values">Field Values, Wildcards & Special Characters</h2>
+  <p>AWS EventBridge cron expressions support a rich set of special characters that give you fine-grained control:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Character</th><th>Meaning</th><th>Example</th><th>Use in Fields</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>*</td><td>Any/All values</td><td><code>* * * * ? *</code> — every minute</td><td>All fields</td></tr>
+        <tr><td>?</td><td>No specific value (placeholder)</td><td><code>? * MON *</code> — day-of-month not specified</td><td>Day-of-month, Day-of-week only</td></tr>
+        <tr><td>-</td><td>Range</td><td><code>10-12</code> — hours 10, 11, 12</td><td>All fields</td></tr>
+        <tr><td>,</td><td>List of values</td><td><code>MON,WED,FRI</code> — those three days</td><td>All fields</td></tr>
+        <tr><td>/</td><td>Step / increment</td><td><code>0/15</code> — every 15 minutes starting at 0</td><td>All fields except Day-of-week</td></tr>
+        <tr><td>L</td><td>Last</td><td><code>L</code> in Day-of-month = last day of month</td><td>Day-of-month, Day-of-week</td></tr>
+        <tr><td>W</td><td>Nearest weekday</td><td><code>15W</code> — nearest weekday to the 15th</td><td>Day-of-month only</td></tr>
+        <tr><td>#</td><td>Nth day of month</td><td><code>2#1</code> — first Monday of month</td><td>Day-of-week only</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Month and Day-of-Week Names</h3>
+  <p>AWS EventBridge accepts both numeric values and 3-letter abbreviations for months and days:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Days of Week</th><th>Value</th><th>Months</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>SUN</td><td>1</td><td>JAN</td><td>1</td></tr>
+        <tr><td>MON</td><td>2</td><td>FEB</td><td>2</td></tr>
+        <tr><td>TUE</td><td>3</td><td>MAR</td><td>3</td></tr>
+        <tr><td>WED</td><td>4</td><td>APR</td><td>4</td></tr>
+        <tr><td>THU</td><td>5</td><td>MAY</td><td>5</td></tr>
+        <tr><td>FRI</td><td>6</td><td>JUN</td><td>6</td></tr>
+        <tr><td>SAT</td><td>7</td><td>JUL–DEC</td><td>7–12</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">ℹ️ Note on Sunday</div>
+    In AWS EventBridge, Sunday = 1 (not 0 like in some Linux cron implementations). Always double-check day numbering when migrating expressions from Linux crontab to AWS.
+  </div>
+
+  <!-- SECTION 5 -->
+  <h2 id="30-examples">30 Real AWS EventBridge Cron Examples</h2>
+  <p>Below are production-ready AWS EventBridge cron expressions covering the most common scheduling patterns. Every expression uses the <code>cron()</code> wrapper required by AWS.</p>
+
+  <h3>Every N Minutes / Hours</h3>
+  <div class="examples-grid">
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0/5 * * * ? *)</div><div class="ex-desc">Every 5 minutes</div></div>
+      <span class="ex-badge">common</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0/15 * * * ? *)</div><div class="ex-desc">Every 15 minutes</div></div>
+      <span class="ex-badge">common</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0/30 * * * ? *)</div><div class="ex-desc">Every 30 minutes</div></div>
+      <span class="ex-badge">common</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 * * * ? *)</div><div class="ex-desc">Every hour at :00</div></div>
+      <span class="ex-badge">common</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 0/6 * * ? *)</div><div class="ex-desc">Every 6 hours (midnight, 6 AM, noon, 6 PM)</div></div>
+      <span class="ex-badge">useful</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 0/12 * * ? *)</div><div class="ex-desc">Twice a day — midnight and noon UTC</div></div>
+      <span class="ex-badge">useful</span>
+    </div>
+  </div>
+
+  <h3>Daily Schedules</h3>
+  <div class="examples-grid">
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 0 * * ? *)</div><div class="ex-desc">Every day at midnight UTC</div></div>
+      <span class="ex-badge">popular</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 9 * * ? *)</div><div class="ex-desc">Every day at 9:00 AM UTC</div></div>
+      <span class="ex-badge">popular</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(30 18 * * ? *)</div><div class="ex-desc">Every day at 6:30 PM UTC</div></div>
+      <span class="ex-badge">useful</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 23 * * ? *)</div><div class="ex-desc">Every day at 11 PM UTC (good for end-of-day jobs)</div></div>
+      <span class="ex-badge">useful</span>
+    </div>
+  </div>
+
+  <h3>Weekday / Weekend</h3>
+  <div class="examples-grid">
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 9 ? * MON-FRI *)</div><div class="ex-desc">Every weekday at 9 AM UTC</div></div>
+      <span class="ex-badge">popular</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 8 ? * 2-6 *)</div><div class="ex-desc">Mon–Fri at 8 AM (numeric days)</div></div>
+      <span class="ex-badge">useful</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 10 ? * SAT,SUN *)</div><div class="ex-desc">Weekends only at 10 AM UTC</div></div>
+      <span class="ex-badge">useful</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 9 ? * MON *)</div><div class="ex-desc">Every Monday at 9 AM — great for weekly reports</div></div>
+      <span class="ex-badge">popular</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 17 ? * FRI *)</div><div class="ex-desc">Every Friday at 5 PM UTC</div></div>
+      <span class="ex-badge">useful</span>
+    </div>
+  </div>
+
+  <h3>Monthly Schedules</h3>
+  <div class="examples-grid">
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 0 1 * ? *)</div><div class="ex-desc">First day of every month at midnight</div></div>
+      <span class="ex-badge">popular</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 0 L * ? *)</div><div class="ex-desc">Last day of every month at midnight</div></div>
+      <span class="ex-badge">useful</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 9 15 * ? *)</div><div class="ex-desc">15th of every month at 9 AM</div></div>
+      <span class="ex-badge">useful</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 9 1,15 * ? *)</div><div class="ex-desc">1st and 15th of every month at 9 AM</div></div>
+      <span class="ex-badge">useful</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 0 ? * 2#1 *)</div><div class="ex-desc">First Monday of every month at midnight</div></div>
+      <span class="ex-badge">advanced</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 0 ? * 6L *)</div><div class="ex-desc">Last Friday of every month at midnight</div></div>
+      <span class="ex-badge">advanced</span>
+    </div>
+  </div>
+
+  <h3>Specific Dates / Years</h3>
+  <div class="examples-grid">
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 0 1 1 ? *)</div><div class="ex-desc">New Year's Day — January 1st at midnight every year</div></div>
+      <span class="ex-badge">useful</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 12 25 12 ? *)</div><div class="ex-desc">December 25th at noon every year</div></div>
+      <span class="ex-badge">fun</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 0 1 1 ? 2027)</div><div class="ex-desc">One-time: January 1, 2027 at midnight</div></div>
+      <span class="ex-badge">one-time</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 9 1 * ? 2026-2028)</div><div class="ex-desc">1st of every month at 9 AM, only for 2026–2028</div></div>
+      <span class="ex-badge">advanced</span>
+    </div>
+  </div>
+
+  <h3>Quarterly / Annual</h3>
+  <div class="examples-grid">
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 0 1 1,4,7,10 ? *)</div><div class="ex-desc">First day of each quarter at midnight</div></div>
+      <span class="ex-badge">popular</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 9 1 JAN,APR,JUL,OCT ? *)</div><div class="ex-desc">Same as above with month names</div></div>
+      <span class="ex-badge">popular</span>
+    </div>
+    <div class="example-card">
+      <div><div class="ex-expr">cron(0 0 1 1 ? *)</div><div class="ex-desc">Once a year — January 1st at midnight</div></div>
+      <span class="ex-badge">annual</span>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <h3>Need a custom AWS cron expression?</h3>
+    <p>Use our free generator — it supports all 6 fields including the AWS-specific Year field, and generates the correct <code>cron()</code> wrapper format automatically.</p>
+    <a class="cta-btn" href="https://cronread.com">⚙ Generate AWS Cron Expression Free →</a>
+  </div>
+
+  <!-- SECTION 6 -->
+  <h2 id="aws-vs-standard">AWS Crontab vs Standard Linux Crontab</h2>
+  <p>If you're coming from Linux cron jobs, there are several important differences you need to know about before writing AWS EventBridge cron expressions. Getting these wrong is the #1 source of errors for developers migrating from traditional cron setups.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Feature</th><th>Linux Crontab</th><th>AWS EventBridge Cron</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Number of fields</td><td>5</td><td><strong>6</strong> (includes Year)</td></tr>
+        <tr><td>Field order</td><td>Min Hour DOM Month DOW</td><td>Min Hour DOM Month DOW <strong>Year</strong></td></tr>
+        <tr><td>Sunday value</td><td>0 or 7</td><td><strong>1</strong> (SUN=1, SAT=7)</td></tr>
+        <tr><td>DOM + DOW conflict</td><td>Both can be set simultaneously</td><td><strong>One must be ?</strong></td></tr>
+        <tr><td>Wrapper syntax</td><td>No wrapper needed</td><td>Must use <strong>cron()</strong></td></tr>
+        <tr><td>Timezone</td><td>Server local time</td><td><strong>UTC by default</strong></td></tr>
+        <tr><td>Minimum interval</td><td>1 minute</td><td><strong>1 minute</strong></td></tr>
+        <tr><td>Year field</td><td>Not supported</td><td><strong>1970–2199</strong></td></tr>
+        <tr><td>L, W, # characters</td><td>Not always supported</td><td><strong>Fully supported</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Converting Linux Crontab to AWS EventBridge</h3>
+  <p>Here are the steps to convert a standard Linux crontab expression:</p>
+  <pre><span class="comment"># Standard Linux crontab (5 fields):</span>
+<span class="value">0 9 * * 1-5</span>    <span class="comment"># 9 AM Mon-Fri (0=Sunday in Linux)</span>
+
+<span class="comment"># AWS EventBridge equivalent:</span>
+<span class="label">cron(</span><span class="value">0 9 ? * MON-FRI *</span><span class="label">)</span>
+<span class="comment"># Changes made:
+# 1. Added ? for Day-of-month (required)
+# 2. Changed 1-5 to MON-FRI (AWS SUN=1, so 1-5 in AWS = SUN-THU!)
+# 3. Added * for Year at the end
+# 4. Wrapped in cron()</span></pre>
+
+  <!-- SECTION 7 -->
+  <h2 id="common-mistakes">Common Mistakes & How to Fix Them</h2>
+
+  <h3>Mistake 1: Specifying Both DOM and DOW</h3>
+  <pre><span class="comment"># ❌ WRONG — Both Day-of-month AND Day-of-week are set</span>
+cron(0 9 15 * MON *)
+
+<span class="comment"># ✅ CORRECT — Use ? for the one you don't need</span>
+cron(0 9 15 * ? *)     <span class="comment"># 15th of every month</span>
+cron(0 9 ? * MON *)    <span class="comment"># every Monday</span></pre>
+
+  <h3>Mistake 2: Forgetting the cron() Wrapper</h3>
+  <pre><span class="comment"># ❌ WRONG — Raw expression without wrapper</span>
+0 9 ? * MON-FRI *
+
+<span class="comment"># ✅ CORRECT — Always wrap in cron()</span>
+cron(0 9 ? * MON-FRI *)</pre>
+
+  <h3>Mistake 3: Wrong Sunday Number</h3>
+  <pre><span class="comment"># ❌ WRONG — Using 0 for Sunday (Linux style)</span>
+cron(0 9 ? * 0-4 *)    <span class="comment"># This is SUN-THU in AWS!</span>
+
+<span class="comment"># ✅ CORRECT — AWS: SUN=1, MON=2, ..., SAT=7</span>
+cron(0 9 ? * 2-6 *)    <span class="comment"># Mon-Fri numeric</span>
+cron(0 9 ? * MON-FRI *) <span class="comment"># Mon-Fri by name (clearer)</span></pre>
+
+  <h3>Mistake 4: Forgetting UTC Timezone</h3>
+  <p>AWS EventBridge cron expressions run in UTC by default. If your users are in IST (UTC+5:30) and you want the job at 9 AM IST, you need to schedule it at 3:30 AM UTC:</p>
+  <pre><span class="comment"># 9:00 AM IST = 3:30 AM UTC</span>
+cron(30 3 ? * MON-FRI *)</pre>
+
+  <div class="callout info">
+    <div class="callout-title">ℹ️ EventBridge Timezone Support</div>
+    EventBridge Scheduler (the newer service) supports specifying a timezone directly in the schedule configuration, so you don't always need to manually convert. EventBridge Rules (the older mechanism) still requires UTC.
+  </div>
+
+  <!-- SECTION 8 -->
+  <h2 id="use-cases">Real-World Use Cases for AWS EventBridge Cron</h2>
+
+  <h3>1. Daily Database Backups</h3>
+  <pre><span class="comment"># Run every day at 2:00 AM UTC (off-peak hours)</span>
+cron(0 2 * * ? *)</pre>
+  <p>Trigger a Lambda that snapshots your RDS database, compresses the dump, and uploads it to S3. Combined with S3 lifecycle policies, this creates a cost-effective automated backup system.</p>
+
+  <h3>2. Weekly Business Reports</h3>
+  <pre><span class="comment"># Every Monday at 6:00 AM UTC — report ready before US business day</span>
+cron(0 6 ? * MON *)</pre>
+  <p>Lambda queries your analytics database, generates a PDF or CSV report, and emails it to stakeholders via SES — all before anyone starts their workday.</p>
+
+  <h3>3. Monthly Billing Cycle Jobs</h3>
+  <pre><span class="comment"># First of every month at midnight UTC</span>
+cron(0 0 1 * ? *)</pre>
+  <p>Trigger billing calculations, generate invoices, reset monthly usage counters, and send subscription renewal reminders.</p>
+
+  <h3>4. API Key Rotation (Security)</h3>
+  <pre><span class="comment"># Every 90 days: Jan 1, Apr 1, Jul 1, Oct 1 at 1 AM UTC</span>
+cron(0 1 1 1,4,7,10 ? *)</pre>
+  <p>Automatically rotate IAM access keys, API keys, and other credentials on a quarterly schedule — a security best practice.</p>
+
+  <h3>5. End-of-Business Day Cache Flush</h3>
+  <pre><span class="comment"># Weekdays at 6 PM UTC (end of US East Coast business day)</span>
+cron(0 22 ? * MON-FRI *)</pre>
+  <p>Flush Redis caches, clean up temporary DynamoDB records, or process end-of-day queues to keep your database lean overnight.</p>
+
+  <h3>6. SaaS Trial Expiry Checks</h3>
+  <pre><span class="comment"># Every day at midnight — check for expired trials</span>
+cron(0 0 * * ? *)</pre>
+  <p>Scan your user database for trials that expired in the last 24 hours, downgrade their account tier, and send a conversion email.</p>
+
+  <!-- FAQ SECTION -->
+  <h2 id="faq">Frequently Asked Questions</h2>
+  
+  <h3>Can AWS EventBridge cron run every second?</h3>
+  <p>No, the minimum resolution for AWS EventBridge Scheduler and CloudWatch Events is <strong>1 minute</strong>. If you need sub-minute executions (e.g., every 10 seconds), you will need to trigger a Lambda function every minute and use a loop with <code>sleep()</code> delays inside the code.</p>
+
+  <h3>How do I write an AWS EventBridge cron in Terraform?</h3>
+  <p>When provisioning infrastructure with Terraform, you use the <code>schedule_expression</code> argument inside the <code>aws_cloudwatch_event_rule</code> or <code>aws_scheduler_schedule</code> resource. You must include the wrapper: <code>schedule_expression = "cron(0 9 ? * MON-FRI *)"</code>.</p>
+
+  <h3>Why is my AWS cron not running at the correct local time?</h3>
+  <p>Standard EventBridge rules evaluate cron expressions in <strong>UTC timezone</strong>. If you are not using the newer EventBridge Scheduler (which supports timezone selection), you must calculate the UTC offset manually. For example, 9:00 AM IST (UTC+5:30) is 3:30 AM UTC.</p>
+
+  <h3>Are AWS cron expressions case-sensitive?</h3>
+  <p>No, the day and month abbreviations (like MON, TUE, JAN, FEB) are case-insensitive. However, standard convention is to use uppercase for readability.</p>
+
+  <!-- SECTION 9 -->
+  <h2 id="generator">Generate Your AWS Cron Expression</h2>
+  <p>Writing AWS cron expressions by hand is error-prone — especially keeping track of the UTC offset, the <code>?</code> placeholder rule, and the 6-field format. That's exactly why we built <strong>CronRead</strong>.</p>
+  <p>Our generator supports the full AWS EventBridge 6-field cron format, gives you human-readable previews ("Runs every Monday at 9:00 AM UTC"), and validates your expression in real time. No more guessing whether your expression is correct before deploying.</p>
+
+  <div class="cta-box">
+    <h3>🛠 Free AWS Cron Expression Generator</h3>
+    <p>Build, validate, and understand your AWS EventBridge cron expressions instantly. Supports all 6 fields, special characters (L, W, #), and generates the <code>cron()</code> wrapper format.</p>
+    <a class="cta-btn" href="https://cronread.com">Open CronRead Generator →</a>
+  </div>
+
+  <h2>Summary</h2>
+  <p>AWS EventBridge cron expressions give you precise calendar-based control over when your AWS workloads run. The key things to remember are:</p>
+  <p><strong>1.</strong> AWS uses a 6-field format: <code>Minutes Hours Day-of-month Month Day-of-week Year</code></p>
+  <p><strong>2.</strong> Always wrap your expression in <code>cron()</code></p>
+  <p><strong>3.</strong> You cannot specify both Day-of-month and Day-of-week — one must be <code>?</code></p>
+  <p><strong>4.</strong> Sunday is 1 in AWS (not 0 like Linux). Use named days (MON, TUE…) to avoid confusion.</p>
+  <p><strong>5.</strong> All times are UTC unless you configure a timezone in EventBridge Scheduler.</p>
+  <p>With these rules in hand and the examples in this guide as a reference, you should be able to write AWS EventBridge cron expressions confidently for any scheduling scenario.</p>
+
+</div>
+
+<footer>
+  <p>© 2026 <a href="https://cronread.com">CronRead.com</a> — Free Cron Expression Generator & Reference</p>
+  <p style="margin-top:0.5rem;">
+    <a href="https://cronread.com/blog/cron-job-examples">Cron Examples</a> ·
+    <a href="https://cronread.com/blog/cron-syntax-guide">Cron Syntax</a> ·
+    <a href="https://cronread.com/blog/aws-eventbridge-cron-expression-guide">AWS EventBridge</a>
+  </p>
+</footer>
+
+</body>
+</html>

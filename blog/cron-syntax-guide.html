@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cron Syntax Guide: How to Read, Write & Debug 5-Field Cron Expressions | CronRead</title>
+  <meta name="description" content="Complete cron syntax guide. Learn the 5-field crontab format, special characters, shorthand notations, and Kubernetes CronJob schedule syntax.">
+  <meta name="keywords" content="cron syntax, cron job, cron expression syntax, crontab format explained, how to write cron expression, cron syntax guide, kubernetes cronjob schedule">
+  <meta property="og:title" content="Cron Syntax Guide – How to Read & Write Cron Expressions">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://cronread.com/blog/cron-syntax-guide">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* SOFT PAPER / HIGH-CONTRAST THEME (No more glare) */
+      --bg: #f9fafb;          /* Soft off-white to prevent glare */
+      --surface: #ffffff;     /* Pure white only for cards to create 3D pop */
+      --surface2: #f1f5f9;
+      --border: #e2e8f0;
+      
+      --text: #1e293b;        /* Much darker text for sharp readability */
+      --text-muted: #475569;  /* Darker muted text so it doesn't look washed out */
+      --heading: #0f172a;     /* Jet black headings */
+      
+      --accent: #ea580c; 
+      --accent2: #c2410c;
+      --accent-light: #fff7ed;
+      
+      --blue: #2563eb; 
+      --green: #059669;
+      --purple: #7c3aed;
+      --yellow: #d97706;
+      --red: #dc2626;
+      
+      --code-bg: #f1f5f9;
+      --code-text: #991b1b;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 18px; scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Fraunces', Georgia, serif;
+      line-height: 1.8;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .nav-logo {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--heading);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a { color: var(--text-muted); text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; font-weight: 600; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--heading); }
+    .nav-cta {
+      background: var(--accent);
+      color: #fff !important;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--accent2); }
+
+    /* HERO */
+    .hero {
+      background: radial-gradient(ellipse at 50% 0%, #fff7ed 0%, #f9fafb 60%);
+      border-bottom: 1px solid var(--border);
+      padding: 6rem 2rem 5rem;
+      text-align: center;
+      position: relative;
+    }
+    .hero-tag {
+      display: inline-block;
+      background: var(--accent-light);
+      border: 1px solid #fed7aa;
+      color: var(--accent);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 100px;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(234, 88, 12, 0.05);
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 700;
+      line-height: 1.1;
+      max-width: 800px;
+      margin: 0 auto 1.25rem;
+      color: var(--heading);
+      letter-spacing: -0.02em;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero .sub {
+      color: var(--text-muted);
+      max-width: 650px;
+      margin: 0 auto 2rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+    .hero-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .hero-meta span::before { content: '// '; color: #cbd5e1; margin-right: 0.3rem;}
+
+    /* LAYOUT */
+    .layout { max-width: 860px; margin: 0 auto; padding: 3rem 2rem; }
+
+    /* TOC */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0 3rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+    }
+    .toc-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .toc ol { padding-left: 1.4rem; }
+    .toc li { margin-bottom: 0.6rem; font-size: 0.95rem; font-weight: 600; color: var(--text); }
+    .toc a { color: var(--blue); text-decoration: none; transition: color 0.2s; }
+    .toc a:hover { text-decoration: underline; color: #1d4ed8; }
+
+    /* HEADINGS */
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 3.5rem 0 1rem;
+      color: var(--heading);
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    h2 .num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    h3 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin: 2rem 0 0.75rem;
+      color: var(--heading);
+    }
+    p { margin-bottom: 1.25rem; color: var(--text); }
+    a { color: var(--blue); font-weight: 600; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    strong { color: var(--heading); font-weight: 600; }
+
+    /* CODE */
+    code {
+      font-family: 'IBM Plex Mono', monospace;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      color: var(--code-text);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      font-size: 0.85em;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      padding: 1.5rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+    pre .c { color: var(--text-muted); font-style: italic; }
+    pre .g { color: var(--green); }
+    pre .b { color: var(--blue); }
+    pre .y { color: var(--yellow); }
+    pre .w { color: var(--heading); }
+
+    /* FIELD EXPLAINER */
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.75rem;
+      margin: 2rem 0;
+    }
+    .field-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 0.5rem;
+      text-align: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .fc-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .fc-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--heading);
+      margin-bottom: 0.3rem;
+    }
+    .fc-range { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: var(--text-muted); }
+    .fc-special { margin-top: 0.5rem; font-size: 0.7rem; color: var(--purple); font-family: 'IBM Plex Mono', monospace; }
+
+    /* CHARACTER TABLE */
+    .char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
+    .char-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      gap: 1rem;
+      align-items: start;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .char-card:hover { border-color: var(--accent); }
+    .char-sym {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      font-size: 2rem;
+      color: var(--accent);
+      line-height: 1;
+      text-align: center;
+    }
+    .char-name { font-weight: 700; font-size: 0.95rem; color: var(--heading); margin-bottom: 0.25rem; }
+    .char-desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .char-ex { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; color: var(--green); }
+
+    /* TABLE */
+    .table-wrap { overflow-x: auto; margin: 1.5rem 0; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    thead { background: var(--surface2); border-bottom: 1px solid var(--border); }
+    th {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--heading);
+      padding: 1rem;
+      text-align: left;
+    }
+    td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text); }
+    tr:last-child td { border-bottom: none; }
+    td:first-child { font-family: 'IBM Plex Mono', monospace; color: var(--accent); font-size: 0.85rem; font-weight: 600; }
+
+    /* CALLOUT */
+    .callout {
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 2rem 0;
+      border-left: 4px solid var(--accent);
+      border: 1px solid var(--border);
+      border-left-width: 4px;
+      font-size: 0.95rem;
+      color: var(--heading);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .callout.warn { border-left-color: var(--yellow); }
+    .callout.tip { border-left-color: var(--green); }
+    .callout-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
+    .callout.warn .callout-title { color: var(--yellow); }
+    .callout.tip .callout-title { color: var(--green); }
+
+    /* SHORTHAND */
+    .shorthand-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 1.5rem 0; }
+    .sh-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .sh-key { font-family: 'IBM Plex Mono', monospace; color: var(--blue); font-size: 0.85rem; white-space: nowrap; min-width: 90px; }
+    .sh-eq { color: var(--border); }
+    .sh-val { font-family: 'IBM Plex Mono', monospace; color: var(--code-text); font-size: 0.8rem; }
+    .sh-desc { color: var(--text-muted); font-size: 0.85rem; }
+
+    /* CTA */
+    .cta-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2.5rem;
+      text-align: center;
+      margin: 3rem 0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    }
+    .cta-box h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--heading);
+      margin-bottom: 0.75rem;
+    }
+    .cta-box p { color: var(--text-muted); margin-bottom: 1.5rem; }
+    .cta-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff !important;
+      padding: 0.85rem 2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+    .cta-btn:hover { background: var(--accent2); }
+
+    /* FAQ */
+    .faq-item { border-bottom: 1px solid var(--border); padding: 1.5rem 0; }
+    .faq-q { font-weight: 700; font-size: 1.1rem; color: var(--heading); margin-bottom: 0.5rem; }
+    .faq-a { color: var(--text); font-size: 0.95rem; }
+
+    /* FOOTER */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    footer a { color: var(--heading); text-decoration: none; font-weight: 600; }
+    footer a:hover { text-decoration: underline; color: var(--accent); }
+
+    @media (max-width: 640px) {
+      .field-grid { grid-template-columns: repeat(3, 1fr); }
+      .char-grid { grid-template-columns: 1fr; }
+      .shorthand-grid { grid-template-columns: 1fr; }
+      .hero { padding: 4rem 1.25rem 3rem; }
+      .layout { padding: 2rem 1.25rem; }
+      h2 { font-size: 1.5rem; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Cron Syntax Guide – How to Read and Write Cron Expressions",
+    "description": "Complete cron syntax guide covering all fields, special characters, shorthand notations, and Kubernetes cronjob syntax differences.",
+    "author": { "@type": "Organization", "name": "CronRead" },
+    "publisher": { "@type": "Organization", "name": "CronRead", "url": "https://cronread.com" },
+    "url": "https://cronread.com/blog/cron-syntax-guide"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What does * mean in a cron job?",
+        "acceptedAnswer": { "@type": "Answer", "text": "The * (asterisk) wildcard in a cron expression means 'any value' or 'all values' for that field. For example, * in the hours field means 'every hour', and * in the month field means 'every month'." }
+      },
+      {
+        "@type": "Question",
+        "name": "How to write a Kubernetes CronJob schedule?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Kubernetes CronJob resources use the exact same 5-field crontab format as standard Linux. For example, schedule: '0 0 * * *' inside your K8s YAML will run the pod daily at midnight UTC." }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I run a cron job every 5 minutes?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Use */5 * * * * in Linux crontab or cron(*/5 * * * ? *) in AWS EventBridge." }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="https://cronread.com">Cron<span>Read</span></a>
+  <div class="nav-links">
+    <a href="https://cronread.com/blog/cron-job-examples">Examples</a>
+    <a href="https://cronread.com/blog/aws-eventbridge-cron-expression-guide">AWS Guide</a>
+    <a class="nav-cta" href="https://cronread.com">Generate →</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-tag">Complete Reference</div>
+  <h1>Cron <span>Syntax</span> Guide</h1>
+  <p class="sub">Everything you need to read, write, and debug cron expressions — from the basic Linux crontab format to advanced Kubernetes and AWS patterns.</p>
+  <div class="hero-meta">
+    <span>2,500+ words</span>
+    <span>All 5 fields explained</span>
+    <span>Updated April 2026</span>
+  </div>
+</header>
+
+<div class="layout">
+
+  <div class="toc">
+    <div class="toc-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg> Table of Contents</div>
+    <ol>
+      <li><a href="#what-is-cron">What Is a Cron Job and How Does Crontab Work?</a></li>
+      <li><a href="#5-fields">The 5 Fields Explained (Crontab Format)</a></li>
+      <li><a href="#special-chars">Special Characters Reference</a></li>
+      <li><a href="#shorthand">Shorthand Notations (@daily, @weekly…)</a></li>
+      <li><a href="#reading">How to Read Any Cron Expression</a></li>
+      <li><a href="#patterns">Most Common Cron Patterns</a></li>
+      <li><a href="#aws-syntax">AWS EventBridge Cron Syntax (6-field)</a></li>
+      <li><a href="#linux-vs-aws">Linux vs AWS: Key Differences</a></li>
+      <li><a href="#faq">Frequently Asked Questions</a></li>
+    </ol>
+  </div>
+
+  <!-- SECTION 1 -->
+  <h2 id="what-is-cron"><span class="num">01.</span> What Is a Cron Job and How Does Crontab Work?</h2>
+  <p>A <strong>cron job</strong> is a scheduled task on Unix-like operating systems (Linux, macOS) that runs automatically at specified times. The name comes from <em>Chronos</em>, the Greek god of time. The program that manages these scheduled tasks is called the <strong>cron daemon</strong> (<code>crond</code>), and it reads scheduled tasks from a configuration file called a <strong>crontab</strong> (cron table).</p>
+  <p>Cron jobs are used for an enormous range of automated tasks: database backups, log rotation, sending scheduled emails, clearing caches, running reports, syncing data from APIs, and even defining the <strong>Kubernetes CronJob schedule syntax</strong>. If it needs to happen on a schedule, cron probably handles it.</p>
+  <p>A <strong>cron expression</strong> is the schedule string that tells cron <em>when</em> to run your task. Learning to write them correctly is a fundamental skill for anyone who works with servers, DevOps, or cloud platforms.</p>
+
+  <div class="callout tip">
+    <div class="callout-title">💡 Cron vs Crontab vs Cron Job</div>
+    <strong>Cron</strong> = the daemon (background process). <strong>Crontab</strong> = the configuration file (or the <code>crontab</code> command). <strong>Cron job</strong> = a single scheduled task entry in the crontab. These terms are often used interchangeably in practice.
+  </div>
+
+  <!-- SECTION 2 -->
+  <h2 id="5-fields"><span class="num">02.</span> The 5 Fields Explained (Crontab Format)</h2>
+  <p>Every standard cron expression contains exactly <strong>5 fields</strong>, separated by spaces. Together, they define the complete <strong>crontab format explained</strong> schedule for when a command should run:</p>
+
+  <div class="field-grid">
+    <div class="field-card">
+      <div class="fc-num">1</div>
+      <div class="fc-name">Minute</div>
+      <div class="fc-range">0 – 59</div>
+      <div class="fc-special">* , - /</div>
+    </div>
+    <div class="field-card">
+      <div class="fc-num">2</div>
+      <div class="fc-name">Hour</div>
+      <div class="fc-range">0 – 23</div>
+      <div class="fc-special">* , - /</div>
+    </div>
+    <div class="field-card">
+      <div class="fc-num">3</div>
+      <div class="fc-name">Day of Month</div>
+      <div class="fc-range">1 – 31</div>
+      <div class="fc-special">* , - / L W</div>
+    </div>
+    <div class="field-card">
+      <div class="fc-num">4</div>
+      <div class="fc-name">Month</div>
+      <div class="fc-range">1–12 or JAN–DEC</div>
+      <div class="fc-special">* , - /</div>
+    </div>
+    <div class="field-card">
+      <div class="fc-num">5</div>
+      <div class="fc-name">Day of Week</div>
+      <div class="fc-range">0–7 (0,7=Sun)</div>
+      <div class="fc-special">* , - / L #</div>
+    </div>
+  </div>
+
+  <pre><span class="c"># The 5-field structure:</span>
+<span class="y">┌───────────── minute (0 - 59)</span>
+<span class="y">│ ┌───────────── hour (0 - 23)</span>
+<span class="y">│ │ ┌───────────── day of month (1 - 31)</span>
+<span class="y">│ │ │ ┌───────────── month (1 - 12)</span>
+<span class="y">│ │ │ │ ┌───────────── day of week (0 - 7, Sun=0 or 7)</span>
+<span class="y">│ │ │ │ │</span>
+<span class="g">* * * * *</span>  <span class="c">command_to_execute</span></pre>
+
+  <h3>Field 1: Minute (0–59)</h3>
+  <p>The minute field specifies which minute(s) of the hour the job should run. <code>0</code> means at the top of the hour (:00), <code>30</code> means at the half hour (:30), and <code>*</code> means every minute. You can also use <code>*/5</code> to mean every 5 minutes, or <code>15,45</code> to mean at :15 and :45.</p>
+
+  <h3>Field 2: Hour (0–23)</h3>
+  <p>The hour field uses 24-hour time. <code>0</code> = midnight, <code>9</code> = 9 AM, <code>13</code> = 1 PM, <code>23</code> = 11 PM. Use <code>*/2</code> for every 2 hours, <code>8-17</code> for business hours (8 AM to 5 PM), or <code>*</code> for every hour.</p>
+
+  <h3>Field 3: Day of Month (1–31)</h3>
+  <p>This field specifies which day(s) of the month to run. <code>1</code> = first day, <code>15</code> = 15th, <code>L</code> = last day of the month (not all implementations). Be careful with months that have fewer than 31 days — if you specify <code>31</code>, the job won't run in February, April, June, September, or November.</p>
+
+  <h3>Field 4: Month (1–12)</h3>
+  <p>Specifies which month(s). You can use numbers (<code>1–12</code>) or 3-letter abbreviations (<code>JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC</code>). Use <code>1,4,7,10</code> for quarterly (Jan/Apr/Jul/Oct) or <code>*</code> for every month.</p>
+
+  <h3>Field 5: Day of Week (0–7)</h3>
+  <p>Specifies which day(s) of the week. Both <code>0</code> and <code>7</code> represent Sunday. You can use numbers or abbreviations: <code>SUN, MON, TUE, WED, THU, FRI, SAT</code>. Use <code>1-5</code> for Monday through Friday (weekdays), or <code>6,0</code> for Saturday and Sunday (weekends).</p>
+
+  <div class="callout warn">
+    <div class="callout-title">⚠ Day-of-Month vs Day-of-Week</div>
+    When you specify <strong>both</strong> a day-of-month AND a day-of-week in standard Linux cron, the job runs when <em>either</em> condition is true (OR logic). For example, <code>0 9 1 * 1</code> runs on the 1st of every month AND every Monday. This is a common source of confusion — use one or the other when you want precise control.
+  </div>
+
+  <!-- SECTION 3 -->
+  <h2 id="special-chars"><span class="num">03.</span> Special Characters Reference</h2>
+  <p>Cron expressions support several special characters beyond simple numbers. Understanding these unlocks the full expressive power of cron syntax.</p>
+
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="char-sym">*</div>
+      <div>
+        <div class="char-name">Asterisk — Any Value</div>
+        <div class="char-desc">Matches any value in that field. The most common character in cron.</div>
+        <div class="char-ex">* in hours = every hour<br>* in days = every day of month</div>
+      </div>
+    </div>
+    <div class="char-card">
+      <div class="char-sym">/</div>
+      <div>
+        <div class="char-name">Slash — Step / Interval</div>
+        <div class="char-desc">Specifies a step value — run every N units. Always used after * or a range.</div>
+        <div class="char-ex">*/5 in minutes = every 5 min<br>0/2 in hours = every 2 hours from midnight</div>
+      </div>
+    </div>
+    <div class="char-card">
+      <div class="char-sym">-</div>
+      <div>
+        <div class="char-name">Hyphen — Range</div>
+        <div class="char-desc">Defines a range of values (inclusive on both ends).</div>
+        <div class="char-ex">9-17 in hours = 9 AM to 5 PM<br>1-5 in weekdays = Mon–Fri</div>
+      </div>
+    </div>
+    <div class="char-card">
+      <div class="char-sym">,</div>
+      <div>
+        <div class="char-name">Comma — List</div>
+        <div class="char-desc">Separates multiple specific values. Like an OR statement for values.</div>
+        <div class="char-ex">1,15 in days = 1st and 15th<br>MON,WED,FRI = three days</div>
+      </div>
+    </div>
+    <div class="char-card">
+      <div class="char-sym">L</div>
+      <div>
+        <div class="char-name">L — Last</div>
+        <div class="char-desc">In day-of-month: last day of the month. In day-of-week: last occurrence of that weekday in the month. Not supported in all cron implementations.</div>
+        <div class="char-ex">L in day-of-month = Jan 31, Feb 28/29...<br>5L = last Friday of the month</div>
+      </div>
+    </div>
+    <div class="char-card">
+      <div class="char-sym">W</div>
+      <div>
+        <div class="char-name">W — Nearest Weekday</div>
+        <div class="char-desc">Finds the nearest weekday (Mon–Fri) to the given day. Useful for business-day scheduling. Not universal.</div>
+        <div class="char-ex">15W = nearest weekday to the 15th<br>If 15th is Saturday, runs on Friday the 14th</div>
+      </div>
+    </div>
+    <div class="char-card">
+      <div class="char-sym">#</div>
+      <div>
+        <div class="char-name"># — Nth Weekday</div>
+        <div class="char-desc">Specifies the Nth occurrence of a weekday in a month. Only valid in day-of-week field.</div>
+        <div class="char-ex">1#1 = first Monday<br>5#3 = third Thursday<br>6#2 = second Saturday</div>
+      </div>
+    </div>
+    <div class="char-card">
+      <div class="char-sym">?</div>
+      <div>
+        <div class="char-name">? — No Specific Value</div>
+        <div class="char-desc">Used in AWS EventBridge (and some others) to mean "no specific value" — a placeholder when you've set the other day field. Not valid in standard Linux cron.</div>
+        <div class="char-ex">AWS: cron(0 9 ? * MON *)<br>? in day-of-month = don't care which day</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <h2 id="shorthand"><span class="num">04.</span> Shorthand Notations</h2>
+  <p>Many cron implementations support convenient shorthand strings that replace the entire 5-field expression. These are much more readable than the numeric format for common schedules.</p>
+
+  <div class="shorthand-grid">
+    <div class="sh-item">
+      <div><div class="sh-key">@yearly</div><div class="sh-eq">=</div><div class="sh-val">0 0 1 1 *</div><div class="sh-desc">Once a year, Jan 1st midnight</div></div>
+    </div>
+    <div class="sh-item">
+      <div><div class="sh-key">@annually</div><div class="sh-eq">=</div><div class="sh-val">0 0 1 1 *</div><div class="sh-desc">Same as @yearly</div></div>
+    </div>
+    <div class="sh-item">
+      <div><div class="sh-key">@monthly</div><div class="sh-eq">=</div><div class="sh-val">0 0 1 * *</div><div class="sh-desc">Once a month, 1st day midnight</div></div>
+    </div>
+    <div class="sh-item">
+      <div><div class="sh-key">@weekly</div><div class="sh-eq">=</div><div class="sh-val">0 0 * * 0</div><div class="sh-desc">Once a week, Sunday midnight</div></div>
+    </div>
+    <div class="sh-item">
+      <div><div class="sh-key">@daily</div><div class="sh-eq">=</div><div class="sh-val">0 0 * * *</div><div class="sh-desc">Once a day, midnight</div></div>
+    </div>
+    <div class="sh-item">
+      <div><div class="sh-key">@midnight</div><div class="sh-eq">=</div><div class="sh-val">0 0 * * *</div><div class="sh-desc">Same as @daily</div></div>
+    </div>
+    <div class="sh-item">
+      <div><div class="sh-key">@hourly</div><div class="sh-eq">=</div><div class="sh-val">0 * * * *</div><div class="sh-desc">Once an hour, at :00</div></div>
+    </div>
+    <div class="sh-item">
+      <div><div class="sh-key">@reboot</div><div class="sh-eq">→</div><div class="sh-val">special</div><div class="sh-desc">Run once at system startup</div></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-title" style="color:var(--heading);">ℹ️ Compatibility Note</div>
+    Shorthand notations are supported in most modern Linux cron implementations (Vixie cron, cronie, fcron) but are <strong>not supported</strong> in AWS EventBridge or many embedded/minimal cron implementations. Always verify support for your specific environment.
+  </div>
+
+  <!-- SECTION 5 -->
+  <h2 id="reading"><span class="num">05.</span> How to Read Any Cron Expression</h2>
+  <p>When you need to figure out <strong>how to read cron expression format for Linux and Kubernetes</strong>, use this simple reading framework. Parse each field from left to right, translating each value into plain English, then combine them:</p>
+
+  <pre><span class="c"># Example: 30 9 * * 1-5</span>
+<span class="b">30</span>  = at minute :30
+<span class="b">9</span>   = at 9 AM (hour 9)
+<span class="b">*</span>   = any day of month
+<span class="b">*</span>   = any month
+<span class="b">1-5</span> = Monday through Friday (days 1 to 5)
+
+<span class="g">Result: Every weekday at 9:30 AM</span></pre>
+
+  <pre><span class="c"># Example: 0 0 1,15 * *</span>
+<span class="b">0</span>    = at minute :00
+<span class="b">0</span>    = at midnight (hour 0)
+<span class="b">1,15</span> = on the 1st and 15th
+<span class="b">*</span>    = every month
+<span class="b">*</span>    = any day of week
+
+<span class="g">Result: At midnight on the 1st and 15th of every month</span></pre>
+
+  <!-- SECTION 6 -->
+  <h2 id="patterns"><span class="num">06.</span> Most Common Cron Patterns</h2>
+  <p>These are the patterns you'll see and use most often in production systems. Memorize these and you'll be able to handle 90% of scheduling requirements.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Expression</th><th>Meaning</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>* * * * *</td><td>Every minute</td><td>Most frequent possible schedule</td></tr>
+        <tr><td>*/5 * * * *</td><td>Every 5 minutes</td><td>Health checks, polling</td></tr>
+        <tr><td>*/15 * * * *</td><td>Every 15 minutes</td><td>Frequent sync tasks</td></tr>
+        <tr><td>0 * * * *</td><td>Every hour at :00</td><td>Hourly aggregation</td></tr>
+        <tr><td>0 0 * * *</td><td>Daily at midnight</td><td>Nightly jobs</td></tr>
+        <tr><td>0 2 * * *</td><td>Daily at 2 AM</td><td>Database backups (low traffic)</td></tr>
+        <tr><td>0 9 * * 1-5</td><td>Weekdays at 9 AM</td><td>Business day start</td></tr>
+        <tr><td>0 17 * * 5</td><td>Friday at 5 PM</td><td>End-of-week reports</td></tr>
+        <tr><td>0 0 1 * *</td><td>Monthly, 1st at midnight</td><td>Monthly billing jobs</td></tr>
+        <tr><td>0 0 * * 0</td><td>Weekly on Sunday midnight</td><td>Weekly maintenance</td></tr>
+        <tr><td>0 0 1 1 *</td><td>Annually, Jan 1 midnight</td><td>Yearly archival</td></tr>
+        <tr><td>0 0 1 1,4,7,10 *</td><td>Quarterly, 1st of quarter</td><td>Q1/Q2/Q3/Q4 jobs</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cta-box">
+    <h3>Need to Validate a Cron Expression String?</h3>
+    <p>Paste any cron expression into CronRead and instantly get a human-readable description, the next 5 scheduled run times, and real-time validation.</p>
+    <a class="cta-btn" href="https://cronread.com">Validate Your Cron Expression →</a>
+  </div>
+
+  <!-- SECTION 7 -->
+  <h2 id="aws-syntax"><span class="num">07.</span> AWS EventBridge Cron Syntax (6-Field)</h2>
+  <p>AWS EventBridge uses an extended cron syntax with <strong>6 fields</strong> instead of 5. The extra field is <em>Year</em>, appended at the end. Additionally, AWS wraps the expression in a <code>cron()</code> function.</p>
+
+  <pre><span class="c"># AWS EventBridge format:</span>
+<span class="y">cron( Minutes  Hours  Day-of-month  Month  Day-of-week  Year )</span>
+<span class="c">      ────────────────────────────────────────────────────────
+      0-59     0-23   1-31 or ?     1-12   1-7 or ?   1970-2199</span>
+
+<span class="c"># Example: Every weekday at 9 AM UTC</span>
+<span class="g">cron(0 9 ? * MON-FRI *)</span></pre>
+
+  <p>The most critical rule: <strong>you cannot specify both Day-of-month and Day-of-week</strong> in the same expression. One of them must always be <code>?</code>. AWS also uses a different day-of-week numbering: <strong>Sunday = 1, Monday = 2, ..., Saturday = 7</strong>.</p>
+
+  <!-- SECTION 8 -->
+  <h2 id="linux-vs-aws"><span class="num">08.</span> Linux vs AWS: Key Differences</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Feature</th><th>Linux Crontab</th><th>AWS EventBridge</th></tr></thead>
+      <tbody>
+        <tr><td>Fields</td><td>5</td><td>6 (+ Year)</td></tr>
+        <tr><td>Syntax wrapper</td><td>None</td><td>cron( )</td></tr>
+        <tr><td>Sunday number</td><td>0 or 7</td><td>1</td></tr>
+        <tr><td>DOM + DOW together</td><td>OR logic (both allowed)</td><td>Not allowed — one must be ?</td></tr>
+        <tr><td>? character</td><td>Not used</td><td>Required placeholder</td></tr>
+        <tr><td>Shorthand (@daily etc)</td><td>Supported</td><td>Not supported</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 9: FAQ -->
+  <h2 id="faq"><span class="num">09.</span> Frequently Asked Questions</h2>
+
+  <div class="faq-item">
+    <div class="faq-q">What does * mean in a cron expression?</div>
+    <div class="faq-a">The asterisk (<code>*</code>) is a wildcard meaning "any value" for that field. So <code>*</code> in the hours field means "every hour", and <code>*</code> in the days field means "every day of the month". A cron expression with all asterisks (<code>* * * * *</code>) runs every single minute.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">What does 0 0 * * * mean in crontab?</div>
+    <div class="faq-a">The expression <code>0 0 * * *</code> translates to "run at minute 0, hour 0 (midnight), every day of the month, every month, every day of the week." It is the standard way to schedule a daily midnight job.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">How to setup a Kubernetes CronJob schedule?</div>
+    <div class="faq-a">Kubernetes <code>CronJob</code> resources use the exact same 5-field crontab format as standard Linux. Inside your YAML file, under the <code>spec</code> block, you define the <code>schedule</code> key. For example, <code>schedule: "0 0 * * *"</code> will run the pod daily at midnight UTC.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Can cron jobs run every second?</div>
+    <div class="faq-a">No. The minimum interval for a standard cron job is 1 minute. Cron does not have a seconds field. If you need sub-minute scheduling, use a different tool (systemd timers with <code>OnUnitActiveSec</code>, Celery Beat, or an application-level scheduler).</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">How do I run a cron job every 5 minutes?</div>
+    <div class="faq-a">Use <code>*/5 * * * *</code> in a Linux crontab. For AWS EventBridge, use <code>cron(*/5 * * * ? *)</code>. This runs at :00, :05, :10, :15, :20, :25, :30, :35, :40, :45, :50, :55 past every hour, every day.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">How do I validate a cron expression string before deploying?</div>
+    <div class="faq-a">You can manually parse the 5 fields, or use a tool like CronRead. Simply paste your string into our generator to instantly see the human-readable description and the next 5 execution times to ensure it matches your expected schedule.</div>
+  </div>
+
+  <div class="cta-box">
+    <h3>🛠 Generate & Validate Cron Expressions Instantly</h3>
+    <p>CronRead is a free cron expression generator that supports both Linux 5-field and AWS EventBridge 6-field syntax. Build visually, get human-readable previews, and validate before deploying.</p>
+    <a class="cta-btn" href="https://cronread.com">Open CronRead — It's Free →</a>
+  </div>
+
+  <h2>Further Reading</h2>
+  <p>Now that you understand cron syntax, explore these related guides:</p>
+  <p>→ <a href="https://cronread.com/blog/cron-job-examples">50+ Cron Job Examples (copy-paste ready)</a> — real examples for every common scheduling pattern.</p>
+  <p>→ <a href="https://cronread.com/blog/aws-eventbridge-cron-expression-guide">AWS EventBridge Cron Expression Guide</a> — deep dive into the 6-field AWS format with 30 examples.</p>
+
+</div>
+
+<footer>
+  <p>© 2026 <a href="https://cronread.com">CronRead.com</a> — Free Cron Expression Generator & Reference</p>
+  <p style="margin-top:0.5rem;">
+    <a href="https://cronread.com/blog/cron-job-examples">Cron Examples</a> ·
+    <a href="https://cronread.com/blog/cron-syntax-guide">Cron Syntax</a> ·
+    <a href="https://cronread.com/blog/aws-eventbridge-cron-expression-guide">AWS EventBridge</a>
+  </p>
+</footer>
+
+</body>
+</html>
