@@ -608,56 +608,61 @@ td:last-child { color: var(--text2); font-weight: 500; }
   border-radius: 10px;
   padding: 1.2rem 1.4rem;
   margin: 1.5rem 0;
-  font-size: .92rem;
-  color: var(--text2);
+  font-size: .95rem;
+  color: #1e293b; /* 🔥 FIXED: Fika var(--text2) hata kar deep dark color daala */
   line-height: 1.75;
   box-shadow: var(--shadow-sm);
+  font-weight: 500; /* 🔥 FIXED: Text halka sa thick kiya readability ke liye */
 }
-.callout.info, .callout-info   { border-left-color: var(--blue); }
+.callout p { color: #1e293b; } /* Paragraphs bhi dark apply kiye */
+
+.callout.info, .callout-info   { border-left-color: var(--blue); background: #EFF6FF; border-color: #DBEAFE; }
 .callout.warning, .callout.warn,
-.callout-warn                   { border-left-color: var(--yellow); background: rgba(217,119,6,.04); }
-.callout.success, .callout-green{ border-left-color: var(--green); background: rgba(5,150,105,.04); }
-.callout-red                    { border-left-color: var(--red);   background: rgba(220,38,38,.04); }
-.callout.tip                    { border-left-color: var(--accent2); }
+.callout-warn                  { border-left-color: var(--yellow); background: #FFF8F0; border-color: #FDE6D5; } /* 🔥 FIXED: Faint rgba hatakar solid cream bg diya */
+.callout.success, .callout-green{ border-left-color: var(--green); background: #F0FDF4; border-color: #D1FAE5; }
+.callout-red                   { border-left-color: var(--red);   background: #FEF2F2; border-color: #FEE2E2; }
+.callout.tip                   { border-left-color: var(--accent2); }
+
 .callout-title, .callout-label {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: .14em;
   color: var(--accent);
-  margin-bottom: .55rem;
-  font-weight: 700;
+  margin-bottom: .6rem;
+  font-weight: 800; /* 🔥 FIXED: Heading ko max bold kiya */
 }
 .callout.info .callout-title,
-.callout-info .callout-label    { color: var(--blue); }
+.callout-info .callout-label   { color: var(--blue); }
 .callout.warning .callout-title,
 .callout.warn .callout-title,
-.callout-warn .callout-label    { color: var(--yellow); }
+.callout-warn .callout-label   { color: #B45309; } /* 🔥 FIXED: Darker orange for better contrast */
 .callout.success .callout-title,
-.callout-green .callout-label   { color: var(--green); }
+.callout-green .callout-label  { color: var(--green); }
 .callout.tip .callout-title,
-.callout-tip .callout-label     { color: var(--accent2); }
-
-/* ── FAQ ───────────────────────────────────────────────────── */
-.faq-list, .faq { margin-top: .5rem; }
-.faq-item { border-bottom: 1px solid var(--border); padding: 1.2rem 0; }
-.faq-item:last-child { border-bottom: none; }
-.faq-q { font-weight: 700; color: var(--text); margin-bottom: .55rem; font-size: .97rem; }
-.faq-a, .faq-body, .faq-body p { color: var(--text2); font-size: .92rem; line-height: 1.8; margin: 0; }
-.faq-a code { font-size: .82em; }
+.callout-tip .callout-label    { color: var(--accent2); }
 
 /* ── Mistake blocks ────────────────────────────────────────── */
 .mistake {
-  background: rgba(220,38,38,.04);
-  border: 1px solid rgba(220,38,38,.18);
-  border-left: 4px solid var(--red);
+  background: #FFF8F0; /* 🔥 FIXED: Warning theme background */
+  border: 1px solid #FDE6D5;
+  border-left: 4px solid var(--yellow);
   border-radius: 10px;
   padding: 1.2rem 1.4rem;
   margin: 1.5rem 0;
+  box-shadow: var(--shadow-sm);
 }
-.mistake p { color: var(--text2); margin: 0; }
+.mistake p { color: #1e293b; margin: 0; font-weight: 500; }
 .mistake pre { margin-top: .75rem; }
-.mistake-title { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: .14em; color: var(--red); margin-bottom: .5rem; font-weight: 700; }
+.mistake-title { 
+  font-family: var(--mono); 
+  font-size: 11px; 
+  text-transform: uppercase; 
+  letter-spacing: .14em; 
+  color: #B45309; /* 🔥 FIXED: Sharp dark orange */
+  margin-bottom: .5rem; 
+  font-weight: 800; 
+}
 .mistake-title::before { content: '✗  '; }
 
 /* ── Features grid ─────────────────────────────────────────── */
