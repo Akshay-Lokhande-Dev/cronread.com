@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <title>Kubernetes CronJob Examples — 15+ Schedule YAML Snippets | CronRead Pro</title>
 <meta name="description" content="15+ Kubernetes CronJob schedule examples with full YAML. Covers timeZone field, concurrencyPolicy, startingDeadlineSeconds, suspend, troubleshooting, and production patterns.">
 <meta name="robots" content="index, follow">
@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/cronread-seo.css">
+<link rel="stylesheet" href="../cronread-seo.css">
 <script type="application/ld+json">
 {
   "@context":"https://schema.org",
@@ -34,13 +34,13 @@
 <body>
 <nav>
   <div class="nav-inner">
-    <a href="/" class="nav-logo">CRONREAD</a>
+    <a href="../index.html" class="nav-logo">CRONREAD</a>
     <div class="nav-links">
-      <a href="/">Tool</a>
-      <a href="/blog/cron-examples/">Examples</a>
-      <a href="/blog/aws-eventbridge-cron-examples/">AWS</a>
-      <a href="/blog/github-actions-cron-examples/">GitHub Actions</a>
-      <a href="/blog/cronguru-alternative/">vs CronGuru</a>
+      <a href="../index.html" Tool</a>
+      <a href="cron-examples.html">Examples</a>
+      <a href="aws-eventbridge-cron-examples.html">AWS</a>
+      <a href="github-actions-cron-examples.html">GitHub Actions</a>
+      <a href="cronguru-alternative.html">vs CronGuru</a>
     </div>
   </div>
 </nav>
@@ -52,7 +52,7 @@
   <h1>Kubernetes CronJob<br><span class="hl">Schedule Examples</span></h1>
   <p class="hero-sub">15+ real CronJob schedule examples with full YAML specs. Covers timeZone, concurrencyPolicy, startingDeadlineSeconds, suspend, and production troubleshooting.</p>
   <div class="cta-row">
-    <a href="/" class="cta-btn">⚡ Generate CronJob Schedule</a>
+    <a href="../index.html" class="cta-btn">⚡ Generate CronJob Schedule</a>
   </div>
 </div>
 
@@ -248,7 +248,7 @@ kubectl patch cronjob my-cronjob -p '{"spec":{"suspend":false}}'  # Resume</pre>
     <li><strong>suspend: true</strong> — Check if CronJob is suspended: <code>kubectl get cronjob my-cronjob -o jsonpath='{.spec.suspend}'</code></li>
     <li><strong>Image pull errors</strong> — The Job pod may be failing to pull the image. Check pod events.</li>
     <li><strong>RBAC</strong> — Ensure the service account has permissions for what the job does.</li>
-    <li><strong>Schedule syntax</strong> — Validate at <a href="/">CronRead</a> before deploying.</li>
+    <li><strong>Schedule syntax</strong> — Validate at <a href="../index.html" CronRead</a> before deploying.</li>
     <li><strong>Missed runs > 100</strong> — Lower <code>startingDeadlineSeconds</code> or restart the controller.</li>
   </ul>
 </section>
@@ -282,18 +282,18 @@ kubectl patch cronjob my-cronjob -p '{"spec":{"suspend":false}}'  # Resume</pre>
 </section>
 
 <div class="cta-row" style="margin-top:3rem">
-  <a href="/" class="cta-btn">⚡ Validate Your CronJob Schedule</a>
+  <a href="../index.html" class="cta-btn">⚡ Validate Your CronJob Schedule</a>
 </div>
 
 </div>
 
 <footer>
   <div class="footer-links">
-    <a href="/">CronRead</a> |
-    <a href="/blog/cron-examples/">Cron Examples</a> |
-    <a href="/blog/aws-eventbridge-cron-examples/">AWS EventBridge</a> |
-    <a href="/blog/github-actions-cron-examples/">GitHub Actions</a> |
-    <a href="/blog/cronguru-alternative/">vs CronGuru</a>
+    <a href="../index.html" CronRead</a> |
+    <a href="cron-examples.html">Cron Examples</a> |
+    <a href="aws-eventbridge-cron-examples.html">AWS EventBridge</a> |
+    <a href="github-actions-cron-examples.html">GitHub Actions</a> |
+    <a href="cronguru-alternative.html">vs CronGuru</a>
   </div>
   <p style="margin-top:.5rem">© 2026 CronRead · Always verify cron schedules in production.</p>
 </footer>

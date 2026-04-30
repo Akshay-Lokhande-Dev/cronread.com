@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <title>AWS EventBridge Cron Examples — 20+ Schedules with Terraform & CDK | CronRead Pro</title>
 <meta name="description" content="20+ AWS EventBridge cron expression examples. Covers cron() vs rate(), the ? wildcard, named days, nth-weekday, Terraform aws_cloudwatch_event_rule, EventBridge Scheduler, and common mistakes to avoid.">
 <meta name="robots" content="index, follow">
@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/cronread-seo.css">
+<link rel="stylesheet" href="../cronread-seo.css">
 <script type="application/ld+json">
 {
   "@context":"https://schema.org",
@@ -35,13 +35,13 @@
 
 <nav>
   <div class="nav-inner">
-    <a href="/" class="nav-logo">CRONREAD</a>
+    <a href="../index.html" class="nav-logo">CRONREAD</a>
     <div class="nav-links">
-      <a href="/">Tool</a>
-      <a href="/blog/cron-examples/">Examples</a>
-      <a href="/blog/kubernetes-cronjob-examples/">Kubernetes</a>
-      <a href="/blog/github-actions-cron-examples/">GitHub Actions</a>
-      <a href="/blog/cronguru-alternative/">vs CronGuru</a>
+      <a href="../index.html" Tool</a>
+      <a href="cron-examples.html">Examples</a>
+      <a href="kubernetes-cronjob-examples.html">Kubernetes</a>
+      <a href="github-actions-cron-examples.html">GitHub Actions</a>
+      <a href="cronguru-alternative.html">vs CronGuru</a>
     </div>
   </div>
 </nav>
@@ -53,7 +53,7 @@
   <h1>AWS EventBridge<br><span class="hl">Cron Expression Examples</span></h1>
   <p class="hero-sub">20+ real-world EventBridge schedule examples with Terraform, AWS CDK, and CLI snippets. Covers cron() vs rate(), the ? wildcard, common mistakes, and production patterns.</p>
   <div class="cta-row">
-    <a href="/" class="cta-btn">⚡ Validate Your EventBridge Cron</a>
+    <a href="../index.html" class="cta-btn">⚡ Validate Your EventBridge Cron</a>
   </div>
 </div>
 
@@ -185,7 +185,7 @@ resource "aws_lambda_permission" "allow_eventbridge" {
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.weekday_job.arn
 }</pre>
-  <p><a href="/">Paste any cron into CronRead</a> to instantly generate this Terraform snippet for your exact schedule.</p>
+  <p><a href="../index.html" Paste any cron into CronRead</a> to instantly generate this Terraform snippet for your exact schedule.</p>
 </section>
 
 <hr class="divider">
@@ -252,7 +252,7 @@ resource "aws_lambda_permission" "allow_eventbridge" {
     </div>
     <div class="faq-item">
       <div class="faq-q">Why is my EventBridge rule not firing at the expected time?</div>
-      <div class="faq-a">Most likely a UTC offset issue. EventBridge runs all schedules in UTC. If you're in UTC+5:30 (IST) and want 9 AM local time, the UTC time is 3:30 AM — so you'd use <code>cron(30 3 ? * * *)</code>. Use <a href="/">CronRead Pro's timezone calculator</a> to find the right UTC time for your timezone.</div>
+      <div class="faq-a">Most likely a UTC offset issue. EventBridge runs all schedules in UTC. If you're in UTC+5:30 (IST) and want 9 AM local time, the UTC time is 3:30 AM — so you'd use <code>cron(30 3 ? * * *)</code>. Use <a href="../index.html" CronRead Pro's timezone calculator</a> to find the right UTC time for your timezone.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">Can I paste an EventBridge cron() expression into CronRead Pro?</div>
@@ -262,18 +262,18 @@ resource "aws_lambda_permission" "allow_eventbridge" {
 </section>
 
 <div class="cta-row" style="margin-top:3rem">
-  <a href="/" class="cta-btn">⚡ Validate Your EventBridge Cron</a>
+  <a href="../index.html" class="cta-btn">⚡ Validate Your EventBridge Cron</a>
 </div>
 
 </div>
 
 <footer>
   <div class="footer-links">
-    <a href="/">CronRead</a> |
-    <a href="/blog/cron-examples/">Cron Examples</a> |
-    <a href="/blog/kubernetes-cronjob-examples/">Kubernetes</a> |
-    <a href="/blog/github-actions-cron-examples/">GitHub Actions</a> |
-    <a href="/blog/cronguru-alternative/">vs CronGuru</a>
+    <a href="../index.html" CronRead</a> |
+    <a href="cron-examples.html">Cron Examples</a> |
+    <a href="kubernetes-cronjob-examples.html">Kubernetes</a> |
+    <a href="github-actions-cron-examples.html">GitHub Actions</a> |
+    <a href="cronguru-alternative.html">vs CronGuru</a>
   </div>
   <p style="margin-top:.5rem">© 2026 CronRead · Always verify cron schedules in production.</p>
 </footer>

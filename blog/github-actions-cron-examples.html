@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <title>GitHub Actions Cron Examples — Scheduled Workflows Guide | CronRead</title>
 <meta name="description" content="Complete guide to GitHub Actions scheduled workflows. 15+ cron examples, UTC timezone explained, common mistakes, workflow_dispatch override, and ready-to-use YAML snippets.">
 <meta name="robots" content="index, follow">
@@ -19,7 +19,7 @@
 <meta name="twitter:description" content="15+ scheduled workflow examples with YAML. UTC explained, common mistakes, and ready-to-copy snippets.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/cronread-seo.css">
+<link rel="stylesheet" href="../cronread-seo.css">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -73,14 +73,14 @@
 
 <nav>
   <div class="nav-inner">
-    <a href="/" class="nav-logo">CRONREAD</a>
+    <a href="../index.html" class="nav-logo">CRONREAD</a>
     <div class="nav-links">
-      <a href="/">Tool</a>
-      <a href="/blog/cron-examples/">Examples</a>
-      <a href="/blog/aws-eventbridge-cron-examples/">AWS</a>
-      <a href="/blog/kubernetes-cronjob-examples/">Kubernetes</a>
-      <a href="/blog/github-actions-cron-examples/" class="active">GitHub Actions</a>
-      <a href="/blog/cronguru-alternative/">vs CronGuru</a>
+      <a href="../index.html" Tool</a>
+      <a href="cron-examples.html">Examples</a>
+      <a href="aws-eventbridge-cron-examples.html">AWS</a>
+      <a href="kubernetes-cronjob-examples.html">Kubernetes</a>
+      <a href="github-actions-cron-examples.html" class="active">GitHub Actions</a>
+      <a href="cronguru-alternative.html">vs CronGuru</a>
     </div>
   </div>
 </nav>
@@ -93,7 +93,7 @@
     <h1>GitHub Actions<br><span class="hl">Cron Schedule Examples</span></h1>
     <p class="hero-sub">Complete guide to scheduled GitHub Actions workflows — 15+ real YAML examples, UTC timezone explained, common mistakes, and production-ready workflow templates.</p>
     <div class="cta-row">
-      <a href="/" class="cta-btn">⚡ Validate Your Schedule</a>
+      <a href="../index.html" class="cta-btn">⚡ Validate Your Schedule</a>
       <a href="#examples" class="cta-secondary">Jump to Examples ↓</a>
     </div>
   </div>
@@ -152,7 +152,7 @@ jobs:
     </div>
 
     <div class="callout callout-warn">
-      <strong style="color:var(--yellow)">⚠ DST gotcha:</strong> UTC offsets change twice a year in most regions due to Daylight Saving Time. A schedule correct in winter may fire an hour off in summer. Use <a href="/">CronRead's timezone calculator</a> to find the right UTC time for your current offset.
+      <strong style="color:var(--yellow)">⚠ DST gotcha:</strong> UTC offsets change twice a year in most regions due to Daylight Saving Time. A schedule correct in winter may fire an hour off in summer. Use <a href="../index.html" CronRead's timezone calculator</a> to find the right UTC time for your current offset.
     </div>
   </section>
 
@@ -448,7 +448,7 @@ jobs:
     <div class="faq-list">
       <div class="faq-item">
         <div class="faq-q">What timezone does GitHub Actions cron use?</div>
-        <div class="faq-a">Always UTC. There is no way to set a timezone on the <code>schedule</code> trigger. Convert your desired local time to UTC before writing the cron expression. <a href="/">CronRead's timezone calculator</a> does this automatically.</div>
+        <div class="faq-a">Always UTC. There is no way to set a timezone on the <code>schedule</code> trigger. Convert your desired local time to UTC before writing the cron expression. <a href="../index.html" CronRead's timezone calculator</a> does this automatically.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">What is the minimum cron interval in GitHub Actions?</div>
@@ -474,19 +474,19 @@ jobs:
   </section>
 
   <div class="cta-row" style="margin-top:3rem">
-    <a href="/" class="cta-btn">⚡ Validate Your GitHub Actions Cron</a>
+    <a href="../index.html" class="cta-btn">⚡ Validate Your GitHub Actions Cron</a>
   </div>
 
 </div><!-- /wrap -->
 
 <footer>
   <div class="footer-links">
-    <a href="/">CronRead</a> |
-    <a href="/blog/cron-examples/">Cron Examples</a> |
-    <a href="/blog/aws-eventbridge-cron-examples/">AWS EventBridge</a> |
-    <a href="/blog/kubernetes-cronjob-examples/">Kubernetes</a> |
-    <a href="/blog/github-actions-cron-examples/">GitHub Actions</a> |
-    <a href="/blog/cronguru-alternative/">vs CronGuru</a>
+    <a href="../index.html" CronRead</a> |
+    <a href="cron-examples.html">Cron Examples</a> |
+    <a href="aws-eventbridge-cron-examples.html">AWS EventBridge</a> |
+    <a href="kubernetes-cronjob-examples.html">Kubernetes</a> |
+    <a href="github-actions-cron-examples.html">GitHub Actions</a> |
+    <a href="cronguru-alternative.html">vs CronGuru</a>
   </div>
   <p style="margin-top:.6rem">© 2026 CronRead · Always verify cron schedules before deploying to production.</p>
 </footer>

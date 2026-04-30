@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <title>Crontab vs Systemd Timer — Which Should You Use? | CronRead</title>
 <meta name="description" content="Crontab vs systemd timers: side-by-side comparison with examples. When to use each, how to convert crontab to systemd timer, and which is better for your use case.">
 <meta name="robots" content="index, follow">
@@ -19,7 +19,7 @@
 <meta name="twitter:description" content="Full comparison with examples. When to use cron, when to use systemd timers, and how to convert between them."  >
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/cronread-seo.css">
+<link rel="stylesheet" href="../cronread-seo.css">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -57,15 +57,15 @@
 
 <nav>
   <div class="nav-inner">
-    <a href="/" class="nav-logo">CRONREAD</a>
+    <a href="../index.html" class="nav-logo">CRONREAD</a>
     <div class="nav-links">
-      <a href="/">Tool</a>
-      <a href="/cron-examples/">Examples</a>
-      <a href="/blog/linux-crontab-examples/">Linux Crontab</a>
-      <a href="/aws-eventbridge-cron-examples/">AWS</a>
-      <a href="/kubernetes-cronjob-examples/">Kubernetes</a>
-      <a href="/github-actions-cron-examples/">GitHub Actions</a>
-      <a href="/cronguru-alternative/">vs CronGuru</a>
+      <a href="../index.html" Tool</a>
+      <a href="cron-examples.html">Examples</a>
+      <a href="linux-crontab-examples.html">Linux Crontab</a>
+      <a href="aws-eventbridge-cron-examples.html">AWS</a>
+      <a href="kubernetes-cronjob-examples.html">Kubernetes</a>
+      <a href="github-actions-cron-examples.html">GitHub Actions</a>
+      <a href="cronguru-alternative.html">vs CronGuru</a>
     </div>
   </div>
 </nav>
@@ -78,7 +78,7 @@
     <h1>Crontab vs<br><span class="hl">Systemd Timers</span></h1>
     <p class="hero-sub">Full comparison with real examples — when to use crontab, when to use systemd timers, how to convert between them, and a side-by-side syntax reference for common scheduling patterns.</p>
     <div class="cta-row">
-      <a href="/" class="cta-btn">⚡ Validate a Cron Expression</a>
+      <a href="../index.html" class="cta-btn">⚡ Validate a Cron Expression</a>
       <a href="#comparison" class="cta-secondary">See Comparison ↓</a>
     </div>
   </div>
@@ -276,7 +276,7 @@ systemd-analyze calendar weekly</pre>
       </div>
       <div class="faq-item">
         <div class="faq-q">Can I use systemd timers in Docker?</div>
-        <div class="faq-a">No — systemd requires the init system, which Docker containers don't run. For container scheduling, use <a href="/blog/docker-cron-job-examples/">supercronic or ofelia inside Docker</a>, or Kubernetes CronJobs if you're on Kubernetes.</div>
+        <div class="faq-a">No — systemd requires the init system, which Docker containers don't run. For container scheduling, use <a href="docker-cron-job-examples.html">supercronic or ofelia inside Docker</a>, or Kubernetes CronJobs if you're on Kubernetes.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">How do I list all active systemd timers?</div>
@@ -294,32 +294,32 @@ systemd-analyze calendar weekly</pre>
           <tr><th>Guide</th><th>What you'll find</th></tr>
         </thead>
         <tbody>
-          <tr><td><a href="/blog/linux-crontab-examples/">Linux Crontab Examples</a></td><td>30+ crontab examples, @shortcuts, output logging</td></tr>
-          <tr><td><a href="/blog/docker-cron-job-examples/">Docker Cron Job Examples</a></td><td>supercronic, ofelia, Dockerfile cron patterns</td></tr>
-          <tr><td><a href="/kubernetes-cronjob-examples/">Kubernetes CronJob Examples</a></td><td>K8s CronJob YAML, concurrencyPolicy, history</td></tr>
-          <tr><td><a href="/blog/cron-expression-tester/">Cron Expression Tester</a></td><td>Validate any cron expression online for free</td></tr>
-          <tr><td><a href="/blog/cron-syntax-guide/">Cron Syntax Guide</a></td><td>Full reference for all cron fields and operators</td></tr>
+          <tr><td><a href="linux-crontab-examples.html">Linux Crontab Examples</a></td><td>30+ crontab examples, @shortcuts, output logging</td></tr>
+          <tr><td><a href="docker-cron-job-examples.html">Docker Cron Job Examples</a></td><td>supercronic, ofelia, Dockerfile cron patterns</td></tr>
+          <tr><td><a href="kubernetes-cronjob-examples.html">Kubernetes CronJob Examples</a></td><td>K8s CronJob YAML, concurrencyPolicy, history</td></tr>
+          <tr><td><a href="cron-expression-tester.html">Cron Expression Tester</a></td><td>Validate any cron expression online for free</td></tr>
+          <tr><td><a href="cron-syntax-guide.html">Cron Syntax Guide</a></td><td>Full reference for all cron fields and operators</td></tr>
         </tbody>
       </table>
     </div>
   </section>
 
   <div class="cta-row" style="margin-top:3rem">
-    <a href="/" class="cta-btn">⚡ Validate Your Cron Expression</a>
+    <a href="../index.html" class="cta-btn">⚡ Validate Your Cron Expression</a>
   </div>
 
 </div><!-- /wrap -->
 
 <footer>
   <div class="footer-links">
-    <a href="/">CronRead</a> |
-    <a href="/cron-examples/">Cron Examples</a> |
-    <a href="/blog/linux-crontab-examples/">Linux Crontab</a> |
-    <a href="/blog/docker-cron-job-examples/">Docker Cron</a> |
-    <a href="/blog/crontab-vs-systemd-timer/">Crontab vs Systemd</a> |
-    <a href="/aws-eventbridge-cron-examples/">AWS EventBridge</a> |
-    <a href="/kubernetes-cronjob-examples/">Kubernetes</a> |
-    <a href="/github-actions-cron-examples/">GitHub Actions</a>
+    <a href="../index.html" CronRead</a> |
+    <a href="cron-examples.html">Cron Examples</a> |
+    <a href="linux-crontab-examples.html">Linux Crontab</a> |
+    <a href="docker-cron-job-examples.html">Docker Cron</a> |
+    <a href="crontab-vs-systemd-timer.html">Crontab vs Systemd</a> |
+    <a href="aws-eventbridge-cron-examples.html">AWS EventBridge</a> |
+    <a href="kubernetes-cronjob-examples.html">Kubernetes</a> |
+    <a href="github-actions-cron-examples.html">GitHub Actions</a>
   </div>
   <p style="margin-top:.6rem">© 2026 CronRead · Always verify cron schedules before deploying to production.</p>
 </footer>
