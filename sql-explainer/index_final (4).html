@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SQL Query Explainer v2 — Execution Order, Visual Flow & Cloud Cost Warnings | CronRead</title>
+<meta name="description" content="Advanced SQL explainer with logical execution order, ASCII visual flow diagram, AWS Athena/Redshift/Snowflake cost warnings, schema/DDL-aware analysis, clause breakdown, and optimization tips. Free AI-powered tool.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://cronread.com/sql-explainer/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SQL Query Explainer v2 — Execution Order, Visual Flow & Cloud Cost Warnings | CronRead">
+<meta property="og:description" content="Paste SQL + optional schema → get execution order, ASCII flow diagram, cloud cost warnings, clause breakdown, index suggestions, and plain-English explanation.">
+<meta property="og:url" content="https://cronread.com/sql-explainer/">
+<meta property="og:site_name" content="CronRead">
+<meta property="og:image" content="https://cronread.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SQL Explainer v2 — CronRead">
+<meta name="twitter:description" content="SQL execution order + visual flow + cloud cost warnings + schema-aware analysis. Free AI tool.">
+<meta name="twitter:image" content="https://cronread.com/og-image.png">
+<meta name="author" content="CronRead">
+<meta name="keywords" content="SQL explainer, SQL execution order, SQL query analyzer, AWS Athena cost, Snowflake optimization, SQL visual flow, schema analysis, SQL DDL, SQL clause breakdown, free SQL tool">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='10' fill='%237c6dfa'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-family='monospace' font-size='20' fill='white'%3ECR%3C/text%3E%3C/svg%3E">
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"SQL Query Explainer v2","url":"https://cronread.com/sql-explainer/","description":"Free AI-powered SQL explainer with execution order, visual flow, cloud cost warnings, and schema-aware analysis.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"creator":{"@type":"Organization","name":"CronRead","url":"https://cronread.com"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is SQL logical execution order?","acceptedAnswer":{"@type":"Answer","text":"SQL logical execution order is the sequence in which the database engine processes query clauses — FROM → JOIN → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT. This is different from the order you write SQL. Understanding execution order helps you write correct, efficient queries."}},{"@type":"Question","name":"Why does SELECT * cost more on AWS Athena?","acceptedAnswer":{"@type":"Answer","text":"AWS Athena charges per terabyte of data scanned. SELECT * reads every column, including ones you don't need. If your data is stored in a columnar format like Parquet, specifying only needed columns can reduce scanned data by 80-90%, drastically cutting costs."}},{"@type":"Question","name":"What does a SQL execution tree show?","acceptedAnswer":{"@type":"Answer","text":"A SQL execution tree (or query plan visualization) shows the order of operations the database engine uses to process a query — which tables are read first, how joins are performed, where filters are applied, and how data is aggregated. It helps identify bottlenecks and understand data flow."}},{"@type":"Question","name":"How do I check if my SQL query will be expensive on Snowflake?","acceptedAnswer":{"@type":"Answer","text":"Key Snowflake cost indicators: missing WHERE clause on large tables (full table scan), no partition pruning, CROSS JOINs, SELECT *, functions on indexed columns in WHERE clause, and queries without LIMIT during development. Use Snowflake's QUERY_HISTORY view and Query Profile to analyze cost after running."}},{"@type":"Question","name":"What is schema-aware SQL analysis?","acceptedAnswer":{"@type":"Answer","text":"Schema-aware SQL analysis cross-references your SQL query against your table definitions (DDL) to find issues like: missing indexes on JOIN columns, data type mismatches between joined columns, missing foreign key constraints, querying columns that don't exist in the schema, and performance risks based on column types."}}]}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0d0d0f;--bg2:#13131a;--bg3:#1a1a24;--bg4:#20202e;
+  --border:#2a2a3a;--border2:#3a3a50;
+  --purple:#7c6dfa;--purple2:#a394ff;--purple-dim:#7c6dfa22;
+  --green:#4ade80;--green-dim:#4ade8018;
+  --yellow:#fbbf24;--yellow-dim:#fbbf2418;
+  --red:#f87171;--red-dim:#f8717118;
+  --blue:#60a5fa;--blue-dim:#60a5fa18;
+  --orange:#fb923c;--orange-dim:#fb923c18;
+  --text:#e8e8f0;--text2:#9898b0;--text3:#5a5a78;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'IBM Plex Sans',sans-serif;
+  --radius:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;min-height:100vh}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(13,13,15,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.5rem;height:52px;display:flex;align-items:center}
+.nav-inner{max-width:1160px;margin:0 auto;width:100%;display:flex;align-items:center;gap:1rem}
+.nav-logo{font-family:var(--mono);font-weight:600;font-size:.9rem;color:var(--text);text-decoration:none;letter-spacing:.08em;flex-shrink:0}
+.nav-logo span{color:var(--purple)}
+.nav-links{display:flex;gap:.15rem;flex-wrap:wrap;margin-left:auto}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:.75rem;padding:.28rem .55rem;border-radius:5px;transition:color .15s,background .15s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:var(--text);background:var(--bg3)}
+.nav-links a.active{color:var(--purple)}
+
+/* WRAP */
+.wrap{max-width:1160px;margin:0 auto;padding:2rem 1.5rem 5rem}
+
+/* HERO */
+.hero{text-align:center;padding:2rem 0 1.8rem}
+.hero-tag{display:inline-flex;align-items:center;gap:.4rem;background:var(--purple-dim);border:1px solid var(--purple);color:var(--purple2);font-family:var(--mono);font-size:.7rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:.28rem .8rem;border-radius:20px;margin-bottom:1rem}
+.v2-badge{background:var(--purple);color:#fff;font-size:.65rem;padding:.1rem .4rem;border-radius:8px;letter-spacing:.06em}
+.hero h1{font-size:clamp(1.9rem,4.5vw,3rem);font-weight:700;line-height:1.15;letter-spacing:-.02em;margin-bottom:.7rem}
+.hero h1 .hl{color:var(--purple2)}
+.hero-sub{color:var(--text2);font-size:.95rem;max-width:640px;margin:0 auto 1.2rem}
+.feature-pills{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-bottom:1.5rem}
+.pill{background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:.73rem;font-family:var(--mono);padding:.2rem .65rem;border-radius:20px}
+.pill.new{border-color:var(--purple);color:var(--purple2);background:var(--purple-dim)}
+
+/* MODE BAR */
+.mode-bar{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+.mode-btn{background:var(--bg2);border:1px solid var(--border);color:var(--text2);font-family:var(--mono);font-size:.73rem;padding:.38rem .85rem;border-radius:6px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.mode-btn:hover{border-color:var(--border2);color:var(--text)}
+.mode-btn.active{background:var(--purple-dim);border-color:var(--purple);color:var(--purple2)}
+
+/* INPUT GRID */
+.input-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:.8rem}
+@media(max-width:800px){.input-grid{grid-template-columns:1fr}}
+
+/* OUTPUT PANEL - full width */
+.output-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem}
+
+/* PANELS */
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.panel-header{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;background:var(--bg3);border-bottom:1px solid var(--border);font-family:var(--mono);font-size:.73rem;color:var(--text2);letter-spacing:.06em;text-transform:uppercase;gap:.5rem}
+.panel-header-left{display:flex;align-items:center;gap:.5rem}
+.badge{background:var(--purple-dim);border:1px solid var(--purple);color:var(--purple2);font-size:.65rem;padding:.12rem .45rem;border-radius:10px}
+.badge-green{background:var(--green-dim);border:1px solid var(--green);color:var(--green)}
+.badge-optional{background:var(--yellow-dim);border:1px solid var(--yellow);color:var(--yellow)}
+
+/* TEXTAREAS */
+.sql-textarea,.ddl-textarea{width:100%;background:transparent;border:none;outline:none;resize:vertical;color:var(--text);font-family:var(--mono);font-size:.85rem;line-height:1.7;padding:.9rem;tab-size:2}
+.sql-textarea{min-height:220px}
+.ddl-textarea{min-height:160px}
+.sql-textarea::placeholder,.ddl-textarea::placeholder{color:var(--text3)}
+
+.input-bar{display:flex;align-items:center;justify-content:space-between;padding:.5rem .9rem;border-top:1px solid var(--border);background:var(--bg3);gap:.5rem;flex-wrap:wrap}
+.char-count{font-family:var(--mono);font-size:.7rem;color:var(--text3)}
+.input-actions{display:flex;gap:.4rem}
+
+/* SCHEMA TOGGLE */
+.schema-toggle{display:flex;align-items:center;gap:.6rem;cursor:pointer;user-select:none;font-size:.8rem;color:var(--text2);margin-bottom:.6rem}
+.toggle-track{width:34px;height:18px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;position:relative;transition:background .2s}
+.toggle-track.on{background:var(--purple-dim);border-color:var(--purple)}
+.toggle-thumb{width:12px;height:12px;background:var(--text3);border-radius:50%;position:absolute;top:2px;left:2px;transition:transform .2s,background .2s}
+.toggle-track.on .toggle-thumb{transform:translateX(16px);background:var(--purple2)}
+.schema-panel{display:none}
+.schema-panel.show{display:block}
+
+/* BTNS */
+.btn{display:inline-flex;align-items:center;gap:.35rem;font-family:var(--mono);font-size:.76rem;font-weight:500;padding:.42rem .9rem;border-radius:6px;border:none;cursor:pointer;transition:all .15s;white-space:nowrap;text-decoration:none}
+.btn-primary{background:var(--purple);color:#fff}
+.btn-primary:hover{background:var(--purple2)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--border2);color:var(--text);background:var(--bg3)}
+.btn-lg{font-size:.88rem;padding:.6rem 1.8rem;border-radius:8px}
+
+/* ACTION ROW */
+.action-row{display:flex;align-items:center;justify-content:center;gap:1rem;margin:1rem 0 1.5rem;flex-wrap:wrap}
+.shortcut-hint{color:var(--text3);font-size:.72rem;font-family:var(--mono)}
+
+/* OUTPUT BODY */
+.output-body{padding:1rem;min-height:260px;font-size:.87rem;line-height:1.75}
+
+.placeholder-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:220px;gap:.7rem;color:var(--text3);text-align:center}
+.placeholder-icon{font-size:2.2rem;opacity:.35}
+.placeholder-features{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:.4rem}
+.placeholder-pill{background:var(--bg3);border:1px solid var(--border);color:var(--text3);font-size:.7rem;font-family:var(--mono);padding:.18rem .55rem;border-radius:10px}
+
+.loading-state{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:220px;gap:1rem}
+.loading-state.show{display:flex}
+.spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--purple);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:var(--mono);font-size:.78rem;color:var(--text2);animation:pulse 1.4s ease-in-out infinite}
+.loading-steps{display:flex;flex-direction:column;gap:.3rem;margin-top:.2rem}
+.loading-step{font-family:var(--mono);font-size:.7rem;color:var(--text3);opacity:0;animation:fadeIn .4s forwards}
+@keyframes fadeIn{to{opacity:.6}}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+
+.error-state{display:none;background:var(--red-dim);border:1px solid var(--red);border-radius:6px;padding:.8rem 1rem;color:var(--red);font-size:.83rem;font-family:var(--mono)}
+.error-state.show{display:block}
+
+.result-content{display:none}
+.result-content.show{display:block}
+
+/* RESULT SECTIONS */
+.result-section{margin-bottom:1.1rem;padding-bottom:1.1rem;border-bottom:1px solid var(--border)}
+.result-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.section-title{font-family:var(--mono);font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--purple2);margin-bottom:.55rem;display:flex;align-items:center;gap:.4rem}
+
+/* PLAIN ENGLISH */
+.plain-english{font-size:.92rem;line-height:1.85;color:var(--text);background:var(--bg3);border-left:3px solid var(--purple);padding:.75rem 1rem;border-radius:0 6px 6px 0}
+.one-liner{font-size:.88rem;color:var(--text2);font-style:italic;margin-bottom:.5rem}
+
+/* EXECUTION ORDER */
+.exec-order-list{display:flex;flex-direction:column;gap:.3rem}
+.exec-order-item{display:flex;align-items:center;gap:.7rem;padding:.4rem .7rem;border-radius:6px;background:var(--bg3);border:1px solid var(--border);transition:border-color .15s}
+.exec-order-item.active-step{border-color:var(--purple);background:var(--purple-dim)}
+.exec-num{font-family:var(--mono);font-size:.7rem;font-weight:600;width:20px;height:20px;border-radius:50%;background:var(--bg4);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text3)}
+.exec-order-item.active-step .exec-num{background:var(--purple);border-color:var(--purple);color:#fff}
+.exec-keyword{font-family:var(--mono);font-size:.78rem;font-weight:600;color:var(--purple2);width:100px;flex-shrink:0}
+.exec-order-item.active-step .exec-keyword{color:var(--purple2)}
+.exec-desc{font-size:.8rem;color:var(--text3)}
+.exec-order-item.active-step .exec-desc{color:var(--text2)}
+
+/* ASCII TREE */
+.ascii-tree{font-family:var(--mono);font-size:.8rem;line-height:1.8;color:var(--text2);background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.9rem 1rem;overflow-x:auto;white-space:pre}
+.ascii-tree .node-table{color:var(--blue)}
+.ascii-tree .node-filter{color:var(--green)}
+.ascii-tree .node-join{color:var(--purple2)}
+.ascii-tree .node-agg{color:var(--yellow)}
+.ascii-tree .node-sort{color:var(--orange)}
+.ascii-tree .node-out{color:var(--text)}
+
+/* CLAUSE BREAKDOWN */
+.clause-list{display:flex;flex-direction:column;gap:.4rem}
+.clause-item{display:grid;grid-template-columns:88px 1fr;gap:.6rem;align-items:start;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.55rem .8rem}
+.clause-keyword{font-family:var(--mono);font-size:.73rem;font-weight:600;color:var(--purple2);padding-top:.05rem}
+.clause-explanation{color:var(--text2);font-size:.83rem;line-height:1.6}
+@media(max-width:500px){.clause-item{grid-template-columns:1fr}.clause-keyword{margin-bottom:.15rem}}
+
+/* COMPLEXITY */
+.complexity-row{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
+.complexity-badge{font-family:var(--mono);font-size:.76rem;font-weight:600;padding:.28rem .8rem;border-radius:20px}
+.complexity-badge.easy{background:var(--green-dim);border:1px solid var(--green);color:var(--green)}
+.complexity-badge.medium{background:var(--yellow-dim);border:1px solid var(--yellow);color:var(--yellow)}
+.complexity-badge.hard{background:var(--red-dim);border:1px solid var(--red);color:var(--red)}
+.complexity-score-bar{display:flex;gap:3px;align-items:center}
+.score-dot{width:8px;height:8px;border-radius:50%;background:var(--border)}
+.score-dot.filled.easy{background:var(--green)}
+.score-dot.filled.medium{background:var(--yellow)}
+.score-dot.filled.hard{background:var(--red)}
+
+/* CLOUD WARNINGS */
+.cloud-warnings{display:flex;flex-direction:column;gap:.5rem}
+.cloud-warn-item{border-radius:6px;padding:.65rem .85rem;border-left:3px solid;display:flex;flex-direction:column;gap:.25rem}
+.cloud-warn-item.high{background:var(--red-dim);border-color:var(--red)}
+.cloud-warn-item.medium{background:var(--yellow-dim);border-color:var(--yellow)}
+.cloud-warn-item.low{background:var(--blue-dim);border-color:var(--blue)}
+.cloud-warn-header{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.cloud-badge{font-family:var(--mono);font-size:.65rem;padding:.1rem .4rem;border-radius:8px;font-weight:600}
+.cloud-badge.athena{background:#ff980018;border:1px solid #ff9800;color:#ff9800}
+.cloud-badge.redshift{background:#1a73e818;border:1px solid #1a73e8;color:#60a5fa}
+.cloud-badge.snowflake{background:#29b5e818;border:1px solid #29b5e8;color:#67d7f0}
+.cloud-badge.general{background:var(--purple-dim);border:1px solid var(--purple);color:var(--purple2)}
+.cloud-warn-title{font-size:.84rem;font-weight:600;color:var(--text)}
+.cloud-warn-desc{font-size:.81rem;color:var(--text2);line-height:1.6}
+.cloud-warn-fix{font-family:var(--mono);font-size:.75rem;color:var(--green);background:var(--bg);padding:.35rem .6rem;border-radius:4px;border:1px solid var(--border);margin-top:.2rem}
+
+/* SCHEMA ANALYSIS */
+.schema-findings{display:flex;flex-direction:column;gap:.45rem}
+.schema-find-item{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.6rem .85rem;display:flex;flex-direction:column;gap:.2rem}
+.schema-find-type{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em}
+.schema-find-type.index{color:var(--yellow)}
+.schema-find-type.mismatch{color:var(--red)}
+.schema-find-type.fk{color:var(--orange)}
+.schema-find-type.good{color:var(--green)}
+.schema-find-type.info{color:var(--blue)}
+.schema-find-msg{font-size:.83rem;color:var(--text2);line-height:1.6}
+.schema-find-fix{font-family:var(--mono);font-size:.75rem;color:var(--green);margin-top:.15rem}
+
+/* TIPS */
+.tips-list{display:flex;flex-direction:column;gap:.38rem}
+.tip-item{display:flex;gap:.55rem;align-items:start;font-size:.83rem;color:var(--text2);line-height:1.6}
+.tip-arrow{color:var(--purple2);flex-shrink:0;margin-top:.1rem;font-family:var(--mono)}
+
+/* RETURNS */
+.returns-box{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.7rem .9rem;font-size:.86rem;color:var(--text2);line-height:1.7}
+
+/* DIALECT */
+.dialect-badge{font-family:var(--mono);font-size:.76rem;padding:.28rem .75rem;border-radius:20px;background:var(--blue-dim);border:1px solid var(--blue);color:var(--blue)}
+
+/* EXAMPLES */
+.examples-section{margin-top:2.5rem}
+.examples-section h2{font-size:1.2rem;font-weight:600;margin-bottom:.3rem}
+.examples-section>p{color:var(--text2);margin-bottom:1rem;font-size:.88rem}
+.examples-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.7rem}
+.example-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.85rem 1rem;cursor:pointer;transition:border-color .15s,transform .15s}
+.example-card:hover{border-color:var(--purple);transform:translateY(-1px)}
+.ex-label{font-size:.7rem;font-family:var(--mono);color:var(--purple2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem}
+.ex-sql{font-family:var(--mono);font-size:.76rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* SEO CONTENT */
+.seo-section{margin-top:3.5rem;border-top:1px solid var(--border);padding-top:2.5rem}
+.seo-section h2{font-size:1.35rem;font-weight:600;margin-bottom:.45rem}
+.seo-section h3{font-size:.95rem;font-weight:600;margin:1.4rem 0 .35rem;color:var(--purple2)}
+.seo-section p{color:var(--text2);margin-bottom:.75rem;line-height:1.75;font-size:.88rem}
+.seo-section code{font-family:var(--mono);background:var(--bg3);border:1px solid var(--border);padding:.1rem .33rem;border-radius:4px;font-size:.8rem;color:var(--purple2)}
+
+.ref-table-wrap{overflow-x:auto;margin:.7rem 0 1.3rem}
+.ref-table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:480px}
+.ref-table th{background:var(--bg3);color:var(--text2);text-align:left;padding:.5rem .75rem;border:1px solid var(--border);font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em}
+.ref-table td{padding:.48rem .75rem;border:1px solid var(--border);color:var(--text2);line-height:1.55;vertical-align:top}
+.ref-table tr:nth-child(even) td{background:var(--bg3)}
+.ref-table td:first-child{font-family:var(--mono);color:var(--purple2)}
+
+/* FAQ */
+.faq-list{display:flex;flex-direction:column;gap:.45rem;margin-top:.9rem}
+.faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.faq-q{padding:.85rem 1rem;font-weight:600;font-size:.86rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;transition:background .15s}
+.faq-q:hover{background:var(--bg3)}
+.faq-q::after{content:'+';color:var(--purple2);font-size:1.1rem;flex-shrink:0}
+.faq-item.open .faq-q::after{content:'−'}
+.faq-a{display:none;padding:0 1rem .85rem;color:var(--text2);font-size:.86rem;line-height:1.72}
+.faq-item.open .faq-a{display:block}
+
+/* RELATED */
+.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.65rem;margin-top:.9rem}
+.related-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.75rem .95rem;text-decoration:none;color:var(--text);transition:border-color .15s;display:flex;flex-direction:column;gap:.18rem}
+.related-card:hover{border-color:var(--purple)}
+.rc-title{font-weight:600;font-size:.86rem}
+.rc-desc{color:var(--text3);font-size:.76rem}
+
+hr.div{border:none;border-top:1px solid var(--border);margin:2.2rem 0}
+
+footer{border-top:1px solid var(--border);padding:1.8rem 1.5rem;text-align:center;color:var(--text3);font-size:.78rem}
+footer a{color:var(--text2);text-decoration:none}
+footer a:hover{color:var(--purple2)}
+.footer-links{display:flex;flex-wrap:wrap;gap:.3rem .8rem;justify-content:center;margin-bottom:.7rem}
+
+.copied{color:var(--green) !important}
+
+/* copy btn */
+#copyBtn{padding:.2rem .6rem;font-size:.68rem;display:none}
+
+/* no cloud warnings placeholder */
+.no-warnings{display:flex;align-items:center;gap:.5rem;color:var(--green);font-size:.83rem;background:var(--green-dim);border:1px solid var(--green);border-radius:6px;padding:.6rem .85rem}
+
+/* HAMBURGER MOBILE NAV */
+.nav-hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:.4rem;border-radius:5px;border:none;background:transparent;margin-left:auto;flex-shrink:0}
+.nav-hamburger span{display:block;width:20px;height:2px;background:var(--text2);border-radius:2px;transition:all .2s}
+.nav-hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.nav-hamburger.open span:nth-child(2){opacity:0}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+@media(max-width:640px){
+  .nav-hamburger{display:flex}
+  .nav-links{display:none;position:absolute;top:52px;left:0;right:0;background:rgba(13,13,15,.98);border-bottom:1px solid var(--border);padding:.6rem 1rem;flex-direction:column;gap:.1rem;z-index:200}
+  .nav-links.open{display:flex}
+  .nav-links a{padding:.5rem .75rem;font-size:.82rem}
+}
+
+/* API KEY BANNER */
+.apikey-banner{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.apikey-banner.has-key{border-color:var(--green);background:var(--green-dim)}
+.apikey-label{font-family:var(--mono);font-size:.73rem;color:var(--text2);white-space:nowrap;flex-shrink:0}
+.apikey-input{flex:1;min-width:180px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:.78rem;padding:.38rem .7rem;border-radius:6px;outline:none;transition:border-color .15s}
+.apikey-input:focus{border-color:var(--purple)}
+.apikey-status{font-family:var(--mono);font-size:.7rem;color:var(--text3);flex-shrink:0}
+.apikey-status.ok{color:var(--green)}
+.apikey-help{font-size:.72rem;color:var(--text3);width:100%}
+.apikey-help a{color:var(--purple2);text-decoration:none}
+.apikey-help a:hover{text-decoration:underline}
+
+/* MOBILE IMPROVEMENTS */
+@media(max-width:600px){
+  .wrap{padding:1.2rem .85rem 4rem}
+  .hero{padding:1.2rem 0 1rem}
+  .hero h1{font-size:1.8rem}
+  .hero-sub{font-size:.85rem}
+  .mode-bar{overflow-x:auto;flex-wrap:nowrap;padding-bottom:.3rem;scrollbar-width:none}
+  .mode-bar::-webkit-scrollbar{display:none}
+  .mode-btn{flex-shrink:0}
+  .action-row{gap:.6rem}
+  .btn-lg{font-size:.82rem;padding:.5rem 1.3rem}
+  .shortcut-hint{display:none}
+  .panel-header{padding:.5rem .75rem}
+  .sql-textarea{min-height:180px}
+  .feature-pills{gap:.3rem}
+  .pill{font-size:.68rem;padding:.18rem .5rem}
+  .examples-grid{grid-template-columns:1fr}
+  .related-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+  .ref-table-wrap{margin:.5rem -0.85rem 1rem;border-radius:0}
+  footer{padding:1.2rem .85rem}
+  .footer-links{gap:.25rem .6rem}
+  .apikey-banner{gap:.5rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">CRON<span>READ</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="/">Cron Tool</a>
+      <a href="/blog/cron-examples/">Examples</a>
+      <a href="/blog/linux-crontab-examples/">Linux</a>
+      <a href="/blog/aws-eventbridge-cron-examples/">AWS</a>
+      <a href="/blog/kubernetes-cronjob-examples/">K8s</a>
+      <a href="/blog/github-actions-cron-examples/">GitHub</a>
+      <a href="/blog/docker-cron-job-examples/">Docker</a>
+      <a href="/sql-explainer/" class="active">SQL</a>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" onclick="toggleNav()" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">AI-POWERED <span class="v2-badge">v2.0</span></div>
+    <h1>SQL Query<br><span class="hl">Explainer</span></h1>
+    <p class="hero-sub">Paste any SQL query and get a plain-English explanation, logical execution order, visual data-flow diagram, cloud cost warnings, and schema-aware analysis.</p>
+    <div class="feature-pills">
+      <span class="pill">Plain English</span>
+      <span class="pill">Clause Breakdown</span>
+      <span class="pill new">⚡ Execution Order</span>
+      <span class="pill new">🌊 Visual Flow</span>
+      <span class="pill new">☁️ Cloud Cost Warnings</span>
+      <span class="pill new">🗄️ Schema / DDL Aware</span>
+    </div>
+  </div>
+
+  <!-- MODE BAR -->
+  <div class="mode-bar" role="group" aria-label="Explanation mode">
+    <button class="mode-btn active" data-mode="full" onclick="setMode(this)">⚡ Full Analysis</button>
+    <button class="mode-btn" data-mode="simple" onclick="setMode(this)">💬 Plain English</button>
+    <button class="mode-btn" data-mode="clauses" onclick="setMode(this)">🔍 Clause Breakdown</button>
+    <button class="mode-btn" data-mode="cloud" onclick="setMode(this)">☁️ Cloud Cost Audit</button>
+    <button class="mode-btn" data-mode="beginner" onclick="setMode(this)">🎓 Beginner Mode</button>
+  </div>
+
+  <!-- INPUT GRID -->
+  <div class="input-grid">
+
+    <!-- SQL Input -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-header-left">
+          <span>SQL Query</span>
+          <span class="badge">Any dialect</span>
+        </div>
+        <span id="sqlDialectBadge" style="display:none" class="badge-green badge"></span>
+      </div>
+      <textarea
+        class="sql-textarea"
+        id="sqlInput"
+        spellcheck="false"
+        autocomplete="off"
+        placeholder="Paste your SQL query here...
+
+SELECT u.name, COUNT(o.id)
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE o.created_at > '2024-01-01'
+GROUP BY u.name
+HAVING COUNT(o.id) > 5
+ORDER BY 2 DESC;"
+        oninput="updateCharCount()"
+        onkeydown="handleKeydown(event)"
+      ></textarea>
+      <div class="input-bar">
+        <span class="char-count" id="charCount">0 chars</span>
+        <div class="input-actions">
+          <button class="btn btn-ghost" onclick="clearInput()">✕ Clear</button>
+          <button class="btn btn-ghost" onclick="formatSQL()">⌥ Format</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DDL / Schema Input -->
+    <div>
+      <!-- Schema toggle -->
+      <div class="schema-toggle" onclick="toggleSchema()" id="schemaToggle">
+        <div class="toggle-track" id="toggleTrack"><div class="toggle-thumb"></div></div>
+        <span id="schemaToggleLabel">Add Schema / DDL (optional — enables index &amp; type analysis)</span>
+      </div>
+
+      <div class="schema-panel" id="schemaPanel">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-header-left">
+              <span>DDL / Schema</span>
+              <span class="badge badge-optional">Optional</span>
+            </div>
+            <button class="btn btn-ghost" onclick="clearDDL()" style="padding:.2rem .55rem;font-size:.68rem">Clear</button>
+          </div>
+          <textarea
+            class="ddl-textarea"
+            id="ddlInput"
+            spellcheck="false"
+            autocomplete="off"
+            placeholder="Paste CREATE TABLE statements here...
+
+CREATE TABLE users (
+  id BIGINT PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  name VARCHAR(100),
+  created_at TIMESTAMP
+);
+
+CREATE TABLE orders (
+  id BIGINT PRIMARY KEY,
+  user_id INT,  -- note: type mismatch with users.id
+  total_amount DECIMAL(10,2),
+  created_at TIMESTAMP
+);"
+          ></textarea>
+          <div class="input-bar">
+            <span style="font-family:var(--mono);font-size:.68rem;color:var(--text3)">Index suggestions, type mismatches, FK checks</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- When schema is hidden, show example cards -->
+      <div id="noSchemaHint" style="margin-top:.5rem">
+        <div style="color:var(--text3);font-size:.76rem;font-family:var(--mono);margin-bottom:.6rem">— or try an example —</div>
+        <div style="display:flex;flex-direction:column;gap:.4rem">
+          <div class="example-card" onclick="loadExample(0)" style="padding:.65rem .85rem">
+            <div class="ex-label">LEFT JOIN + GROUP BY + HAVING</div>
+            <div class="ex-sql">SELECT u.name, COUNT(o.id) FROM users u LEFT JOIN orders...</div>
+          </div>
+          <div class="example-card" onclick="loadExample(1)" style="padding:.65rem .85rem">
+            <div class="ex-label">CTE + Window Function</div>
+            <div class="ex-sql">WITH monthly AS (...) SELECT RANK() OVER (PARTITION BY...</div>
+          </div>
+          <div class="example-card" onclick="loadExample(2)" style="padding:.65rem .85rem">
+            <div class="ex-label">Subquery + EXISTS</div>
+            <div class="ex-sql">SELECT * FROM products WHERE EXISTS (SELECT 1 FROM...</div>
+          </div>
+          <div class="example-card" onclick="loadExample(3)" style="padding:.65rem .85rem">
+            <div class="ex-label">Schema + Query (index analysis)</div>
+            <div class="ex-sql">With DDL — detects missing indexes &amp; type mismatches</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- EXPLAIN BUTTON -->
+  <div class="action-row">
+    <button class="btn btn-primary btn-lg" id="explainBtn" onclick="explainSQL()">
+      ⚡ Explain SQL
+    </button>
+    <span class="shortcut-hint">Ctrl+Enter</span>
+    <span id="schemaActiveHint" style="display:none;font-family:var(--mono);font-size:.72rem;color:var(--green)">🗄️ Schema-aware mode active</span>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="output-panel">
+    <div class="panel-header">
+      <div class="panel-header-left">
+        <span>Analysis Result</span>
+        <span id="resultModeBadge" style="display:none" class="badge"></span>
+      </div>
+      <button class="btn btn-ghost" id="copyBtn" onclick="copyResult()">Copy</button>
+    </div>
+    <div class="output-body" id="outputBody">
+
+      <div class="placeholder-state" id="placeholderState">
+        <div class="placeholder-icon">⬆</div>
+        <div>Paste SQL above and click <strong>Explain SQL</strong></div>
+        <div class="placeholder-features">
+          <span class="placeholder-pill">Execution Order</span>
+          <span class="placeholder-pill">Visual Flow</span>
+          <span class="placeholder-pill">Cloud Cost Check</span>
+          <span class="placeholder-pill">Schema Analysis</span>
+        </div>
+      </div>
+
+      <div class="loading-state" id="loadingState">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loadingText">Analyzing query...</div>
+        <div class="loading-steps" id="loadingSteps"></div>
+      </div>
+
+      <div class="error-state" id="errorState"></div>
+      <div class="result-content" id="resultContent"></div>
+
+    </div>
+  </div>
+
+  <!-- ALL EXAMPLES -->
+  <div class="examples-section">
+    <h2>More Examples</h2>
+    <p>Click to load into the editor. All examples support Full Analysis mode.</p>
+    <div class="examples-grid">
+      <div class="example-card" onclick="loadExample(0)">
+        <div class="ex-label">LEFT JOIN + GROUP BY + HAVING</div>
+        <div class="ex-sql">SELECT u.name, COUNT(o.id) FROM users u LEFT JOIN orders...</div>
+      </div>
+      <div class="example-card" onclick="loadExample(1)">
+        <div class="ex-label">CTE + Window Function</div>
+        <div class="ex-sql">WITH monthly_sales AS (...) SELECT RANK() OVER...</div>
+      </div>
+      <div class="example-card" onclick="loadExample(2)">
+        <div class="ex-label">Correlated Subquery</div>
+        <div class="ex-sql">SELECT * FROM products WHERE EXISTS (SELECT 1 FROM...</div>
+      </div>
+      <div class="example-card" onclick="loadExample(3)">
+        <div class="ex-label">Schema + Query (DDL analysis)</div>
+        <div class="ex-sql">CREATE TABLE users... + SELECT with JOIN — detects type mismatches</div>
+      </div>
+      <div class="example-card" onclick="loadExample(4)">
+        <div class="ex-label">DELETE with Subquery</div>
+        <div class="ex-sql">DELETE FROM orders WHERE customer_id IN (SELECT id FROM...</div>
+      </div>
+      <div class="example-card" onclick="loadExample(5)">
+        <div class="ex-label">UPSERT / INSERT ON CONFLICT</div>
+        <div class="ex-sql">INSERT INTO users ... ON CONFLICT (email) DO UPDATE SET...</div>
+      </div>
+      <div class="example-card" onclick="loadExample(6)">
+        <div class="ex-label">Athena / Partitioned Table (Cloud Cost)</div>
+        <div class="ex-sql">SELECT * FROM s3_events WHERE event_type = 'click' — no partition</div>
+      </div>
+      <div class="example-card" onclick="loadExample(7)">
+        <div class="ex-label">Snowflake CROSS JOIN Risk</div>
+        <div class="ex-sql">SELECT a.*, b.* FROM large_table a CROSS JOIN lookup b</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- SEO CONTENT -->
+  <div class="seo-section">
+    <h2>SQL Logical Execution Order — Complete Reference</h2>
+    <p>The most important concept for understanding complex SQL queries is <strong>logical execution order</strong>. The database engine doesn't process SQL in the order you write it — it follows a fixed sequence.</p>
+
+    <div class="ref-table-wrap">
+      <table class="ref-table">
+        <thead><tr><th>Step</th><th>Clause</th><th>What happens</th><th>Common mistake</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>FROM / JOIN</td><td>Tables are identified and joined together</td><td>Assuming ORDER BY applies before JOIN</td></tr>
+          <tr><td>2</td><td>WHERE</td><td>Rows filtered before any grouping</td><td>Using aliases defined in SELECT (not available yet)</td></tr>
+          <tr><td>3</td><td>GROUP BY</td><td>Remaining rows grouped into buckets</td><td>Selecting non-aggregated, non-grouped columns</td></tr>
+          <tr><td>4</td><td>HAVING</td><td>Groups filtered using aggregate conditions</td><td>Using HAVING instead of WHERE for row-level filters</td></tr>
+          <tr><td>5</td><td>SELECT</td><td>Columns computed and aliases defined</td><td>Referencing a SELECT alias in WHERE (too early)</td></tr>
+          <tr><td>6</td><td>DISTINCT</td><td>Duplicate rows removed</td><td>Expecting DISTINCT before GROUP BY</td></tr>
+          <tr><td>7</td><td>ORDER BY</td><td>Result set sorted</td><td>Sorting before LIMIT — always applies together</td></tr>
+          <tr><td>8</td><td>LIMIT / OFFSET</td><td>Final row count restricted</td><td>Using LIMIT without ORDER BY (non-deterministic)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Cloud Data Warehouse Cost Patterns</h3>
+    <p>On pay-per-scan platforms like <strong>AWS Athena</strong>, <strong>Amazon Redshift Spectrum</strong>, and <strong>Snowflake</strong>, poorly written SQL directly increases cost. Key patterns to avoid:</p>
+    <div class="ref-table-wrap">
+      <table class="ref-table">
+        <thead><tr><th>Anti-Pattern</th><th>Platform Risk</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>SELECT * on large tables</td><td>Athena, Redshift, Snowflake</td><td>List only needed columns — reduces bytes scanned</td></tr>
+          <tr><td>No partition filter in WHERE</td><td>Athena, Redshift Spectrum</td><td>Always filter on partition key (e.g. event_date, region)</td></tr>
+          <tr><td>CROSS JOIN on large tables</td><td>All platforms</td><td>Replace with INNER JOIN or add join condition</td></tr>
+          <tr><td>Functions on indexed/partition columns</td><td>All platforms</td><td>Avoid WHERE YEAR(created_at) = 2024 — use range instead</td></tr>
+          <tr><td>Scanning non-columnar format</td><td>Athena</td><td>Convert to Parquet/ORC for 10x cost reduction</td></tr>
+          <tr><td>No LIMIT in dev/test queries</td><td>Snowflake, BigQuery</td><td>Always add LIMIT when exploring data</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Schema-Aware Analysis: What It Checks</h3>
+    <p>When you provide a <code>CREATE TABLE</code> DDL alongside your SQL query, the explainer cross-references them to find:</p>
+    <div class="ref-table-wrap">
+      <table class="ref-table">
+        <thead><tr><th>Check</th><th>Example Issue Found</th></tr></thead>
+        <tbody>
+          <tr><td>Missing index on JOIN column</td><td>Joining on <code>orders.user_id</code> with no index — full table scan on every query</td></tr>
+          <tr><td>Data type mismatch in JOIN</td><td><code>users.id BIGINT</code> joined to <code>orders.user_id INT</code> — implicit cast on every row</td></tr>
+          <tr><td>Missing foreign key</td><td>No FK constraint between <code>orders.user_id</code> and <code>users.id</code> — data integrity risk</td></tr>
+          <tr><td>Column doesn't exist in schema</td><td>Query references <code>users.phone</code> which isn't in your <code>CREATE TABLE</code></td></tr>
+          <tr><td>VARCHAR too short</td><td>Filtering on an email column defined as <code>VARCHAR(50)</code> when emails can be longer</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- FAQ -->
+  <section>
+    <h2 style="font-size:1.35rem;font-weight:600;margin-bottom:.3rem">Frequently Asked Questions</h2>
+    <p style="color:var(--text2);font-size:.86rem;margin-bottom:.5rem">SQL execution, cloud costs, and schema analysis explained.</p>
+    <div class="faq-list">
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is SQL logical execution order?</div><div class="faq-a">SQL logical execution order is FROM → JOIN → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT. This is the sequence the database engine processes clauses — not the order you write them. Understanding this explains why you can't use a SELECT alias in a WHERE clause, or why HAVING is needed for aggregate filters.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Why does SELECT * cost more on AWS Athena?</div><div class="faq-a">Athena charges per terabyte of data scanned. If your data is in columnar format (Parquet or ORC), specifying only the columns you need means Athena reads only those column files — skipping the rest. SELECT * forces Athena to read every column. On wide tables with 50+ columns, this can be 10-20x more expensive than a targeted column list.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is a partition filter and why does it matter?</div><div class="faq-a">On Athena and Redshift Spectrum, large tables are often partitioned by date, region, or another column. Without a WHERE clause filtering on the partition key, the query scans the entire table (all partitions). Adding a partition filter like WHERE event_date = '2024-01-15' limits the scan to only that partition — dramatically reducing cost and query time.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is schema-aware SQL analysis?</div><div class="faq-a">Schema-aware analysis cross-references your SQL query against your CREATE TABLE definitions to find issues like missing indexes on JOIN columns, data type mismatches (e.g. BIGINT joined to INT), missing foreign keys, columns referenced in the query that don't exist in the schema, and column size concerns.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What does an ASCII SQL execution tree show?</div><div class="faq-a">The ASCII visual flow shows the order of data operations the database performs — which tables are read, how filters reduce row counts, how joins combine data, where aggregation happens, and what is finally returned. It mirrors a simplified query execution plan and helps you identify where performance bottlenecks are most likely to occur.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the difference between WHERE and HAVING?</div><div class="faq-a">WHERE filters individual rows before grouping — it runs at step 2 in execution order. HAVING filters groups after GROUP BY — it runs at step 4. A common performance mistake is using HAVING for row-level filters that could be WHERE, forcing the database to group all rows before discarding many of them.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How do I check if a JOIN will cause a data type mismatch?</div><div class="faq-a">Compare the column definitions in your CREATE TABLE statements for both sides of the JOIN condition. If users.id is BIGINT and orders.user_id is INT, the database must implicitly cast one type to the other on every row comparison — making index usage impossible on some engines. Always match data types exactly on JOIN columns.</div></div>
+    </div>
+  </section>
+
+  <hr class="div">
+
+  <!-- RELATED -->
+  <section>
+    <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:.7rem">More Developer Tools on CronRead</h2>
+    <div class="related-grid">
+      <a href="/" class="related-card"><div class="rc-title">⏱ Cron Expression Reader</div><div class="rc-desc">Paste any cron → plain English instantly</div></a>
+      <a href="/blog/cron-examples/" class="related-card"><div class="rc-title">📋 Cron Examples</div><div class="rc-desc">50+ ready-to-copy cron schedules</div></a>
+      <a href="/blog/linux-crontab-examples/" class="related-card"><div class="rc-title">🐧 Linux Crontab</div><div class="rc-desc">30+ crontab commands with real use cases</div></a>
+      <a href="/blog/aws-eventbridge-cron-examples/" class="related-card"><div class="rc-title">☁️ AWS EventBridge Cron</div><div class="rc-desc">6-field AWS cron syntax explained</div></a>
+      <a href="/blog/kubernetes-cronjob-examples/" class="related-card"><div class="rc-title">⎈ Kubernetes CronJob</div><div class="rc-desc">K8s CronJob YAML examples</div></a>
+      <a href="/blog/docker-cron-job-examples/" class="related-card"><div class="rc-title">🐳 Docker Cron Jobs</div><div class="rc-desc">supercronic, ofelia, Dockerfile patterns</div></a>
+      <a href="/blog/github-actions-cron-examples/" class="related-card"><div class="rc-title">⚙️ GitHub Actions Cron</div><div class="rc-desc">Scheduled workflow examples</div></a>
+      <a href="/blog/crontab-vs-systemd-timer/" class="related-card"><div class="rc-title">⚔️ Crontab vs Systemd</div><div class="rc-desc">Full comparison with examples</div></a>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="/">CronRead</a>
+    <a href="/sql-explainer/">SQL Explainer</a>
+    <a href="/blog/cron-examples/">Cron Examples</a>
+    <a href="/blog/linux-crontab-examples/">Linux Crontab</a>
+    <a href="/blog/aws-eventbridge-cron-examples/">AWS EventBridge</a>
+    <a href="/blog/kubernetes-cronjob-examples/">Kubernetes</a>
+    <a href="/blog/github-actions-cron-examples/">GitHub Actions</a>
+    <a href="/blog/docker-cron-job-examples/">Docker Cron</a>
+    <a href="/blog/crontab-vs-systemd-timer/">Crontab vs Systemd</a>
+    <a href="/blog/cronguru-alternative/">vs CronGuru</a>
+  </div>
+  <p>© 2026 CronRead · Always test SQL in a safe environment before running on production data.</p>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let currentMode = 'full';
+let schemaEnabled = false;
+
+const PROXY_URL = '/api/sql-proxy';
+
+// ═══════════════════════════════════════════════
+// NAV TOGGLE
+// ═══════════════════════════════════════════════
+function toggleNav() {
+  const links = document.getElementById('navLinks');
+  const btn = document.getElementById('navHamburger');
+  links.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════════
+// EXAMPLES
+// ═══════════════════════════════════════════════
+const EXAMPLES = [
+  // 0 - LEFT JOIN + GROUP BY + HAVING
+  { sql: `SELECT
+  u.name,
+  u.email,
+  COUNT(o.id) AS order_count,
+  SUM(o.total_amount) AS total_spent
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE o.created_at > '2024-01-01'
+GROUP BY u.id, u.name, u.email
+HAVING COUNT(o.id) > 5
+ORDER BY total_spent DESC
+LIMIT 20;`, ddl: '' },
+
+  // 1 - CTE + Window Function
+  { sql: `WITH monthly_sales AS (
+  SELECT
+    DATE_TRUNC('month', created_at) AS month,
+    department,
+    SUM(amount) AS revenue
+  FROM sales
+  WHERE status = 'completed'
+  GROUP BY 1, 2
+)
+SELECT
+  month,
+  department,
+  revenue,
+  RANK() OVER (PARTITION BY month ORDER BY revenue DESC) AS dept_rank,
+  revenue / SUM(revenue) OVER (PARTITION BY month) * 100 AS pct_of_monthly
+FROM monthly_sales
+ORDER BY month, dept_rank;`, ddl: '' },
+
+  // 2 - Correlated Subquery + EXISTS
+  { sql: `SELECT
+  p.id,
+  p.name,
+  p.price
+FROM products p
+WHERE EXISTS (
+  SELECT 1
+  FROM order_items oi
+  INNER JOIN orders o ON oi.order_id = o.id
+  WHERE oi.product_id = p.id
+    AND o.status = 'completed'
+    AND o.created_at >= NOW() - INTERVAL '30 days'
+)
+ORDER BY p.price DESC;`, ddl: '' },
+
+  // 3 - Schema + Query (DDL analysis)
+  { sql: `SELECT
+  u.id,
+  u.name,
+  o.id AS order_id,
+  o.total_amount
+FROM users u
+INNER JOIN orders o ON u.id = o.user_id
+WHERE u.created_at > '2023-01-01'
+  AND o.status = 'pending'
+ORDER BY o.total_amount DESC;`,
+    ddl: `CREATE TABLE users (
+  id BIGINT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE orders (
+  id BIGINT PRIMARY KEY,
+  user_id INT,
+  status VARCHAR(20),
+  total_amount DECIMAL(10,2),
+  created_at TIMESTAMP DEFAULT NOW()
+);` },
+
+  // 4 - DELETE with Subquery
+  { sql: `DELETE FROM orders
+WHERE customer_id IN (
+  SELECT id
+  FROM customers
+  WHERE last_active < NOW() - INTERVAL '2 years'
+    AND total_orders = 0
+    AND subscription_status = 'inactive'
+);`, ddl: '' },
+
+  // 5 - UPSERT
+  { sql: `INSERT INTO users (email, name, plan, created_at)
+VALUES
+  ('alice@example.com', 'Alice Smith', 'pro', NOW()),
+  ('bob@example.com', 'Bob Jones', 'free', NOW())
+ON CONFLICT (email)
+DO UPDATE SET
+  name = EXCLUDED.name,
+  plan = EXCLUDED.plan,
+  updated_at = NOW()
+WHERE users.plan != 'enterprise'
+RETURNING id, email, plan, updated_at;`, ddl: '' },
+
+  // 6 - Athena / Cloud cost risk (no partition filter)
+  { sql: `SELECT
+  user_id,
+  event_type,
+  page_url,
+  session_id,
+  COUNT(*) AS event_count
+FROM analytics_events
+WHERE event_type = 'page_view'
+GROUP BY user_id, event_type, page_url, session_id
+ORDER BY event_count DESC
+LIMIT 100;`, ddl: '' },
+
+  // 7 - Snowflake CROSS JOIN risk
+  { sql: `SELECT
+  a.user_id,
+  a.product_id,
+  b.category,
+  b.region
+FROM user_purchase_events a
+CROSS JOIN product_metadata b
+WHERE b.is_active = 1;`, ddl: '' }
+];
+
+// ═══════════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════════
+function updateCharCount() {
+  const v = document.getElementById('sqlInput').value;
+  document.getElementById('charCount').textContent = v.length + ' chars';
+}
+
+function setMode(btn) {
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentMode = btn.dataset.mode;
+}
+
+function loadExample(idx) {
+  const ex = EXAMPLES[idx];
+  document.getElementById('sqlInput').value = ex.sql;
+  updateCharCount();
+  if (ex.ddl) {
+    schemaEnabled = true;
+    document.getElementById('toggleTrack').classList.add('on');
+    document.getElementById('schemaPanel').classList.add('show');
+    document.getElementById('noSchemaHint').style.display = 'none';
+    document.getElementById('schemaActiveHint').style.display = 'inline';
+    document.getElementById('ddlInput').value = ex.ddl;
+  } else {
+    // Reset schema state when loading a non-DDL example
+    schemaEnabled = false;
+    document.getElementById('toggleTrack').classList.remove('on');
+    document.getElementById('schemaPanel').classList.remove('show');
+    document.getElementById('noSchemaHint').style.display = 'block';
+    document.getElementById('schemaActiveHint').style.display = 'none';
+    if (document.getElementById('ddlInput')) {
+      document.getElementById('ddlInput').value = '';
+    }
+  }
+  document.getElementById('sqlInput').focus();
+}
+
+function clearInput() {
+  document.getElementById('sqlInput').value = '';
+  updateCharCount();
+  showPlaceholder();
+}
+
+function clearDDL() {
+  document.getElementById('ddlInput').value = '';
+}
+
+function toggleSchema() {
+  schemaEnabled = !schemaEnabled;
+  const track = document.getElementById('toggleTrack');
+  const panel = document.getElementById('schemaPanel');
+  const hint = document.getElementById('noSchemaHint');
+  const activeHint = document.getElementById('schemaActiveHint');
+  track.classList.toggle('on', schemaEnabled);
+  panel.classList.toggle('show', schemaEnabled);
+  hint.style.display = schemaEnabled ? 'none' : 'block';
+  activeHint.style.display = schemaEnabled ? 'inline' : 'none';
+}
+
+function handleKeydown(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); explainSQL(); return; }
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const ta = e.target, s = ta.selectionStart, end = ta.selectionEnd;
+    ta.value = ta.value.substring(0, s) + '  ' + ta.value.substring(end);
+    ta.selectionStart = ta.selectionEnd = s + 2;
+  }
+}
+
+function formatSQL() {
+  const ta = document.getElementById('sqlInput');
+  let sql = ta.value.trim();
+  if (!sql) return;
+  const kws = ['SELECT','FROM','WHERE','LEFT JOIN','RIGHT JOIN','INNER JOIN','FULL OUTER JOIN',
+    'CROSS JOIN','JOIN','ON','GROUP BY','HAVING','ORDER BY','LIMIT','OFFSET',
+    'UNION ALL','UNION','INSERT INTO','VALUES','UPDATE','SET','DELETE FROM',
+    'WITH','PARTITION BY','OVER','CASE','WHEN','THEN','ELSE','END','RETURNING'];
+  kws.forEach(kw => { sql = sql.replace(new RegExp(`\\b${kw}\\b`, 'gi'), kw); });
+  ['SELECT','FROM','LEFT JOIN','RIGHT JOIN','INNER JOIN','FULL OUTER JOIN','CROSS JOIN',
+    'JOIN','WHERE','GROUP BY','HAVING','ORDER BY','LIMIT','UNION ALL','UNION',
+    'INSERT INTO','UPDATE','DELETE FROM','WITH','RETURNING']
+    .forEach(kw => { sql = sql.replace(new RegExp(`(?<!\n)\\b(${kw})\\b`, 'g'), '\n$1'); });
+  ta.value = sql.trim();
+  updateCharCount();
+}
+
+function copyResult() {
+  const text = document.getElementById('resultContent').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✓ Copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ═══════════════════════════════════════════════
+// UI STATES
+// ═══════════════════════════════════════════════
+function showPlaceholder() {
+  document.getElementById('placeholderState').style.display = 'flex';
+  document.getElementById('loadingState').classList.remove('show');
+  document.getElementById('errorState').classList.remove('show');
+  document.getElementById('resultContent').classList.remove('show');
+  document.getElementById('copyBtn').style.display = 'none';
+  document.getElementById('resultModeBadge').style.display = 'none';
+}
+
+function showLoading(msg, steps) {
+  document.getElementById('placeholderState').style.display = 'none';
+  document.getElementById('loadingText').textContent = msg;
+  const stepsEl = document.getElementById('loadingSteps');
+  stepsEl.innerHTML = '';
+  if (steps) {
+    steps.forEach((s, i) => {
+      const div = document.createElement('div');
+      div.className = 'loading-step';
+      div.textContent = s;
+      div.style.animationDelay = (i * 0.6) + 's';
+      stepsEl.appendChild(div);
+    });
+  }
+  document.getElementById('loadingState').classList.add('show');
+  document.getElementById('errorState').classList.remove('show');
+  document.getElementById('resultContent').classList.remove('show');
+  document.getElementById('copyBtn').style.display = 'none';
+}
+
+function showError(msg) {
+  document.getElementById('placeholderState').style.display = 'none';
+  document.getElementById('loadingState').classList.remove('show');
+  const el = document.getElementById('errorState');
+  el.textContent = '⚠ ' + msg;
+  el.classList.add('show');
+  document.getElementById('resultContent').classList.remove('show');
+  document.getElementById('copyBtn').style.display = 'none';
+}
+
+function showResult(html, modeLabel) {
+  document.getElementById('placeholderState').style.display = 'none';
+  document.getElementById('loadingState').classList.remove('show');
+  document.getElementById('errorState').classList.remove('show');
+  const el = document.getElementById('resultContent');
+  el.innerHTML = html;
+  el.classList.add('show');
+  document.getElementById('copyBtn').style.display = 'inline-flex';
+  const badge = document.getElementById('resultModeBadge');
+  badge.textContent = modeLabel;
+  badge.style.display = 'inline';
+}
+
+// ═══════════════════════════════════════════════
+// SAFE ESCAPE
+// ═══════════════════════════════════════════════
+function esc(s) {
+  if (typeof s !== 'string') return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ═══════════════════════════════════════════════
+// PROMPTS
+// ═══════════════════════════════════════════════
+const EXEC_ORDER_STANDARD = [
+  {step:'FROM / JOIN', desc:'Tables are identified and combined'},
+  {step:'WHERE', desc:'Row-level filters applied before grouping'},
+  {step:'GROUP BY', desc:'Rows grouped into buckets'},
+  {step:'HAVING', desc:'Group-level filters applied after aggregation'},
+  {step:'SELECT', desc:'Columns computed, aliases defined'},
+  {step:'DISTINCT', desc:'Duplicate rows removed'},
+  {step:'ORDER BY', desc:'Result set sorted'},
+  {step:'LIMIT / OFFSET', desc:'Final row count restricted'}
+];
+
+function buildPrompt(sql, ddl, mode) {
+  const hasDDL = ddl && ddl.trim().length > 10;
+  const ddlBlock = hasDDL ? `\n\nSchema/DDL provided:\n\`\`\`sql\n${ddl.trim()}\n\`\`\`` : '';
+  const base = `You are an expert SQL analyst. Analyze the following SQL query${hasDDL ? ' and the provided schema/DDL' : ''}.
+Respond ONLY with valid JSON — no markdown fences, no preamble, no explanation outside the JSON.
+
+SQL Query:
+\`\`\`sql
+${sql}
+\`\`\`${ddlBlock}`;
+
+  if (mode === 'simple') {
+    return base + `
+
+Return this exact JSON:
+{
+  "one_liner": "One sentence max 20 words summarizing what this query does.",
+  "plain_english": "2-4 sentences in plain English. Be specific about table names, conditions, what is returned.",
+  "dialect_detected": "MySQL | PostgreSQL | SQL Server | SQLite | Generic SQL | Snowflake | BigQuery | Athena"
+}`;
+  }
+
+  if (mode === 'clauses') {
+    return base + `
+
+Return this exact JSON:
+{
+  "execution_order": [
+    { "step": "CLAUSE_NAME", "present": true_or_false, "note": "brief note about this clause in the query, or empty string if not present" }
+  ],
+  "clauses": [
+    { "keyword": "KEYWORD", "code_snippet": "the actual clause text (truncated if long)", "explanation": "plain English explanation" }
+  ],
+  "ascii_tree": "A text/ASCII diagram showing data flow. Use box-drawing chars and arrows. Example:\\n┌─────────────┐\\n│ FROM users  │\\n└──────┬──────┘\\n       │\\n   [WHERE]\\n       │\\n  [SELECT]\\n       │\\n  [OUTPUT]",
+  "reading_tip": "One helpful tip about reading this query"
+}
+
+For execution_order, include all 8 standard steps: FROM/JOIN, WHERE, GROUP BY, HAVING, SELECT, DISTINCT, ORDER BY, LIMIT/OFFSET.
+Set present=true only for clauses actually in this query.
+For clauses array, include one entry per major clause that exists in the query.`;
+  }
+
+  if (mode === 'cloud') {
+    return base + `
+
+Audit this SQL query specifically for cloud data warehouse cost and performance issues.
+
+Return this exact JSON:
+{
+  "cloud_warnings": [
+    {
+      "severity": "high | medium | low",
+      "platforms": ["Athena", "Redshift", "Snowflake", "BigQuery", "General"],
+      "title": "Short issue title",
+      "description": "What the problem is and why it costs more or performs worse",
+      "fix": "Specific actionable fix with example SQL if helpful",
+      "estimated_impact": "e.g. '5-10x more data scanned' or 'potential full table scan'"
+    }
+  ],
+  "safe_patterns": ["list of cost-safe patterns already used in this query"],
+  "overall_risk": "low | medium | high",
+  "overall_summary": "1-2 sentence overall cost risk assessment"
+}
+
+Check for: SELECT *, missing partition filters, CROSS JOINs, functions on indexed/partition columns in WHERE, no LIMIT on exploratory queries, SELECT DISTINCT on large datasets, non-sargable predicates, cartesian products, implicit type casts in JOINs.
+If the query is already cost-efficient, set cloud_warnings to [] and set overall_risk to "low".`;
+  }
+
+  if (mode === 'beginner') {
+    return base + `
+
+Explain this SQL for a complete beginner. Use simple analogies.
+
+Return this exact JSON:
+{
+  "analogy": "A real-world analogy explaining what this query does (e.g. imagine a filing cabinet...)",
+  "execution_order": [
+    { "step": "CLAUSE_NAME", "present": true_or_false, "note": "what this does in simple terms" }
+  ],
+  "steps": [
+    { "step_num": 1, "title": "Step name", "explanation": "plain simple explanation" }
+  ],
+  "result_description": "What you get back, in simple terms",
+  "new_terms": [
+    { "term": "SQL keyword", "means": "simple explanation" }
+  ]
+}
+
+For execution_order include all 8 standard steps. Set present=true only for clauses in this query.`;
+  }
+
+  // FULL mode
+  return base + `
+
+Return this exact JSON:
+{
+  "one_liner": "One sentence max 20 words summarizing what this query does.",
+  "plain_english": "2-4 sentences explaining the query in plain English. Mention table names, joins, filters, and what is returned.",
+  "dialect_detected": "MySQL | PostgreSQL | SQL Server | SQLite | Generic SQL | Snowflake | BigQuery | Athena",
+  "execution_order": [
+    { "step": "CLAUSE_NAME", "present": true_or_false, "note": "brief note about this clause, or empty string if not present" }
+  ],
+  "ascii_tree": "An ASCII/text diagram showing the data flow from source tables through filters, joins, aggregations to the output. Use box-drawing chars (┌─┐│└─┘├) and arrows (↓ →). Make it 40-60 chars wide. Label each node with the operation type.",
+  "clauses": [
+    { "keyword": "KEYWORD", "explanation": "plain English explanation of this clause" }
+  ],
+  "complexity": {
+    "level": "Easy | Medium | Hard | Expert",
+    "score": 1,
+    "reason": "brief reason"
+  },
+  "cloud_warnings": [
+    {
+      "severity": "high | medium | low",
+      "platforms": ["Athena", "Redshift", "Snowflake", "BigQuery", "General"],
+      "title": "issue title",
+      "description": "what the problem is",
+      "fix": "how to fix it",
+      "estimated_impact": "e.g. potential full table scan"
+    }
+  ],
+  "tips": ["actionable optimization tip specific to this query"],
+  "returns": "What kind of data/rows this query returns",${hasDDL ? `
+  "schema_analysis": {
+    "findings": [
+      {
+        "type": "missing_index | type_mismatch | missing_fk | column_not_found | warning | good_practice",
+        "message": "description of the finding",
+        "fix": "SQL or action to resolve, or empty string"
+      }
+    ],
+    "overall": "1-2 sentence summary of schema health relative to this query"
+  },` : ''}
+  "safe_patterns": ["list of things already done well in this query"]
+}
+
+For execution_order, always include all 8 steps: FROM/JOIN, WHERE, GROUP BY, HAVING, SELECT, DISTINCT, ORDER BY, LIMIT/OFFSET.
+Set present=true only for steps actually used in the query.
+For clauses, include one entry per major clause present in the query.
+For cloud_warnings, check for: SELECT *, missing partition/date filters, CROSS JOINs, functions on filter columns, no LIMIT, implicit type casts. If no issues, set to [].
+Tips should be specific to this query, not generic advice.`;
+}
+
+// ═══════════════════════════════════════════════
+// RENDER EXECUTION ORDER
+// ═══════════════════════════════════════════════
+function renderExecOrder(items) {
+  if (!items || !items.length) return '';
+  let html = '<div class="exec-order-list">';
+  items.forEach((item, i) => {
+    const active = item.present ? 'active-step' : '';
+    const note = item.note || (item.present ? 'Present in this query' : 'Not used in this query');
+    html += `<div class="exec-order-item ${active}">
+      <div class="exec-num">${i + 1}</div>
+      <div class="exec-keyword">${esc(item.step)}</div>
+      <div class="exec-desc">${esc(note)}</div>
+    </div>`;
+  });
+  html += '</div>';
+  return html;
+}
+
+// ═══════════════════════════════════════════════
+// RENDER ASCII TREE
+// ═══════════════════════════════════════════════
+function renderAsciiTree(tree) {
+  if (!tree) return '';
+  return `<pre class="ascii-tree">${esc(tree)}</pre>`;
+}
+
+// ═══════════════════════════════════════════════
+// RENDER CLOUD WARNINGS
+// ═══════════════════════════════════════════════
+function renderCloudWarnings(warnings) {
+  if (!warnings || warnings.length === 0) {
+    return '<div class="no-warnings">✅ No cloud cost issues detected — this query looks cost-efficient.</div>';
+  }
+  let html = '<div class="cloud-warnings">';
+  warnings.forEach(w => {
+    const sev = (w.severity || 'low').toLowerCase();
+    const platforms = Array.isArray(w.platforms) ? w.platforms : [];
+    const platBadges = platforms.map(p => {
+      const cls = p.toLowerCase() === 'athena' ? 'athena'
+                : p.toLowerCase() === 'redshift' ? 'redshift'
+                : p.toLowerCase() === 'snowflake' ? 'snowflake'
+                : 'general';
+      return `<span class="cloud-badge ${cls}">${esc(p)}</span>`;
+    }).join('');
+    html += `<div class="cloud-warn-item ${sev}">
+      <div class="cloud-warn-header">
+        ${platBadges}
+        <span class="cloud-warn-title">${esc(w.title || '')}</span>
+        ${w.estimated_impact ? `<span style="font-family:var(--mono);font-size:.68rem;color:var(--text3)">${esc(w.estimated_impact)}</span>` : ''}
+      </div>
+      <div class="cloud-warn-desc">${esc(w.description || '')}</div>
+      ${w.fix ? `<div class="cloud-warn-fix">→ ${esc(w.fix)}</div>` : ''}
+    </div>`;
+  });
+  html += '</div>';
+  return html;
+}
+
+// ═══════════════════════════════════════════════
+// RENDER SCHEMA ANALYSIS
+// ═══════════════════════════════════════════════
+function renderSchemaAnalysis(schema) {
+  if (!schema) return '';
+  let html = '';
+  if (schema.findings && schema.findings.length > 0) {
+    html += '<div class="schema-findings">';
+    schema.findings.forEach(f => {
+      const typeClass = f.type === 'missing_index' ? 'index'
+                      : f.type === 'type_mismatch' ? 'mismatch'
+                      : f.type === 'missing_fk' ? 'fk'
+                      : f.type === 'good_practice' ? 'good'
+                      : 'info';
+      const typeLabel = f.type ? f.type.replace(/_/g,' ').toUpperCase() : 'INFO';
+      html += `<div class="schema-find-item">
+        <span class="schema-find-type ${typeClass}">${esc(typeLabel)}</span>
+        <div class="schema-find-msg">${esc(f.message || '')}</div>
+        ${f.fix ? `<div class="schema-find-fix">→ ${esc(f.fix)}</div>` : ''}
+      </div>`;
+    });
+    html += '</div>';
+  }
+  if (schema.overall) {
+    html += `<div style="margin-top:.6rem;color:var(--text2);font-size:.83rem;line-height:1.65;background:var(--bg3);border-radius:6px;padding:.6rem .85rem;border:1px solid var(--border)">${esc(schema.overall)}</div>`;
+  }
+  return html;
+}
+
+// ═══════════════════════════════════════════════
+// RENDER RESULT
+// ═══════════════════════════════════════════════
+function renderResult(data, mode, hasDDL) {
+  let html = '';
+
+  if (mode === 'simple') {
+    if (data.one_liner) html += `<div class="result-section"><div class="section-title">📌 Summary</div><div class="one-liner">${esc(data.one_liner)}</div></div>`;
+    if (data.plain_english) html += `<div class="result-section"><div class="section-title">💬 Plain English</div><div class="plain-english">${esc(data.plain_english)}</div></div>`;
+    if (data.dialect_detected) html += `<div class="result-section"><div class="section-title">🗄️ Dialect</div><span class="dialect-badge">${esc(data.dialect_detected)}</span></div>`;
+    return html;
+  }
+
+  if (mode === 'clauses') {
+    if (data.execution_order) html += `<div class="result-section"><div class="section-title">⚙️ Logical Execution Order <span style="color:var(--text3);font-weight:400;font-size:.65rem;letter-spacing:.06em">(highlighted = present in this query)</span></div>${renderExecOrder(data.execution_order)}</div>`;
+    if (data.ascii_tree) html += `<div class="result-section"><div class="section-title">🌊 Visual Data Flow</div>${renderAsciiTree(data.ascii_tree)}</div>`;
+    if (data.clauses && data.clauses.length) {
+      html += '<div class="result-section"><div class="section-title">🔍 Clause Breakdown</div><div class="clause-list">';
+      data.clauses.forEach(c => {
+        html += `<div class="clause-item"><div class="clause-keyword">${esc(c.keyword)}</div><div class="clause-explanation">${esc(c.explanation)}</div></div>`;
+      });
+      html += '</div></div>';
+    }
+    if (data.reading_tip) html += `<div class="result-section"><div class="section-title">💡 Reading Tip</div><div class="plain-english">${esc(data.reading_tip)}</div></div>`;
+    return html;
+  }
+
+  if (mode === 'cloud') {
+    const risk = (data.overall_risk || '').toLowerCase();
+    const riskColor = risk === 'high' ? 'var(--red)' : risk === 'medium' ? 'var(--yellow)' : 'var(--green)';
+    if (data.overall_summary) {
+      html += `<div class="result-section"><div class="section-title">☁️ Cloud Cost Risk <span style="font-family:var(--mono);color:${riskColor};font-size:.72rem;padding:.1rem .45rem;border-radius:8px;background:${riskColor}18;border:1px solid ${riskColor}">${esc((data.overall_risk || 'unknown').toUpperCase())}</span></div><div style="color:var(--text2);font-size:.86rem;line-height:1.7;margin-bottom:.6rem">${esc(data.overall_summary)}</div></div>`;
+    }
+    html += `<div class="result-section"><div class="section-title">⚠️ Warnings</div>${renderCloudWarnings(data.cloud_warnings)}</div>`;
+    if (data.safe_patterns && data.safe_patterns.length) {
+      html += '<div class="result-section"><div class="section-title">✅ Cost-Safe Patterns Used</div><div class="tips-list">';
+      data.safe_patterns.forEach(p => { html += `<div class="tip-item"><span class="tip-arrow">✓</span>${esc(p)}</div>`; });
+      html += '</div></div>';
+    }
+    return html;
+  }
+
+  if (mode === 'beginner') {
+    if (data.analogy) html += `<div class="result-section"><div class="section-title">🏠 Real-World Analogy</div><div class="plain-english">${esc(data.analogy)}</div></div>`;
+    if (data.execution_order) html += `<div class="result-section"><div class="section-title">⚙️ Logical Execution Order</div>${renderExecOrder(data.execution_order)}</div>`;
+    if (data.steps && data.steps.length) {
+      html += '<div class="result-section"><div class="section-title">👣 Step by Step</div><div class="clause-list">';
+      data.steps.forEach(s => {
+        html += `<div class="clause-item"><div class="clause-keyword">Step ${s.step_num || ''}</div><div class="clause-explanation"><strong style="color:var(--text);font-size:.84rem">${esc(s.title)}</strong><br>${esc(s.explanation)}</div></div>`;
+      });
+      html += '</div></div>';
+    }
+    if (data.result_description) html += `<div class="result-section"><div class="section-title">📤 What You Get Back</div><div class="returns-box">${esc(data.result_description)}</div></div>`;
+    if (data.new_terms && data.new_terms.length) {
+      html += '<div class="result-section"><div class="section-title">📚 Terms Explained</div><div class="clause-list">';
+      data.new_terms.forEach(t => { html += `<div class="clause-item"><div class="clause-keyword">${esc(t.term)}</div><div class="clause-explanation">${esc(t.means)}</div></div>`; });
+      html += '</div></div>';
+    }
+    return html;
+  }
+
+  // ── FULL MODE ──
+  if (data.one_liner) html += `<div class="result-section"><div class="section-title">📌 Summary</div><div class="one-liner">${esc(data.one_liner)}</div></div>`;
+  if (data.plain_english) html += `<div class="result-section"><div class="section-title">💬 Plain English</div><div class="plain-english">${esc(data.plain_english)}</div></div>`;
+
+  // Execution Order — NEW v2
+  if (data.execution_order) {
+    html += `<div class="result-section"><div class="section-title">⚙️ Logical Execution Order <span style="color:var(--text3);font-weight:400;font-size:.65rem;letter-spacing:.06em">(highlighted = present)</span></div>${renderExecOrder(data.execution_order)}</div>`;
+  }
+
+  // ASCII Tree — NEW v2
+  if (data.ascii_tree) {
+    html += `<div class="result-section"><div class="section-title">🌊 Visual Data Flow</div>${renderAsciiTree(data.ascii_tree)}</div>`;
+  }
+
+  // Clauses
+  if (data.clauses && data.clauses.length) {
+    html += '<div class="result-section"><div class="section-title">🔍 Clause Breakdown</div><div class="clause-list">';
+    data.clauses.forEach(c => { html += `<div class="clause-item"><div class="clause-keyword">${esc(c.keyword)}</div><div class="clause-explanation">${esc(c.explanation)}</div></div>`; });
+    html += '</div></div>';
+  }
+
+  // Complexity
+  if (data.complexity) {
+    const lvl = (data.complexity.level || '').toLowerCase();
+    const cls = lvl === 'easy' ? 'easy' : (lvl === 'hard' || lvl === 'expert') ? 'hard' : 'medium';
+    const score = Math.min(10, Math.max(1, parseInt(data.complexity.score) || 5));
+    let dots = '<div class="complexity-score-bar">';
+    for (let i = 1; i <= 10; i++) { dots += `<div class="score-dot${i <= score ? ' filled ' + cls : ''}"></div>`; }
+    dots += '</div>';
+    html += `<div class="result-section"><div class="section-title">📊 Complexity</div><div class="complexity-row"><span class="complexity-badge ${cls}">${esc(data.complexity.level)} · ${score}/10</span>${dots}<span style="color:var(--text2);font-size:.82rem">${esc(data.complexity.reason || '')}</span></div></div>`;
+  }
+
+  // Cloud Warnings — NEW v2 (always shown in full mode)
+  html += `<div class="result-section"><div class="section-title">☁️ Cloud Cost Warnings</div>${renderCloudWarnings(data.cloud_warnings)}</div>`;
+
+  // Schema Analysis — NEW v2
+  if (hasDDL && data.schema_analysis) {
+    html += `<div class="result-section"><div class="section-title">🗄️ Schema Analysis</div>${renderSchemaAnalysis(data.schema_analysis)}</div>`;
+  }
+
+  // Returns
+  if (data.returns) html += `<div class="result-section"><div class="section-title">📤 Returns</div><div class="returns-box">${esc(data.returns)}</div></div>`;
+
+  // Tips
+  if (data.tips && data.tips.length) {
+    html += '<div class="result-section"><div class="section-title">💡 Optimization Tips</div><div class="tips-list">';
+    data.tips.forEach(t => { html += `<div class="tip-item"><span class="tip-arrow">→</span>${esc(t)}</div>`; });
+    html += '</div></div>';
+  }
+
+  // Safe patterns
+  if (data.safe_patterns && data.safe_patterns.length) {
+    html += '<div class="result-section"><div class="section-title">✅ Good Practices Used</div><div class="tips-list">';
+    data.safe_patterns.forEach(p => { html += `<div class="tip-item"><span class="tip-arrow">✓</span>${esc(p)}</div>`; });
+    html += '</div></div>';
+  }
+
+  // Dialect
+  if (data.dialect_detected) html += `<div class="result-section"><div class="section-title">🗄️ Dialect Detected</div><span class="dialect-badge">${esc(data.dialect_detected)}</span></div>`;
+
+  return html;
+}
+
+// ═══════════════════════════════════════════════
+// MAIN EXPLAIN
+// ═══════════════════════════════════════════════
+async function explainSQL() {
+  const sql = document.getElementById('sqlInput').value.trim();
+  const ddl = schemaEnabled ? (document.getElementById('ddlInput').value.trim()) : '';
+
+  if (!sql) { showError('Please paste a SQL query first.'); return; }
+  if (sql.length > 8000) { showError('Query too long (max 8000 characters). Please trim it.'); return; }
+
+  const btn = document.getElementById('explainBtn');
+  btn.disabled = true;
+
+  const loadingConfig = {
+    full: { msg: 'Running full analysis...', steps: ['→ Parsing clauses...', '→ Building execution order...', '→ Generating visual flow...', '→ Checking cloud cost patterns...', ddl ? '→ Analyzing schema...' : '→ Computing complexity...'] },
+    simple: { msg: 'Translating to plain English...', steps: ['→ Parsing query structure...', '→ Writing explanation...'] },
+    clauses: { msg: 'Breaking down clauses...', steps: ['→ Mapping execution order...', '→ Building visual tree...', '→ Explaining each clause...'] },
+    cloud: { msg: 'Running cloud cost audit...', steps: ['→ Checking Athena patterns...', '→ Checking Redshift patterns...', '→ Checking Snowflake patterns...'] },
+    beginner: { msg: 'Preparing beginner explanation...', steps: ['→ Finding a good analogy...', '→ Simplifying terms...'] }
+  };
+  const lc = loadingConfig[currentMode] || loadingConfig.full;
+  showLoading(lc.msg, lc.steps.filter(Boolean));
+
+  const modeLabelMap = { full:'Full Analysis', simple:'Plain English', clauses:'Clause Breakdown', cloud:'Cloud Cost Audit', beginner:'Beginner Mode' };
+
+  try {
+    const response = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: buildPrompt(sql, ddl, currentMode) }]
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      const msg = err?.error?.message || `API error ${response.status}`;
+      if (response.status === 401) throw new Error('Invalid API key. Please check your key at console.anthropic.com');
+      if (response.status === 429) throw new Error('Rate limit hit. Please wait a moment and try again.');
+      if (response.status === 400) throw new Error('Bad request: ' + msg);
+      throw new Error(msg);
+    }
+
+    const data = await response.json();
+    const rawText = data.content.filter(b => b.type === 'text').map(b => b.text).join('');
+    const cleaned = rawText.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+
+    let parsed;
+    try {
+      parsed = JSON.parse(cleaned);
+    } catch (e) {
+      const match = cleaned.match(/\{[\s\S]*\}/);
+      if (match) { parsed = JSON.parse(match[0]); }
+      else { throw new Error('Could not parse response. Please try again.'); }
+    }
+
+    showResult(renderResult(parsed, currentMode, !!(ddl && ddl.length > 10)), modeLabelMap[currentMode] || currentMode);
+
+  } catch (err) {
+    console.error(err);
+    showError(err.message || 'Something went wrong. Please try again.');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ═══════════════════════════════════════════════
+// FAQ
+// ═══════════════════════════════════════════════
+function toggleFaq(el) { el.parentElement.classList.toggle('open'); }
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+updateCharCount();
+</script>
+</body>
+</html>
