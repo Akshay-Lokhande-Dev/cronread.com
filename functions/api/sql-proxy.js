@@ -1,30 +1,20 @@
 /**
- * CronRead — SQL Explainer Proxy (Cloudflare AI — FREE)
+ * CronRead — SQL Explainer Proxy (Groq — FREE)
  * File location in your repo: /functions/api/sql-proxy.js
  *
- * Uses Cloudflare Workers AI (LLaMA 3.3 70B) — completely FREE.
- * No API key needed. No Anthropic account needed.
- * Just add the AI binding in Cloudflare Pages dashboard.
- *
- * Setup (one time):
- *   Cloudflare Dashboard → Pages → cronread → Settings
- *   → Functions → AI Bindings → Add binding
- *   → Variable name: AI  (exactly this, capital AI)
- *   → Save & redeploy
- *
- * Free limits:
- *   10,000 requests/day on free Cloudflare plan — more than enough to start.
+ * Uses Groq API (LLaMA 3.3 70B) — completely FREE.
+ * API key stored as Cloudflare Pages environment variable (secret).
  */
 
-// Best free model on Cloudflare AI for instruction-following + JSON output
-const CF_MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODEL = 'llama-3.3-70b-versatile';
 
 export async function onRequestPost({ request, env }) {
 
-  // ── Check AI binding is set up ─────────────────────────────────────────
-  if (!env.AI) {
+  // ── Check API key is set ───────────────────────────────────────────────
+  if (!env.GROQ_API_KEY) {
     return Response.json(
-      { error: { message: 'AI binding not configured. Add AI binding in Cloudflare Pages → Settings → Functions → AI Bindings.' } },
+      { error: { message: 'GROQ_API_KEY not set in Cloudflare environment variables.' } },
       { status: 500 }
     );
   }
@@ -48,60 +38,61 @@ export async function onRequestPost({ request, env }) {
     );
   }
 
-  // ── Extract user prompt ────────────────────────────────────────────────
-  // Get the last user message (the SQL analysis prompt)
+  // ── Get user message ───────────────────────────────────────────────────
   const userMessage = body.messages
     .filter(m => m.role === 'user')
     .pop()?.content || '';
 
-  if (!userMessage) {
-    return Response.json(
-      { error: { message: 'No user message found.' } },
-      { status: 400 }
-    );
-  }
-
-  // ── Run Cloudflare AI ──────────────────────────────────────────────────
-  let aiResponse;
+  // ── Call Groq API ──────────────────────────────────────────────────────
+  let groqRes;
   try {
-    aiResponse = await env.AI.run(CF_MODEL, {
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an expert SQL analyst. Always respond with valid JSON only. No markdown, no explanations outside JSON, no backticks. Your entire response must be a single valid JSON object.'
-        },
-        {
-          role: 'user',
-          content: userMessage
-        }
-      ],
-      max_tokens: 1500,
-      temperature: 0.1  // Low temperature = more consistent JSON output
+    groqRes = await fetch(GROQ_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${env.GROQ_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert SQL analyst. Always respond with valid JSON only. No markdown, no backticks, no explanation outside JSON. Your entire response must be a single valid JSON object.'
+          },
+          {
+            role: 'user',
+            content: userMessage
+          }
+        ],
+        max_tokens: 1500,
+        temperature: 0.1
+      })
     });
   } catch (err) {
-    console.error('Cloudflare AI error:', err);
     return Response.json(
-      { error: { message: 'AI model error. Please try again.' } },
+      { error: { message: 'Could not reach Groq API. Please try again.' } },
       { status: 502 }
     );
   }
 
-  // ── Normalize response to Anthropic-compatible format ──────────────────
-  // The HTML already knows how to parse Anthropic's response format,
-  // so we return in the same shape — no HTML changes needed.
-  const responseText = aiResponse?.response || '';
+  const groqData = await groqRes.json();
+
+  // ── Handle Groq errors ─────────────────────────────────────────────────
+  if (!groqRes.ok) {
+    return Response.json(
+      { error: { message: groqData?.error?.message || 'Groq API error.' } },
+      { status: groqRes.status }
+    );
+  }
+
+  // ── Return in Anthropic-compatible format (HTML doesn't need changes) ──
+  const responseText = groqData?.choices?.[0]?.message?.content || '';
 
   return Response.json({
-    content: [
-      {
-        type: 'text',
-        text: responseText
-      }
-    ]
+    content: [{ type: 'text', text: responseText }]
   });
 }
 
-// ── Block non-POST requests ────────────────────────────────────────────────
 export async function onRequestGet() {
   return Response.json({ error: 'Method not allowed' }, { status: 405 });
 }
