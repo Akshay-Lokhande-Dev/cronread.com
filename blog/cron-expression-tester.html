@@ -3,9 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-<title>Cron Expression Tester — Validate &amp; Debug Cron Online | CronRead</title>
-<meta name="description" content="Free online cron expression tester. Instantly validate cron syntax, see the next 10 run times, debug common errors, and understand what your cron expression means in plain English.">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>Cron Expression Tester — Validate &amp; Debug | CronRead</title>
+<meta name="description" content="Free online cron expression tester. Instantly validate cron syntax, see the next 10 run times, debug common errors, and understand what your cron expression...">
+<meta name="keywords" content="cron expression tester, cron tester online, test cron expression, cron validator, cron expression checker, cron next run time, validate cron expression, cron expression preview, cron schedule tester, online cron tester, cron expression calculator, cron job tester, cron expression live preview">
+<meta name="author" content="CronRead">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://cronread.com/blog/cron-expression-tester/">
 <meta property="og:type" content="website">
@@ -60,23 +64,49 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Test a Cron Expression Online",
+  "step": [
+    { "@type": "HowToStep", "position": 1, "name": "Enter your cron expression", "text": "Type or paste your 5-field cron expression into the tester input." },
+    { "@type": "HowToStep", "position": 2, "name": "Check the human-readable description", "text": "The tool instantly converts the expression to plain English so you can verify your intent matches the syntax." },
+    { "@type": "HowToStep", "position": 3, "name": "Preview the next run times", "text": "See the next 10 scheduled run times calculated from the current moment to confirm the schedule is correct." },
+    { "@type": "HowToStep", "position": 4, "name": "Adjust and re-test", "text": "Modify any field and the preview updates live — no page reload needed." }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "CronRead", "item": "https://cronread.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://cronread.com/blog/" },
+    { "@type": "ListItem", "position": 3, "name": "Cron Expression Tester", "item": "https://cronread.com/blog/cron-expression-tester.html" }
+  ]
+}
+</script>
 </head>
 <body>
 
 <nav>
   <div class="nav-inner">
     <a href="../index.html" class="nav-logo">CRONREAD</a>
-    <div class="nav-links">
-      <a href="../index.html" Tool</a>
-      <a href="cron-examples.html">Examples</a>
-      <a href="aws-eventbridge-cron-examples.html">AWS</a>
-      <a href="kubernetes-cronjob-examples.html">Kubernetes</a>
-      <a href="github-actions-cron-examples.html">GitHub Actions</a>
-      <a href="linux-crontab-examples.html">Linux Crontab</a>
-      <a href="cronguru-alternative.html">vs CronGuru</a>
+    <div class="nav-links" id="navLinks">
+      <a href="../index.html">Cron Tool</a>
+      <a href="../unix-timestamp-converter/">Timestamp</a>
+      <a href="../jwt-decoder/">JWT Decoder</a>
+      <a href="../yaml-json-converter/">YAML ↔ JSON</a>
+      <a href="../base64-encoder/">Base64</a>
+      <a href="../blog/cron-examples.html">Examples</a>
     </div>
   </div>
-</nav>
+    <button class="nav-hamburger" id="navHamburger" onclick="document.getElementById('navLinks').classList.toggle('open');this.classList.toggle('open')" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
 
 <div class="wrap">
 
@@ -294,15 +324,14 @@
 
 <footer>
   <div class="footer-links">
-    <a href="../index.html" CronRead</a> |
-    <a href="cron-examples.html">Cron Examples</a> |
-    <a href="linux-crontab-examples.html">Linux Crontab</a> |
-    <a href="aws-eventbridge-cron-examples.html">AWS EventBridge</a> |
-    <a href="kubernetes-cronjob-examples.html">Kubernetes</a> |
-    <a href="github-actions-cron-examples.html">GitHub Actions</a> |
-    <a href="cronguru-alternative.html">vs CronGuru</a>
+    <a href="../index.html">CronRead Home</a> |
+    <a href="../unix-timestamp-converter/">Timestamp Converter</a> |
+    <a href="../jwt-decoder/">JWT Decoder</a> |
+    <a href="../yaml-json-converter/">YAML ↔ JSON</a> |
+    <a href="../base64-encoder/">Base64</a> |
+    <a href="cron-examples.html">Cron Examples</a>
   </div>
-  <p style="margin-top:.6rem">© 2026 CronRead · Always verify cron schedules before deploying to production.</p>
+  <p style="margin-top:.6rem">© 2026 CronRead · Free developer tools · No ads, no tracking</p>
 </footer>
 
 </body>

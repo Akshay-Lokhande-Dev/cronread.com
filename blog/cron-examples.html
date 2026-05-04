@@ -3,9 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-<title>50 Cron Expression Examples — Beginner to Advanced | CronRead Pro</title>
-<meta name="description" content="50 cron expression examples from beginner to advanced. Grouped by use case: every-minute, hourly, daily, weekly, monthly, weekdays, and complex schedules. With plain-English explanations.">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>50 Cron Expression Examples — Beginner to | CronRead</title>
+<meta name="description" content="50 cron expression examples from beginner to advanced. Grouped by use case: every-minute, hourly, daily, weekly, monthly, weekdays, and complex schedules....">
+<meta name="keywords" content="cron examples, cron expression examples, crontab examples, cron job examples, cron every 5 minutes, cron every hour, cron daily, cron weekly, cron monthly, cron syntax examples, linux cron examples, cron schedule examples, cron every 15 minutes, cron at midnight, cron every weekday, cron expression cheat sheet, common cron expressions">
+<meta name="author" content="CronRead">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://cronread.com/blog/cron-examples/">
 <meta property="og:type" content="article">
@@ -13,6 +17,8 @@
 <meta property="og:description" content="50 cron expression examples with plain-English explanations. Grouped by use case from simple intervals to complex multi-field schedules.">
 <meta property="og:url" content="https://cronread.com/blog/cron-examples/">
 <meta property="og:site_name" content="CronRead Pro">
+<meta name="twitter:title" content="50 Cron Expression Examples — CronRead Pro">
+<meta name="twitter:description" content="Copy-paste cron expressions for every common schedule — hourly, daily, weekly, monthly, and more.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -30,20 +36,49 @@
   ]
 }
 </script>
+<meta property="og:image" content="https://cronread.com/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Write Cron Expressions",
+  "step": [
+    { "@type": "HowToStep", "position": 1, "name": "Learn the 5-field structure", "text": "A standard cron expression has 5 space-separated fields: minute(0-59), hour(0-23), day-of-month(1-31), month(1-12), day-of-week(0-7 where 0 and 7 are Sunday)." },
+    { "@type": "HowToStep", "position": 2, "name": "Use special characters", "text": "Use * for any value, , to list multiple values (1,15), - for ranges (1-5), / for step values (*/15 = every 15 minutes)." },
+    { "@type": "HowToStep", "position": 3, "name": "Start with a common example", "text": "Copy a working example from this page: 0 2 * * * runs at 2am daily, */5 * * * * runs every 5 minutes, 0 9 * * 1-5 runs at 9am Monday to Friday." },
+    { "@type": "HowToStep", "position": 4, "name": "Validate your expression", "text": "Paste the expression into the CronRead tool to confirm it matches your intended schedule by previewing the next 10 run times." }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "CronRead", "item": "https://cronread.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://cronread.com/blog/" },
+    { "@type": "ListItem", "position": 3, "name": "Cron Expression Examples", "item": "https://cronread.com/blog/cron-examples.html" }
+  ]
+}
+</script>
 </head>
 <body>
 <nav>
   <div class="nav-inner">
     <a href="../index.html" class="nav-logo">CRONREAD</a>
-    <div class="nav-links">
-      <a href="../index.html" Tool</a>
-      <a href="aws-eventbridge-cron-examples.html">AWS</a>
-      <a href="kubernetes-cronjob-examples.html">Kubernetes</a>
-      <a href="github-actions-cron-examples.html">GitHub Actions</a>
-      <a href="cronguru-alternative.html">vs CronGuru</a>
+    <div class="nav-links" id="navLinks">
+      <a href="../index.html">Cron Tool</a>
+      <a href="../unix-timestamp-converter/">Timestamp</a>
+      <a href="../jwt-decoder/">JWT Decoder</a>
+      <a href="../yaml-json-converter/">YAML ↔ JSON</a>
+      <a href="../base64-encoder/">Base64</a>
+      <a href="../blog/cron-examples.html">Examples</a>
     </div>
   </div>
-</nav>
+    <button class="nav-hamburger" id="navHamburger" onclick="document.getElementById('navLinks').classList.toggle('open');this.classList.toggle('open')" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
 
 <div class="wrap">
 
@@ -226,13 +261,14 @@
 
 <footer>
   <div class="footer-links">
-    <a href="../index.html" CronRead</a> |
-    <a href="aws-eventbridge-cron-examples.html">AWS EventBridge</a> |
-    <a href="kubernetes-cronjob-examples.html">Kubernetes</a> |
-    <a href="github-actions-cron-examples.html">GitHub Actions</a> |
-    <a href="cronguru-alternative.html">vs CronGuru</a>
+    <a href="../index.html">CronRead Home</a> |
+    <a href="../unix-timestamp-converter/">Timestamp Converter</a> |
+    <a href="../jwt-decoder/">JWT Decoder</a> |
+    <a href="../yaml-json-converter/">YAML ↔ JSON</a> |
+    <a href="../base64-encoder/">Base64</a> |
+    <a href="cron-examples.html">Cron Examples</a>
   </div>
-  <p style="margin-top:.5rem">© 2026 CronRead · Always verify cron schedules in production.</p>
+  <p style="margin-top:.6rem">© 2026 CronRead · Free developer tools · No ads, no tracking</p>
 </footer>
 </body>
 </html>

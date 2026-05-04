@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AWS EventBridge Cron Expression Guide (6-Field Syntax & Examples) | CronRead</title>
-  <meta name="description" content="Master AWS EventBridge cron expressions. Learn the 6-field syntax, handling wildcards, UTC timezones, and see 30+ real examples for Lambda scheduling.">
+  <title>AWS EventBridge Cron Expression Guide | CronRead</title>
+  <meta name="description" content="Complete guide to AWS EventBridge cron expressions. 6-field format, special characters, L W # syntax, rate vs cron, and ready-to-use examples.">
   <meta name="keywords" content="aws eventbridge cron, aws crontab, aws eventbridge cron expression, eventbridge scheduler cron, aws cron syntax">
-  <meta property="og:title" content="AWS EventBridge Cron Expression Guide – Complete Tutorial">
-  <meta property="og:description" content="Master AWS EventBridge cron expressions with 30+ real examples and a complete 6-field syntax breakdown.">
+  <meta property="og:title" content="AWS EventBridge Cron Expression Guide | CronRead">
+  <meta property="og:description" content="Complete guide to AWS EventBridge cron expressions. 6-field format, special characters, L W # syntax, rate vs cron, and ready-to-use examples.">
   <meta property="og:type" content="article">
-  <link rel="canonical" href="https://cronread.com/blog/aws-eventbridge-cron-expression-guide">
+  <meta name="author" content="CronRead">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://cronread.com/blog/aws-eventbridge-cron-expression-guide">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -442,13 +444,67 @@ pre::before {
   border-radius: 11px 11px 0 0;
 }
 </style>
+<meta property="og:image" content="https://cronread.com/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Use AWS EventBridge Cron Expressions",
+  "step": [
+    { "@type": "HowToStep", "position": 1, "name": "Learn the 6-field format", "text": "EventBridge cron expressions have 6 fields: Minutes(0-59) Hours(0-23) Day-of-month(1-31) Month(1-12) Day-of-week(SUN-SAT) Year(1970-2199)." },
+    { "@type": "HowToStep", "position": 2, "name": "Avoid the ? wildcard mistake", "text": "In EventBridge, Day-of-month and Day-of-week cannot both be specified. Use ? to leave one unspecified: cron(0 12 * * ? *) runs daily at noon." },
+    { "@type": "HowToStep", "position": 3, "name": "Use special characters", "text": "L means last (e.g. last day of month). W means nearest weekday. # means nth weekday (e.g. 2#1 = first Monday). These are EventBridge-specific extensions." },
+    { "@type": "HowToStep", "position": 4, "name": "Validate before deploying", "text": "Use the CronRead cron expression tool to preview the next run times and confirm your schedule is correct before creating the EventBridge rule." }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "CronRead", "item": "https://cronread.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://cronread.com/blog/" },
+    { "@type": "ListItem", "position": 3, "name": "AWS EventBridge Cron Expression Guide", "item": "https://cronread.com/blog/aws-eventbridge-cron-expression-guide.html" }
+  ]
+}
+</script>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AWS EventBridge Cron Expression Guide | CronRead">
+<meta name="twitter:description" content="Master AWS EventBridge cron syntax with examples for Lambda, ECS, and CloudWatch rules.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "What is the format of an AWS EventBridge cron expression?", "acceptedAnswer": { "@type": "Answer", "text": "EventBridge uses a 6-field cron format: Minutes Hours Day-of-month Month Day-of-week Year. Unlike standard cron, you must use ? in either Day-of-month or Day-of-week (not both simultaneously)." } },
+    { "@type": "Question", "name": "What is the difference between cron and rate expressions in EventBridge?", "acceptedAnswer": { "@type": "Answer", "text": "Rate expressions (rate(5 minutes), rate(1 hour)) are for simple fixed intervals. Cron expressions (cron(0 9 ? * MON-FRI *)) are for complex schedules like every weekday at a specific time." } },
+    { "@type": "Question", "name": "Can EventBridge cron run every minute?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Use rate(1 minute) or cron(* * * * ? *) to trigger a rule every minute. Be aware of invocation costs for very frequent schedules." } }
+  ]
+}
+</script>
 </head>
 <body>
 
 <nav>
-  <a class="nav-logo" href="https://cronread.com">⏱ CronRead</a>
-  <a class="nav-cta" href="https://cronread.com">Generate Cron Expression →</a>
-</nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">CRONREAD</a>
+    <div class="nav-links" id="navLinks">
+      <a href="../index.html">Cron Tool</a>
+      <a href="../unix-timestamp-converter/">Timestamp</a>
+      <a href="../jwt-decoder/">JWT Decoder</a>
+      <a href="../yaml-json-converter/">YAML ↔ JSON</a>
+      <a href="../base64-encoder/">Base64</a>
+      <a href="../blog/cron-examples.html">Examples</a>
+    </div>
+  </div>
+    <button class="nav-hamburger" id="navHamburger" onclick="document.getElementById('navLinks').classList.toggle('open');this.classList.toggle('open')" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
 
 <header class="hero">
   <div class="hero-tag">AWS Guide</div>
@@ -899,12 +955,15 @@ cron(0 0 * * ? *)</pre>
 </div>
 
 <footer>
-  <p>© 2026 <a href="https://cronread.com">CronRead.com</a> — Free Cron Expression Generator & Reference</p>
-  <p style="margin-top:0.5rem;">
-    <a href="https://cronread.com/blog/cron-job-examples">Cron Examples</a> ·
-    <a href="https://cronread.com/blog/cron-syntax-guide">Cron Syntax</a> ·
-    <a href="https://cronread.com/blog/aws-eventbridge-cron-expression-guide">AWS EventBridge</a>
-  </p>
+  <div class="footer-links">
+    <a href="../index.html">CronRead Home</a> |
+    <a href="../unix-timestamp-converter/">Timestamp Converter</a> |
+    <a href="../jwt-decoder/">JWT Decoder</a> |
+    <a href="../yaml-json-converter/">YAML ↔ JSON</a> |
+    <a href="../base64-encoder/">Base64</a> |
+    <a href="cron-examples.html">Cron Examples</a>
+  </div>
+  <p style="margin-top:.6rem">© 2026 CronRead · Free developer tools · No ads, no tracking</p>
 </footer>
 
 </body>

@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cron Syntax Guide: How to Read, Write & Debug 5-Field Cron Expressions | CronRead</title>
+  <title>Cron Syntax Guide: How to Read, Write & Debug | CronRead</title>
   <meta name="description" content="Complete cron syntax guide. Learn the 5-field crontab format, special characters, shorthand notations, and Kubernetes CronJob schedule syntax.">
   <meta name="keywords" content="cron syntax, cron job, cron expression syntax, crontab format explained, how to write cron expression, cron syntax guide, kubernetes cronjob schedule">
   <meta property="og:title" content="Cron Syntax Guide – How to Read & Write Cron Expressions">
   <meta property="og:type" content="article">
-  <link rel="canonical" href="https://cronread.com/blog/cron-syntax-guide">
+  <meta name="author" content="CronRead">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://cronread.com/blog/cron-syntax-guide">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -467,17 +469,56 @@ pre::before {
   border-radius: 11px 11px 0 0;
 }
 </style>
+<meta property="og:image" content="https://cronread.com/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Write Correct Cron Syntax",
+  "step": [
+    { "@type": "HowToStep", "position": 1, "name": "Know the field order", "text": "Five fields left to right: Minute Hour Day-of-Month Month Day-of-Week. A sixth Year field exists in Quartz/AWS but not standard cron." },
+    { "@type": "HowToStep", "position": 2, "name": "Master the special characters", "text": "* (any), , (list), - (range), / (step), L (last), W (nearest weekday), # (nth weekday). Not all implementations support L, W, and #." },
+    { "@type": "HowToStep", "position": 3, "name": "Check your platform", "text": "Standard Linux cron, Quartz, AWS EventBridge, GitHub Actions, and Kubernetes all have slightly different syntax. Use the correct format for your platform." },
+    { "@type": "HowToStep", "position": 4, "name": "Validate before deploying", "text": "Always test your cron expression with a tool before using it in production to avoid unexpected schedules." }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "CronRead", "item": "https://cronread.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://cronread.com/blog/" },
+    { "@type": "ListItem", "position": 3, "name": "Cron Syntax Guide", "item": "https://cronread.com/blog/cron-syntax-guide.html" }
+  ]
+}
+</script>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cron Syntax Guide — Complete Reference | CronRead">
+<meta name="twitter:description" content="All cron fields, wildcards, and special characters explained. Covers Linux, AWS, Kubernetes, and Quartz.">
 </head>
 <body>
 
 <nav>
-  <a class="nav-logo" href="https://cronread.com">Cron<span>Read</span></a>
-  <div class="nav-links">
-    <a href="https://cronread.com/blog/cron-job-examples">Examples</a>
-    <a href="https://cronread.com/blog/aws-eventbridge-cron-expression-guide">AWS Guide</a>
-    <a class="nav-cta" href="https://cronread.com">Generate →</a>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">CRONREAD</a>
+    <div class="nav-links" id="navLinks">
+      <a href="../index.html">Cron Tool</a>
+      <a href="../unix-timestamp-converter/">Timestamp</a>
+      <a href="../jwt-decoder/">JWT Decoder</a>
+      <a href="../yaml-json-converter/">YAML ↔ JSON</a>
+      <a href="../base64-encoder/">Base64</a>
+      <a href="../blog/cron-examples.html">Examples</a>
+    </div>
   </div>
-</nav>
+    <button class="nav-hamburger" id="navHamburger" onclick="document.getElementById('navLinks').classList.toggle('open');this.classList.toggle('open')" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
 
 <header class="hero">
   <div class="hero-tag">Complete Reference</div>
@@ -816,12 +857,15 @@ pre::before {
 </div>
 
 <footer>
-  <p>© 2026 <a href="https://cronread.com">CronRead.com</a> — Free Cron Expression Generator & Reference</p>
-  <p style="margin-top:0.5rem;">
-    <a href="https://cronread.com/blog/cron-job-examples">Cron Examples</a> ·
-    <a href="https://cronread.com/blog/cron-syntax-guide">Cron Syntax</a> ·
-    <a href="https://cronread.com/blog/aws-eventbridge-cron-expression-guide">AWS EventBridge</a>
-  </p>
+  <div class="footer-links">
+    <a href="../index.html">CronRead Home</a> |
+    <a href="../unix-timestamp-converter/">Timestamp Converter</a> |
+    <a href="../jwt-decoder/">JWT Decoder</a> |
+    <a href="../yaml-json-converter/">YAML ↔ JSON</a> |
+    <a href="../base64-encoder/">Base64</a> |
+    <a href="cron-examples.html">Cron Examples</a>
+  </div>
+  <p style="margin-top:.6rem">© 2026 CronRead · Free developer tools · No ads, no tracking</p>
 </footer>
 
 </body>

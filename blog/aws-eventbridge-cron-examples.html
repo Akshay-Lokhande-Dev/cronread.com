@@ -3,9 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-<title>AWS EventBridge Cron Examples — 20+ Schedules with Terraform & CDK | CronRead Pro</title>
-<meta name="description" content="20+ AWS EventBridge cron expression examples. Covers cron() vs rate(), the ? wildcard, named days, nth-weekday, Terraform aws_cloudwatch_event_rule, EventBridge Scheduler, and common mistakes to avoid.">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>AWS EventBridge Cron Examples — 20+ Schedules | CronRead</title>
+<meta name="description" content="20+ AWS EventBridge cron expression examples. Covers cron() vs rate(), the ? wildcard, named days, nth-weekday, Terraform aws_cloudwatch_event_rule,...">
+<meta name="keywords" content="aws eventbridge cron examples, eventbridge schedule expressions, eventbridge cron syntax, aws cron expression examples, eventbridge rate expression, aws lambda schedule, eventbridge rule schedule, aws cron every 5 minutes, aws cron daily, aws cron weekly, eventbridge cron vs rate, aws scheduled events, cloudwatch events cron, aws cron expression generator, eventbridge cron expression tester">
+<meta name="author" content="CronRead">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://cronread.com/blog/aws-eventbridge-cron-examples/">
 <meta property="og:type" content="article">
@@ -13,6 +17,8 @@
 <meta property="og:description" content="20+ EventBridge cron examples with Terraform, AWS CDK, and CLI snippets. Understand cron() vs rate(), the ? wildcard, and common pitfalls.">
 <meta property="og:url" content="https://cronread.com/blog/aws-eventbridge-cron-examples/">
 <meta property="og:site_name" content="CronRead Pro">
+<meta name="twitter:title" content="AWS EventBridge Cron Examples — CronRead Pro">
+<meta name="twitter:description" content="Ready-to-use AWS EventBridge cron expressions for Lambda, ECS, and CloudWatch. rate() and cron() examples included.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -30,21 +36,50 @@
   ]
 }
 </script>
+<meta property="og:image" content="https://cronread.com/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Write AWS EventBridge Cron Expressions",
+  "step": [
+    { "@type": "HowToStep", "position": 1, "name": "Understand EventBridge cron format", "text": "EventBridge uses a 6-field cron format: Minutes Hours Day-of-month Month Day-of-week Year. Unlike standard cron, you must use ? in either Day-of-month or Day-of-week (not both)." },
+    { "@type": "HowToStep", "position": 2, "name": "Choose rate or cron expression", "text": "For simple fixed intervals use rate expressions: rate(5 minutes), rate(1 hour). For complex schedules like every weekday at 9am use cron(0 9 ? * MON-FRI *)." },
+    { "@type": "HowToStep", "position": 3, "name": "Use wildcards correctly", "text": "Use * for any value, ? for unspecified, L for last, W for nearest weekday, and # for the nth weekday of the month." },
+    { "@type": "HowToStep", "position": 4, "name": "Test your expression", "text": "Paste your EventBridge cron expression into the CronRead tool to validate it and see the next 10 run times before deploying." }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "CronRead", "item": "https://cronread.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://cronread.com/blog/" },
+    { "@type": "ListItem", "position": 3, "name": "AWS EventBridge Cron Examples", "item": "https://cronread.com/blog/aws-eventbridge-cron-examples.html" }
+  ]
+}
+</script>
 </head>
 <body>
 
 <nav>
   <div class="nav-inner">
     <a href="../index.html" class="nav-logo">CRONREAD</a>
-    <div class="nav-links">
-      <a href="../index.html" Tool</a>
-      <a href="cron-examples.html">Examples</a>
-      <a href="kubernetes-cronjob-examples.html">Kubernetes</a>
-      <a href="github-actions-cron-examples.html">GitHub Actions</a>
-      <a href="cronguru-alternative.html">vs CronGuru</a>
+    <div class="nav-links" id="navLinks">
+      <a href="../index.html">Cron Tool</a>
+      <a href="../unix-timestamp-converter/">Timestamp</a>
+      <a href="../jwt-decoder/">JWT Decoder</a>
+      <a href="../yaml-json-converter/">YAML ↔ JSON</a>
+      <a href="../base64-encoder/">Base64</a>
+      <a href="../blog/cron-examples.html">Examples</a>
     </div>
   </div>
-</nav>
+    <button class="nav-hamburger" id="navHamburger" onclick="document.getElementById('navLinks').classList.toggle('open');this.classList.toggle('open')" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
 
 <div class="wrap">
 
@@ -275,13 +310,14 @@ resource "aws_lambda_permission" "allow_eventbridge" {
 
 <footer>
   <div class="footer-links">
-    <a href="../index.html" CronRead</a> |
-    <a href="cron-examples.html">Cron Examples</a> |
-    <a href="kubernetes-cronjob-examples.html">Kubernetes</a> |
-    <a href="github-actions-cron-examples.html">GitHub Actions</a> |
-    <a href="cronguru-alternative.html">vs CronGuru</a>
+    <a href="../index.html">CronRead Home</a> |
+    <a href="../unix-timestamp-converter/">Timestamp Converter</a> |
+    <a href="../jwt-decoder/">JWT Decoder</a> |
+    <a href="../yaml-json-converter/">YAML ↔ JSON</a> |
+    <a href="../base64-encoder/">Base64</a> |
+    <a href="cron-examples.html">Cron Examples</a>
   </div>
-  <p style="margin-top:.5rem">© 2026 CronRead · Always verify cron schedules in production.</p>
+  <p style="margin-top:.6rem">© 2026 CronRead · Free developer tools · No ads, no tracking</p>
 </footer>
 </body>
 </html>

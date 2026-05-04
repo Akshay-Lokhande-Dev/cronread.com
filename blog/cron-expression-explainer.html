@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cron Expression Explainer: What Every Field Means (With Examples)</title>
+  <title>Cron Expression Explained | CronRead</title>
   <meta name="description" content="Understand every field, special character, and syntax variant in cron expressions. Includes 15 real-world examples, common mistakes, and a platform comparison." />
   <meta name="keywords" content="cron expression explainer, cron syntax explained, how to read cron expressions, cron job examples, crontab guide" />
-  <link rel="canonical" href="https://cronread.com/blog/cron-expression-explainer" />
+  <meta name="author" content="CronRead">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://cronread.com/blog/cron-expression-explainer" />
   <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -489,6 +491,34 @@ body {
                     radial-gradient(circle at 80% 80%, rgba(167,139,250,.05) 0%, transparent 45%);
 }
 </style>
+<meta property="og:image" content="https://cronread.com/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Read and Write Cron Expressions",
+  "step": [
+    { "@type": "HowToStep", "position": 1, "name": "Identify the 5 fields", "text": "Read left to right: the first number is the minute, second is hour, third is day-of-month, fourth is month, fifth is day-of-week." },
+    { "@type": "HowToStep", "position": 2, "name": "Decode the wildcards", "text": "* means every value for that field. */n means every n units. A specific number means exactly that value. A range like 1-5 means every value in that range." },
+    { "@type": "HowToStep", "position": 3, "name": "Build your expression", "text": "Start from the leftmost field and decide what value or pattern fits each time unit for your desired schedule." },
+    { "@type": "HowToStep", "position": 4, "name": "Verify with a tool", "text": "Paste your expression into CronRead to see the next run times in plain English before using it in production." }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "CronRead", "item": "https://cronread.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://cronread.com/blog/" },
+    { "@type": "ListItem", "position": 3, "name": "Cron Expression Explainer", "item": "https://cronread.com/blog/cron-expression-explainer.html" }
+  ]
+}
+</script>
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cron Expression Explained — Plain English Guide | CronRead">
+<meta name="twitter:description" content="Understand every part of a cron expression. Fields, wildcards, and special characters explained simply.">
 </head>
 <body>
 
@@ -726,9 +756,15 @@ body {
 </div>
 
 <footer>
-  <div class="page-wrap">
-    <p>© 2024 <a href="https://cronread.com">CronRead.com</a> &mdash; Cron expressions, explained in plain English.</p>
+  <div class="footer-links">
+    <a href="../index.html">CronRead Home</a> |
+    <a href="../unix-timestamp-converter/">Timestamp Converter</a> |
+    <a href="../jwt-decoder/">JWT Decoder</a> |
+    <a href="../yaml-json-converter/">YAML ↔ JSON</a> |
+    <a href="../base64-encoder/">Base64</a> |
+    <a href="cron-examples.html">Cron Examples</a>
   </div>
+  <p style="margin-top:.6rem">© 2026 CronRead · Free developer tools · No ads, no tracking</p>
 </footer>
 
 </body>

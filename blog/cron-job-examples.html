@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>50+ Cron Job Examples – Copy-Paste Crontab Expressions | CronRead</title>
-  <meta name="description" content="50+ real-world cron job examples with copy-paste crontab expressions. Covers Linux cron, AWS cron, and AWS EventBridge 6-field format with full explanations.">
+  <title>Cron Job Examples — Linux, Docker & Cloud | CronRead</title>
+  <meta name="description" content="Real-world cron job examples for Linux, Docker, Kubernetes, and cloud schedulers. Includes backup, cleanup, and API call scripts with logging.">
   <meta name="keywords" content="cron job examples, cron examples, crontab examples, cron example, cron jobs example, cron job example">
-  <meta property="og:title" content="50+ Cron Job Examples – Copy-Paste Crontab Expressions">
-  <meta property="og:description" content="50+ real-world cron job examples with copy-paste expressions for Linux crontab and AWS EventBridge.">
+  <meta property="og:title" content="Cron Job Examples — Linux, Docker & Cloud | CronRead">
+  <meta property="og:description" content="Real-world cron job examples for Linux, Docker, Kubernetes, and cloud schedulers. Includes backup, cleanup, and API call scripts with logging.">
   <meta property="og:type" content="article">
-  <link rel="canonical" href="https://cronread.com/blog/cron-job-examples">
+  <meta name="author" content="CronRead">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://cronread.com/blog/cron-job-examples">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -430,13 +432,67 @@ pre::before {
   border-radius: 11px 11px 0 0;
 }
 </style>
+<meta property="og:image" content="https://cronread.com/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Create and Schedule a Cron Job",
+  "step": [
+    { "@type": "HowToStep", "position": 1, "name": "Open your crontab", "text": "Run crontab -e in your terminal to open the crontab editor. Use crontab -l to list existing jobs." },
+    { "@type": "HowToStep", "position": 2, "name": "Write the cron expression and command", "text": "Each line follows the format: [cron expression] [command]. Example: 0 2 * * * /usr/bin/python3 /home/user/backup.py runs backup.py at 2am daily." },
+    { "@type": "HowToStep", "position": 3, "name": "Redirect output for logging", "text": "Append >> /var/log/myjob.log 2>&1 to your command to capture both stdout and stderr to a log file." },
+    { "@type": "HowToStep", "position": 4, "name": "Verify the job was saved", "text": "Run crontab -l to confirm your job was saved. Check /var/log/syslog or /var/log/cron for execution logs." }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "CronRead", "item": "https://cronread.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://cronread.com/blog/" },
+    { "@type": "ListItem", "position": 3, "name": "Cron Job Examples", "item": "https://cronread.com/blog/cron-job-examples.html" }
+  ]
+}
+</script>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cron Job Examples — Linux, Docker & Cloud | CronRead">
+<meta name="twitter:description" content="Practical cron job examples with shell scripts, logging, and error handling for Linux servers.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "How do I create a cron job in Linux?", "acceptedAnswer": { "@type": "Answer", "text": "Run crontab -e to open your crontab file. Add a line in the format: [minute] [hour] [day] [month] [weekday] [command]. For example: 0 2 * * * /usr/bin/python3 /home/user/backup.py runs backup.py at 2am every day." } },
+    { "@type": "Question", "name": "How do I log cron job output?", "acceptedAnswer": { "@type": "Answer", "text": "Append >> /var/log/myjob.log 2>&1 to your cron command to capture both stdout and stderr to a log file. Use >> to append logs rather than overwrite them each run." } },
+    { "@type": "Question", "name": "Why is my cron job not running?", "acceptedAnswer": { "@type": "Answer", "text": "Common causes: incorrect cron syntax, command not using absolute paths, environment variables missing (PATH is different in cron), script not executable (chmod +x), or cron service not running (systemctl status cron)." } }
+  ]
+}
+</script>
 </head>
 <body>
 
 <nav>
-  <a class="nav-logo" href="https://cronread.com">Cron<span>Read</span></a>
-  <a class="nav-cta" href="https://cronread.com">Generate Cron →</a>
-</nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">CRONREAD</a>
+    <div class="nav-links" id="navLinks">
+      <a href="../index.html">Cron Tool</a>
+      <a href="../unix-timestamp-converter/">Timestamp</a>
+      <a href="../jwt-decoder/">JWT Decoder</a>
+      <a href="../yaml-json-converter/">YAML ↔ JSON</a>
+      <a href="../base64-encoder/">Base64</a>
+      <a href="../blog/cron-examples.html">Examples</a>
+    </div>
+  </div>
+    <button class="nav-hamburger" id="navHamburger" onclick="document.getElementById('navLinks').classList.toggle('open');this.classList.toggle('open')" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
 
 <header class="hero">
   <div class="hero-inner">
@@ -1054,12 +1110,15 @@ pre::before {
 </div>
 
 <footer>
-  <p>© 2026 <a href="https://cronread.com">CronRead.com</a> — Cron Expression Generator & Reference</p>
-  <p style="margin-top:0.5rem;">
-    <a href="https://cronread.com/blog/cron-job-examples">Cron Examples</a> ·
-    <a href="https://cronread.com/blog/cron-syntax-guide">Cron Syntax</a> ·
-    <a href="https://cronread.com/blog/aws-eventbridge-cron-expression-guide">AWS EventBridge</a>
-  </p>
+  <div class="footer-links">
+    <a href="../index.html">CronRead Home</a> |
+    <a href="../unix-timestamp-converter/">Timestamp Converter</a> |
+    <a href="../jwt-decoder/">JWT Decoder</a> |
+    <a href="../yaml-json-converter/">YAML ↔ JSON</a> |
+    <a href="../base64-encoder/">Base64</a> |
+    <a href="cron-examples.html">Cron Examples</a>
+  </div>
+  <p style="margin-top:.6rem">© 2026 CronRead · Free developer tools · No ads, no tracking</p>
 </footer>
 
 </body>

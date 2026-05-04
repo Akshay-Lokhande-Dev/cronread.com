@@ -3,9 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-<title>Kubernetes CronJob Examples — 15+ Schedule YAML Snippets | CronRead Pro</title>
-<meta name="description" content="15+ Kubernetes CronJob schedule examples with full YAML. Covers timeZone field, concurrencyPolicy, startingDeadlineSeconds, suspend, troubleshooting, and production patterns.">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>Kubernetes CronJob Examples — 15+ Schedule YAML | CronRead</title>
+<meta name="description" content="15+ Kubernetes CronJob schedule examples with full YAML. Covers timeZone field, concurrencyPolicy, startingDeadlineSeconds, suspend, troubleshooting, and...">
+<meta name="keywords" content="kubernetes cronjob examples, kubernetes cron job, k8s cronjob, kubernetes cronjob yaml, kubernetes schedule job, kubectl cronjob, kubernetes cron syntax, kubernetes cronjob concurrencyPolicy, kubernetes cronjob tutorial, kubernetes cronjob best practices, kubernetes scheduled job examples, kubernetes cronjob timezone, kubernetes batch job">
+<meta name="author" content="CronRead">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://cronread.com/blog/kubernetes-cronjob-examples/">
 <meta property="og:type" content="article">
@@ -13,6 +17,8 @@
 <meta property="og:description" content="15+ Kubernetes CronJob schedule examples with YAML. Learn timeZone, concurrencyPolicy, startingDeadlineSeconds, and common troubleshooting patterns.">
 <meta property="og:url" content="https://cronread.com/blog/kubernetes-cronjob-examples/">
 <meta property="og:site_name" content="CronRead Pro">
+<meta name="twitter:title" content="Kubernetes CronJob Examples — CronRead Pro">
+<meta name="twitter:description" content="Production-ready Kubernetes CronJob YAML examples with concurrencyPolicy, resource limits, and timezone support.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -30,20 +36,49 @@
   ]
 }
 </script>
+<meta property="og:image" content="https://cronread.com/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Create a Kubernetes CronJob",
+  "step": [
+    { "@type": "HowToStep", "position": 1, "name": "Write the CronJob YAML", "text": "Define apiVersion: batch/v1, kind: CronJob, and set spec.schedule to your cron expression. The jobTemplate contains the pod spec that runs on schedule." },
+    { "@type": "HowToStep", "position": 2, "name": "Set concurrencyPolicy", "text": "Choose Allow (default), Forbid (skip if previous is running), or Replace (cancel previous and start new). Use Forbid for most batch jobs to prevent overlapping runs." },
+    { "@type": "HowToStep", "position": 3, "name": "Configure history limits", "text": "Set successfulJobsHistoryLimit and failedJobsHistoryLimit to control how many completed/failed Job objects Kubernetes retains. 3 and 1 are sensible defaults." },
+    { "@type": "HowToStep", "position": 4, "name": "Deploy and verify", "text": "Run kubectl apply -f cronjob.yaml, then kubectl get cronjobs to confirm it is scheduled. Use kubectl get jobs to see executions and kubectl logs to check output." }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "CronRead", "item": "https://cronread.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://cronread.com/blog/" },
+    { "@type": "ListItem", "position": 3, "name": "Kubernetes CronJob Examples", "item": "https://cronread.com/blog/kubernetes-cronjob-examples.html" }
+  ]
+}
+</script>
 </head>
 <body>
 <nav>
   <div class="nav-inner">
     <a href="../index.html" class="nav-logo">CRONREAD</a>
-    <div class="nav-links">
-      <a href="../index.html" Tool</a>
-      <a href="cron-examples.html">Examples</a>
-      <a href="aws-eventbridge-cron-examples.html">AWS</a>
-      <a href="github-actions-cron-examples.html">GitHub Actions</a>
-      <a href="cronguru-alternative.html">vs CronGuru</a>
+    <div class="nav-links" id="navLinks">
+      <a href="../index.html">Cron Tool</a>
+      <a href="../unix-timestamp-converter/">Timestamp</a>
+      <a href="../jwt-decoder/">JWT Decoder</a>
+      <a href="../yaml-json-converter/">YAML ↔ JSON</a>
+      <a href="../base64-encoder/">Base64</a>
+      <a href="../blog/cron-examples.html">Examples</a>
     </div>
   </div>
-</nav>
+    <button class="nav-hamburger" id="navHamburger" onclick="document.getElementById('navLinks').classList.toggle('open');this.classList.toggle('open')" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
 
 <div class="wrap">
 
@@ -289,13 +324,14 @@ kubectl patch cronjob my-cronjob -p '{"spec":{"suspend":false}}'  # Resume</pre>
 
 <footer>
   <div class="footer-links">
-    <a href="../index.html" CronRead</a> |
-    <a href="cron-examples.html">Cron Examples</a> |
-    <a href="aws-eventbridge-cron-examples.html">AWS EventBridge</a> |
-    <a href="github-actions-cron-examples.html">GitHub Actions</a> |
-    <a href="cronguru-alternative.html">vs CronGuru</a>
+    <a href="../index.html">CronRead Home</a> |
+    <a href="../unix-timestamp-converter/">Timestamp Converter</a> |
+    <a href="../jwt-decoder/">JWT Decoder</a> |
+    <a href="../yaml-json-converter/">YAML ↔ JSON</a> |
+    <a href="../base64-encoder/">Base64</a> |
+    <a href="cron-examples.html">Cron Examples</a>
   </div>
-  <p style="margin-top:.5rem">© 2026 CronRead · Always verify cron schedules in production.</p>
+  <p style="margin-top:.6rem">© 2026 CronRead · Free developer tools · No ads, no tracking</p>
 </footer>
 </body>
 </html>

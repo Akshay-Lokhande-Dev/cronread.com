@@ -3,9 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-<title>Linux Crontab Examples — 30+ Real crontab -e Schedules | CronRead</title>
-<meta name="description" content="30+ Linux crontab examples with real commands. Learn crontab -e syntax, special strings (@daily, @reboot), environment variables, crontab -l, and common scheduling patterns for sysadmins.">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>Linux Crontab Examples — 30+ Real crontab -e | CronRead</title>
+<meta name="description" content="30+ Linux crontab examples with real commands. Learn crontab -e syntax, special strings (@daily, @reboot), environment variables, crontab -l, and common...">
+<meta name="keywords" content="linux crontab examples, linux cron examples, crontab tutorial, crontab command, crontab -e, crontab -l, linux cron job setup, crontab syntax linux, linux cron every minute, linux cron every hour, linux cron daily backup, linux cron at midnight, crontab special strings, @reboot cron, @daily cron, @weekly cron, crontab environment variables">
+<meta name="author" content="CronRead">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://cronread.com/blog/linux-crontab-examples/">
 <meta property="og:type" content="article">
@@ -68,23 +72,49 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Set Up Cron Jobs in Linux",
+  "step": [
+    { "@type": "HowToStep", "position": 1, "name": "Open the crontab editor", "text": "Run crontab -e to edit your personal crontab. Use sudo crontab -e for root cron jobs. The file opens in your default terminal editor." },
+    { "@type": "HowToStep", "position": 2, "name": "Add your cron job", "text": "Each line: [minute] [hour] [day] [month] [weekday] [command]. Example: 0 3 * * * /home/user/backup.sh runs at 3am every day." },
+    { "@type": "HowToStep", "position": 3, "name": "Use special strings for readability", "text": "@daily, @weekly, @monthly, @reboot are shortcuts for common schedules. @reboot runs the command once when the system starts." },
+    { "@type": "HowToStep", "position": 4, "name": "Set environment variables if needed", "text": "Add MAILTO="" at the top to suppress email output. Add PATH=/usr/local/bin:/usr/bin:/bin to ensure commands are found." }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "CronRead", "item": "https://cronread.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://cronread.com/blog/" },
+    { "@type": "ListItem", "position": 3, "name": "Linux Crontab Examples", "item": "https://cronread.com/blog/linux-crontab-examples.html" }
+  ]
+}
+</script>
 </head>
 <body>
 
 <nav>
   <div class="nav-inner">
     <a href="../index.html" class="nav-logo">CRONREAD</a>
-    <div class="nav-links">
-      <a href="../index.html" Tool</a>
-      <a href="cron-examples.html">Examples</a>
-      <a href="aws-eventbridge-cron-examples.html">AWS</a>
-      <a href="kubernetes-cronjob-examples.html">Kubernetes</a>
-      <a href="github-actions-cron-examples.html">GitHub Actions</a>
-      <a href="linux-crontab-examples.html" class="active">Linux Crontab</a>
-      <a href="cronguru-alternative.html">vs CronGuru</a>
+    <div class="nav-links" id="navLinks">
+      <a href="../index.html">Cron Tool</a>
+      <a href="../unix-timestamp-converter/">Timestamp</a>
+      <a href="../jwt-decoder/">JWT Decoder</a>
+      <a href="../yaml-json-converter/">YAML ↔ JSON</a>
+      <a href="../base64-encoder/">Base64</a>
+      <a href="../blog/cron-examples.html">Examples</a>
     </div>
   </div>
-</nav>
+    <button class="nav-hamburger" id="navHamburger" onclick="document.getElementById('navLinks').classList.toggle('open');this.classList.toggle('open')" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
 
 <div class="wrap">
 
@@ -505,15 +535,14 @@ MAILTO=""
 
 <footer>
   <div class="footer-links">
-    <a href="../index.html" CronRead</a> |
-    <a href="cron-examples.html">Cron Examples</a> |
-    <a href="linux-crontab-examples.html">Linux Crontab</a> |
-    <a href="aws-eventbridge-cron-examples.html">AWS EventBridge</a> |
-    <a href="kubernetes-cronjob-examples.html">Kubernetes</a> |
-    <a href="github-actions-cron-examples.html">GitHub Actions</a> |
-    <a href="cronguru-alternative.html">vs CronGuru</a>
+    <a href="../index.html">CronRead Home</a> |
+    <a href="../unix-timestamp-converter/">Timestamp Converter</a> |
+    <a href="../jwt-decoder/">JWT Decoder</a> |
+    <a href="../yaml-json-converter/">YAML ↔ JSON</a> |
+    <a href="../base64-encoder/">Base64</a> |
+    <a href="cron-examples.html">Cron Examples</a>
   </div>
-  <p style="margin-top:.6rem">© 2026 CronRead · Always verify cron schedules before deploying to production.</p>
+  <p style="margin-top:.6rem">© 2026 CronRead · Free developer tools · No ads, no tracking</p>
 </footer>
 
 </body>
