@@ -6,41 +6,7 @@
 /* ── CSS Variables ─────────────────────────────────────────── */
 :root {
   --bg:       #ECEEF8;
-  --surface:  #FFFFFF;/* TABLE FIXES FOR SHARP TEXT */
-table { 
-  width: 100%; 
-  border-collapse: collapse; 
-  font-size: 0.95rem; /* Halka sa bada kiya hai padhne ke liye */
-}
-
-thead { 
-  background: var(--surface2); /* Ya jo bhi tera light background ho */
-  border-bottom: 2px solid var(--border); 
-}
-
-th {
-  font-family: 'Syne', sans-serif; /* Ya jo bhi tera header font hai */
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #475569; /* Fika color hatakar bold slate color daala hai */
-  font-weight: 800; /* Font ko mota kiya hai taaki heading chhupe na */
-  padding: 1rem;
-  text-align: left;
-}
-
-td { 
-  padding: 1rem; 
-  border-bottom: 1px solid var(--border); 
-  vertical-align: top; 
-  color: #1e293b; /* Ekdum dark slate color jisse glare nahi aayega par text sharp dikhega */
-  font-weight: 500; /* Text thoda thick kiya hai readability ke liye */
-}
-
-td:first-child { 
-  font-weight: 700; /* Pehla column (jaise 'supercronic') thoda aur bold kar diya */
-  color: #0f172a; /* Isko completely dark kar diya */
-}
+  --surface:  #FFFFFF;
   --surface2: #F2F3FB;
   --border:   #DDE0F0;
   --text:     #0C0C20;
@@ -60,6 +26,37 @@ td:first-child {
   --radius:   12px;
   --shadow:   0 1px 4px rgba(86,81,214,.07), 0 8px 28px rgba(86,81,214,.06);
   --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+}
+
+/* ── Table fixes ───────────────────────────────────────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+thead {
+  background: var(--surface2);
+  border-bottom: 2px solid var(--border);
+}
+th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #475569;
+  font-weight: 800;
+  padding: 1rem;
+  text-align: left;
+}
+td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  color: #1e293b;
+  font-weight: 500;
+}
+td:first-child {
+  font-weight: 700;
+  color: #0f172a;
 }
 
 /* ── Reset ─────────────────────────────────────────────────── */
@@ -809,13 +806,22 @@ footer a { color: var(--text2); margin: 0 8px; font-weight: 600; }
 footer a:hover { color: var(--accent); text-decoration: none; }
 
 /* ── Responsive ────────────────────────────────────────────── */
+.nav-hamburger { display: none; }
+
 @media (max-width: 768px) {
   .wrap, .layout, .page-wrap, .content { padding: 0 1.1rem 5rem; }
   .layout { padding-top: 2rem; }
   .hero { padding: 3.5rem 1.1rem 2.5rem; }
   h1 { font-size: 1.8rem; letter-spacing: -1px; }
   h2 { font-size: 1.3rem; }
-  .nav-links { display: none; }
+  .nav-links { display: none; flex-direction: column; width: 100%; gap: .5rem; padding: .5rem 0 .8rem; }
+  .nav-links.open { display: flex; }
+  .nav-links a { font-size: 13px; padding: .3rem 0; border-bottom: 1px solid var(--border); }
+  .nav-hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; }
+  .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--accent); border-radius: 2px; transition: all .2s; }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
   pre { font-size: .75rem; padding: .9rem 1rem; }
   .features-grid { grid-template-columns: 1fr; }
   .field-grid { grid-template-columns: repeat(3, 1fr); }
