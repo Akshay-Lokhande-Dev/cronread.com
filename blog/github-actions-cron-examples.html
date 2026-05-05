@@ -7,7 +7,7 @@
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>GitHub Actions Cron Examples — Scheduled | CronRead</title>
-<meta name="description" content="Complete guide to GitHub Actions scheduled workflows. 15+ cron examples, UTC timezone explained, common mistakes, workflow_dispatch override, and step-by-step debugging tips.">
+<meta name="description" content="GitHub Actions scheduled workflows: 15+ cron examples, UTC timezone explained, common mistakes, workflow_dispatch override, and step-by-step debugging tips.">
 <meta name="keywords" content="github actions cron, github actions schedule, github actions cron examples, github actions workflow schedule, github actions cron syntax, github actions run daily, github actions run weekly, github actions cron not running, github actions schedule timezone, github actions workflow_dispatch cron, github actions cron every hour, github actions on schedule">
 <meta name="author" content="CronRead">
 <meta name="robots" content="index, follow">
@@ -19,7 +19,8 @@
 <meta property="og:site_name" content="CronRead">
 <meta property="og:image" content="https://cronread.com/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="GitHub Actions Cron Examples — CronRead">
+  <meta name="twitter:url" content="https://cronread.com/blog/github-actions-cron-examples/">
+<meta name="twitter:title" content="GitHub Actions Cron Examples — Scheduled | CronRead">
 <meta name="twitter:description" content="15+ scheduled workflow examples with YAML. UTC explained, common mistakes, and ready-to-copy snippets.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -78,7 +79,7 @@
   "@type": "HowTo",
   "name": "How to Schedule GitHub Actions with Cron",
   "step": [
-    { "@type": "HowToStep", "position": 1, "name": "Add the schedule trigger", "text": "In your workflow YAML, add on: schedule: - cron: "your expression" at the top level. GitHub Actions uses UTC timezone." },
+    { "@type": "HowToStep", "position": 1, "name": "Add the schedule trigger", "text": "In your workflow YAML, add on: schedule: - cron: 'your expression' at the top level. GitHub Actions uses UTC timezone." },
     { "@type": "HowToStep", "position": 2, "name": "Use the correct cron format", "text": "GitHub Actions uses standard 5-field cron syntax. The minimum interval is every 5 minutes. Shorter intervals are not supported." },
     { "@type": "HowToStep", "position": 3, "name": "Know the delays", "text": "GitHub Actions scheduled workflows can run up to 15-30 minutes late during peak times. Do not rely on exact-minute precision for critical tasks." },
     { "@type": "HowToStep", "position": 4, "name": "Test with workflow_dispatch", "text": "Add on: workflow_dispatch: {} alongside schedule: so you can manually trigger the workflow to test it without waiting for the scheduled time." }
