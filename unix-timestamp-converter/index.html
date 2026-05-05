@@ -7,7 +7,7 @@
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>Unix Timestamp Converter — Epoch Time to Date | CronRead</title>
-<meta name="description" content="Convert Unix timestamps to human-readable dates instantly. Free epoch time converter with timezone support, live clock, relative time, and...">
+<meta name="description" content="Convert Unix timestamps to human-readable dates instantly. Free epoch time converter with timezone support, live clock, relative time display, and ISO 8601 output format.">
 <meta name="keywords" content="unix timestamp converter, epoch converter, timestamp to date, epoch time converter, unix time, date to timestamp, unix epoch, posix timestamp, epoch time to human readable, convert unix timestamp to datetime, online epoch converter, unix timestamp to date online, epoch to utc, timestamp to human readable, milliseconds to date, seconds since 1970, what is unix timestamp, unix time converter, epoch timestamp converter, javascript unix timestamp, python datetime to timestamp, mysql unix timestamp, mongodb timestamp to date, jwt expiry timestamp, aws lambda timestamp, firebase timestamp to date, epoch to iso 8601, negative unix timestamp, timestamp before 1970, year 2038 problem, unix timestamp calculator, epoch time calculator, timestamp decoder, date to epoch converter, convert epoch to date, unix time to human readable, posix time converter, utc timestamp converter, unix timestamp seconds milliseconds, how to convert unix timestamp, linux timestamp converter">
 <meta name="robots" content="index, follow">
 <meta name="author" content="CronRead">
@@ -822,7 +822,34 @@ now := time.Now().Unix()</pre>
     </div>
   </section>
 
-  <!-- FAQ -->\n  <section>
+  <section style="margin-bottom:1.5rem">
+    <h2>Seconds vs Milliseconds — How to Tell the Difference</h2>
+    <div class="card" style="font-size:15px;line-height:1.8;color:#484868">
+      <p>The most common source of confusion with Unix timestamps is whether a value is in <strong>seconds</strong> or <strong>milliseconds</strong>. The rule of thumb is simple:</p>
+      <ul style="margin-top:.6rem;padding-left:1.4rem;display:flex;flex-direction:column;gap:.4rem">
+        <li><strong>10 digits → seconds.</strong> Example: <code>1700000000</code> = Nov 14, 2023. Standard Unix, used by most backend systems, Linux, Python, Go, Rust, and Ruby.</li>
+        <li><strong>13 digits → milliseconds.</strong> Example: <code>1700000000000</code> = same moment. Used by JavaScript (<code>Date.now()</code>), Java (<code>System.currentTimeMillis()</code>), and many front-end APIs.</li>
+        <li><strong>16 digits → microseconds.</strong> Used by PostgreSQL in high-precision contexts and some distributed log systems.</li>
+      </ul>
+      <p style="margin-top:.8rem">If a timestamp converts to a date far in the future (a 13-digit value interpreted as seconds would give year 56000+), you likely have milliseconds — divide by 1000. This tool auto-detects the format based on digit count.</p>
+    </div>
+  </section>
+
+  <section style="margin-bottom:1.5rem">
+    <h2>Unix Timestamps in Databases and APIs</h2>
+    <div class="card" style="font-size:15px;line-height:1.8;color:#484868">
+      <p>Storing time as a Unix integer — rather than a formatted string — is best practice for backend development because it is timezone-safe, language-agnostic, and fast to index and sort.</p>
+      <ul style="margin-top:.6rem;padding-left:1.4rem;display:flex;flex-direction:column;gap:.4rem">
+        <li><strong>Timezone-safe:</strong> No ambiguity from DST or local offsets. Store UTC seconds, display in any timezone at the application layer.</li>
+        <li><strong>Easy arithmetic:</strong> Add 86400 to advance exactly one day; add 3600 for one hour — no calendar library required.</li>
+        <li><strong>JWT claims:</strong> The <code>exp</code>, <code>iat</code>, and <code>nbf</code> fields in JWT tokens are Unix seconds. Use the <a href="../jwt-decoder/" style="color:var(--accent)">JWT Decoder</a> to inspect them as human-readable dates.</li>
+        <li><strong>Cron scheduling:</strong> AWS EventBridge, Kubernetes, and GitHub Actions all log scheduled run times as UTC epoch. The <a href="../" style="color:var(--accent)">CronRead tool</a> shows next run times alongside Unix timestamps.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section>
     <h2>Unix Timestamp — FAQ</h2>
     <div class="faq-grid">
 
