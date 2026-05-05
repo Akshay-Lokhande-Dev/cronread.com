@@ -7,7 +7,7 @@
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>Base64 Encoder & Decoder — Online Tool | CronRead</title>
-<meta name="description" content="Encode or decode Base64 strings and files online. Supports text, files, images with live preview, URL-safe Base64, and MIME type detection. Free, 100%...">
+<meta name="description" content="Encode or decode Base64 strings and files online. Supports text, files, and images with live preview, URL-safe Base64, and MIME type detection. Free and 100% client-side — nothing leaves your browser.">
 <meta name="keywords" content="base64 encoder, base64 decoder, base64 encode online, base64 decode online, encode to base64, decode base64 string, base64 converter, base64 image encoder, base64 file encoder, base64 url safe, base64 online tool, base64 string to text, text to base64, base64 encode decode, base64 javascript, base64 python, base64 decode string, decode base64 to text, base64 binary, image to base64, base64 to image, base64 encode file, base64 html image, base64 data uri, atob btoa online, base64 padding, base64 characters, what is base64">
 <meta name="robots" content="index, follow">
 <meta name="author" content="CronRead">
@@ -649,6 +649,36 @@
   </section>
 
   <!-- FAQ -->
+  <section style="margin-top:1.5rem">
+    <h2>How Base64 Encoding Works — Step by Step</h2>
+    <div class="card" style="font-size:15px;line-height:1.8;color:#484868">
+      <p>Base64 works by converting every <strong>3 bytes</strong> of binary input into <strong>4 Base64 characters</strong>. Here is how the string <code>Man</code> (3 bytes) encodes to <code>TWFu</code>:</p>
+      <ol style="margin-top:.8rem;padding-left:1.4rem;display:flex;flex-direction:column;gap:.5rem">
+        <li><strong>Convert to binary:</strong> <code>M</code> = <code>01001101</code>, <code>a</code> = <code>01100001</code>, <code>n</code> = <code>01101110</code></li>
+        <li><strong>Concatenate bits:</strong> <code>010011010110000101101110</code> (24 bits)</li>
+        <li><strong>Split into 6-bit groups:</strong> <code>010011</code> <code>010110</code> <code>000101</code> <code>101110</code></li>
+        <li><strong>Map to Base64 alphabet:</strong> <code>19→T</code>, <code>22→W</code>, <code>5→F</code>, <code>46→u</code> → output <code>TWFu</code></li>
+      </ol>
+      <p style="margin-top:.8rem">When the input length is <strong>not</strong> divisible by 3, padding characters (<code>=</code>) are appended to make the output a multiple of 4 characters. One <code>=</code> means 1 padding byte; two <code>==</code> means 2 padding bytes.</p>
+      <p style="margin-top:.8rem"><strong>Standard vs URL-safe Base64:</strong> Standard Base64 uses <code>+</code> and <code>/</code> as the 62nd and 63rd characters, which are unsafe in URLs and HTTP headers. URL-safe Base64 (RFC 4648 §5) substitutes <code>-</code> for <code>+</code> and <code>_</code> for <code>/</code>, making encoded strings safe to embed in query strings, filenames, and Authorization headers without percent-encoding.</p>
+    </div>
+  </section>
+
+  <section style="margin-top:1.5rem">
+    <h2>Base64 Security Considerations</h2>
+    <div class="card" style="font-size:15px;line-height:1.8;color:#484868">
+      <p><strong>Base64 is not a security measure.</strong> Any encoded string can be decoded instantly by anyone with access to it. Do not use Base64 to hide passwords, API keys, or sensitive data — it provides zero confidentiality.</p>
+      <p style="margin-top:.8rem"><strong>Common misuse patterns to avoid:</strong></p>
+      <ul style="margin-top:.4rem;padding-left:1.4rem;display:flex;flex-direction:column;gap:.4rem">
+        <li>Storing passwords as Base64 in a database (use bcrypt or Argon2 instead)</li>
+        <li>Sending API keys in a URL query string as Base64 (use Authorization headers with HTTPS)</li>
+        <li>Using Base64 as "obfuscation" for JavaScript code (easily reversed, ineffective)</li>
+      </ul>
+      <p style="margin-top:.8rem"><strong>Legitimate security uses:</strong> Base64 <em>is</em> the standard encoding for the payload sections of <a href="../jwt-decoder/" style="color:var(--accent)">JWT tokens</a> (the signature provides the security, not Base64 itself), and for embedding binary keys in PEM certificates and SSH authorized_keys files.</p>
+      <p style="margin-top:.8rem"><strong>This tool is 100% client-side.</strong> No data you encode or decode is sent to any server. All processing runs locally in your browser using the Web Crypto API and native <code>atob()</code>/<code>btoa()</code> functions.</p>
+    </div>
+  </section>
+
   <section style="margin-top:1.5rem">
     <h2>Base64 — FAQ</h2>
     <div class="faq-grid">
