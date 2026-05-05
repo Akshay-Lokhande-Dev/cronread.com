@@ -7,7 +7,7 @@
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>YAML to JSON Converter — Bidirectional Online | CronRead</title>
-<meta name="description" content="Convert YAML to JSON and JSON to YAML instantly. Bidirectional, live conversion with real-time error detection. Includes Kubernetes CronJob, GitHub Actions,...">
+<meta name="description" content="Convert YAML to JSON and JSON to YAML instantly. Bidirectional, live conversion with real-time error detection. Includes Kubernetes CronJob, GitHub Actions, and Docker Compose examples.">
 <meta name="keywords" content="yaml to json, json to yaml, yaml converter, yaml to json online, json to yaml converter, yaml parser online, yaml validator, yaml formatter, convert yaml to json, kubernetes yaml, github actions yaml, docker compose yaml, yaml json tool, yaml online editor, yaml to json converter free, json yaml converter, yaml to json javascript, yaml linter, yaml syntax checker, yaml to json python, helm yaml, ansible yaml, yaml to object, yaml indent, yaml validation online, convert json to yaml online, yaml pretty print, yaml vs json">
 <meta name="robots" content="index, follow">
 <meta name="author" content="CronRead">
@@ -513,6 +513,18 @@
       <p style="margin-top:.6rem"><strong>Lists:</strong> Each item on a new line starting with <code>-</code>:<br><code>tags:<br>&nbsp;&nbsp;- backend<br>&nbsp;&nbsp;- devops</code></p>
       <p style="margin-top:.6rem"><strong>Multi-line string (literal block):</strong> Use <code>|</code> to preserve line breaks, <code>&gt;</code> to fold them into spaces.</p>
       <p style="margin-top:.6rem"><strong>Indentation:</strong> Always use <strong>spaces, never tabs</strong>. 2 spaces is the standard convention.</p>
+    </div>
+  </section>
+
+  <section style="margin-top:1.5rem">
+    <h2>Common YAML ↔ JSON Conversion Scenarios</h2>
+    <div class="card" style="font-size:15px;line-height:1.8;color:#484868">
+      <p>Here are the most common real-world situations where developers need to convert between YAML and JSON:</p>
+      <p style="margin-top:.8rem"><strong>Kubernetes manifests → Helm values:</strong> Kubernetes resources are written in YAML, but tooling like Terraform's Kubernetes provider or some CI systems accept only JSON. Paste your <code>Deployment</code> or <code>CronJob</code> YAML here to get the equivalent JSON representation instantly.</p>
+      <p style="margin-top:.8rem"><strong>GitHub Actions workflows → API payloads:</strong> The GitHub Actions API (<code>POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches</code>) accepts JSON. If you have a <code>.github/workflows/</code> YAML file, convert it to JSON to understand the structure for API calls or repository dispatch events.</p>
+      <p style="margin-top:.8rem"><strong>Docker Compose → Portainer / Compose API:</strong> Some Docker management tools accept a Compose file as inline JSON rather than a YAML file. Convert your <code>docker-compose.yml</code> to JSON for these integrations.</p>
+      <p style="margin-top:.8rem"><strong>Ansible playbooks → JSON inventories:</strong> Ansible natively supports both YAML and JSON inventory files. When integrating with an external CMDB or asset management system that outputs JSON, convert it to YAML for readability in version control.</p>
+      <p style="margin-top:.8rem"><strong>OpenAPI specs:</strong> OpenAPI/Swagger specifications are commonly written in YAML for readability but many code generators and validators require JSON. Convert the spec in either direction with zero manual editing.</p>
     </div>
   </section>
 
