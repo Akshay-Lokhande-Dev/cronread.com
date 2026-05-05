@@ -7,7 +7,7 @@
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>Cron Expression Tester — Validate &amp; Debug | CronRead</title>
-<meta name="description" content="Free online cron expression tester. Instantly validate cron syntax, see the next 10 run times, debug common errors, and understand what your cron expression...">
+<meta name="description" content="Free online cron expression tester. Instantly validate cron syntax, see the next 10 run times, debug common errors, and understand what your cron expression does in plain English.">
 <meta name="keywords" content="cron expression tester, cron tester online, test cron expression, cron validator, cron expression checker, cron next run time, validate cron expression, cron expression preview, cron schedule tester, online cron tester, cron expression calculator, cron job tester, cron expression live preview">
 <meta name="author" content="CronRead">
 <meta name="robots" content="index, follow">
@@ -265,6 +265,26 @@
 
     <h3>Job runs unexpectedly often</h3>
     <p>A common mistake: <code>* * * * *</code> runs every single minute. If you meant "once per hour", you need <code>0 * * * *</code> (minute field must be 0, not *).</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── PLATFORM TESTING ── -->
+  <section>
+    <h2>Testing Cron Expressions by Platform</h2>
+    <p>Different platforms implement slightly different cron dialects. Here is what to watch for when testing expressions for specific schedulers:</p>
+
+    <h3>Linux crontab (5-field)</h3>
+    <p>Standard 5-field format: <code>minute hour day month weekday</code>. Day-of-week uses 0–7 (0 and 7 are both Sunday). The system daemon reads <code>/etc/crontab</code> and user crontabs from <code>/var/spool/cron/crontabs/</code>. Verify your expression with <code>crontab -l</code> after editing. The timezone used is the system timezone — not UTC unless <code>CRON_TZ</code> is set in the crontab file.</p>
+
+    <h3>AWS EventBridge Scheduler (6-field)</h3>
+    <p>AWS uses a 6-field format with an extra <strong>Year</strong> field at the end: <code>minute hour day month weekday year</code>. The <code>?</code> wildcard is required in either the day-of-month or day-of-week field (not both <code>*</code>). All times are interpreted as <strong>UTC only</strong>. Use the <a href="aws-eventbridge-cron-expression-guide/" style="color:var(--accent)">AWS EventBridge Cron Guide</a> for platform-specific examples.</p>
+
+    <h3>GitHub Actions (5-field, UTC)</h3>
+    <p>GitHub Actions <code>schedule</code> triggers use standard 5-field cron and <strong>always run in UTC</strong>. Scheduled workflows may run up to 15 minutes late under high load. The minimum interval is every 5 minutes — GitHub will not guarantee runs more frequent than that. Test your expression in UTC to see the actual trigger window.</p>
+
+    <h3>Kubernetes CronJob (5-field)</h3>
+    <p>Kubernetes CronJobs support standard 5-field cron. Since Kubernetes 1.25, you can specify a <code>timeZone</code> field in the spec (e.g. <code>timeZone: "America/New_York"</code>); earlier versions always use UTC. The <code>startingDeadlineSeconds</code> field controls how late a missed run can start — worth testing with your expression to ensure recovery after cluster downtime.</p>
   </section>
 
   <hr class="divider">
