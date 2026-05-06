@@ -394,16 +394,25 @@
   </style>
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "TechArticle",
-    "headline": "50+ Cron Job Examples – Copy-Paste Crontab Expressions",
-    "description": "50+ real-world cron job examples with copy-paste crontab expressions for Linux and AWS.",
-    "author": { "@type": "Organization", "name": "CronRead" },
-    "publisher": { "@type": "Organization", "name": "CronRead", "url": "https://cronread.com" },
-    "url": "https://cronread.com/blog/cron-job-examples"
-  }
-  </script>
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "50+ Cron Job Examples – Copy-Paste Crontab Expressions",
+  "description": "50+ real-world cron job examples with copy-paste crontab expressions for Linux and AWS.",
+  "author": {
+    "@type": "Organization",
+    "name": "CronRead"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "CronRead",
+    "url": "https://cronread.com"
+  },
+  "url": "https://cronread.com/blog/cron-job-examples",
+  "datePublished": "2025-02-10",
+  "dateModified": "2026-02-01"
+}
+</script>
 
 <style>
 /* ── Vivid Enhancements ─── */
@@ -433,16 +442,37 @@ pre::before {
 }
 </style>
 <meta property="og:image" content="https://cronread.com/og-image.png">
+<meta property="og:image:alt" content="Cron job examples for Linux, Docker and cloud — CronRead">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "HowTo",
   "name": "How to Create and Schedule a Cron Job",
   "step": [
-    { "@type": "HowToStep", "position": 1, "name": "Open your crontab", "text": "Run crontab -e in your terminal to open the crontab editor. Use crontab -l to list existing jobs." },
-    { "@type": "HowToStep", "position": 2, "name": "Write the cron expression and command", "text": "Each line follows the format: [cron expression] [command]. Example: 0 2 * * * /usr/bin/python3 /home/user/backup.py runs backup.py at 2am daily." },
-    { "@type": "HowToStep", "position": 3, "name": "Redirect output for logging", "text": "Append >> /var/log/myjob.log 2>&1 to your command to capture both stdout and stderr to a log file." },
-    { "@type": "HowToStep", "position": 4, "name": "Verify the job was saved", "text": "Run crontab -l to confirm your job was saved. Check /var/log/syslog or /var/log/cron for execution logs." }
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Open your crontab",
+      "text": "Run crontab -e in your terminal to open the crontab editor. Use crontab -l to list existing jobs."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Write the cron expression and command",
+      "text": "Each line follows the format: [cron expression] [command]. Example: 0 2 * * * /usr/bin/python3 /home/user/backup.py runs backup.py at 2am daily."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Redirect output for logging",
+      "text": "Append \u003E\u003E /var/log/myjob.log 2\u003E\u00261 to your command to capture both stdout and stderr to a log file."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Verify the job was saved",
+      "text": "Run crontab -l to confirm your job was saved. Check /var/log/syslog or /var/log/cron for execution logs."
+    }
   ]
 }
 </script>
@@ -469,9 +499,30 @@ pre::before {
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "How do I create a cron job in Linux?", "acceptedAnswer": { "@type": "Answer", "text": "Run crontab -e to open your crontab file. Add a line in the format: [minute] [hour] [day] [month] [weekday] [command]. For example: 0 2 * * * /usr/bin/python3 /home/user/backup.py runs backup.py at 2am every day." } },
-    { "@type": "Question", "name": "How do I log cron job output?", "acceptedAnswer": { "@type": "Answer", "text": "Append >> /var/log/myjob.log 2>&1 to your cron command to capture both stdout and stderr to a log file. Use >> to append logs rather than overwrite them each run." } },
-    { "@type": "Question", "name": "Why is my cron job not running?", "acceptedAnswer": { "@type": "Answer", "text": "Common causes: incorrect cron syntax, command not using absolute paths, environment variables missing (PATH is different in cron), script not executable (chmod +x), or cron service not running (systemctl status cron)." } }
+    {
+      "@type": "Question",
+      "name": "How do I create a cron job in Linux?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Run crontab -e to open your crontab file. Add a line in the format: [minute] [hour] [day] [month] [weekday] [command]. For example: 0 2 * * * /usr/bin/python3 /home/user/backup.py runs backup.py at 2am every day."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I log cron job output?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Append \u003E\u003E /var/log/myjob.log 2\u003E\u00261 to your cron command to capture both stdout and stderr to a log file. Use \u003E\u003E to append logs rather than overwrite them each run."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why is my cron job not running?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Common causes: incorrect cron syntax, command not using absolute paths, environment variables missing (PATH is different in cron), script not executable (chmod +x), or cron service not running (systemctl status cron)."
+      }
+    }
   ]
 }
 </script>
@@ -1120,15 +1171,28 @@ pre::before {
 </div>
 
 <footer>
-  <div class="footer-links">
-    <a href="../index.html">CronRead Home</a> |
+    <div class="footer-links">
+    <a href="../">CronRead Home</a> |
     <a href="../unix-timestamp-converter/">Timestamp Converter</a> |
     <a href="../jwt-decoder/">JWT Decoder</a> |
     <a href="../yaml-json-converter/">YAML ↔ JSON</a> |
     <a href="../base64-encoder/">Base64</a> |
-    <a href="cron-examples.html">Cron Examples</a>
+    <a href="../sql-explainer/">SQL Explainer</a> |
+    <a href="cron-examples.html">Cron Examples</a> |
+    <a href="cron-syntax-guide.html">Cron Syntax</a> |
+    <a href="cron-job-examples.html">Cron Job Examples</a> |
+    <a href="linux-crontab-examples.html">Linux Crontab</a>
   </div>
   <p style="margin-top:.6rem">© 2026 CronRead · Free developer tools · No ads, no tracking</p>
+
+  <div class="footer-badges" style="margin-top:0.8rem;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;">
+    <a href="https://www.saashub.com/cronread-alternatives" rel="nofollow noopener" target="_blank" title="CronRead on SaaSHub">
+      <img src="https://cdn-b.saashub.com/images/app/badges/featured-on-saashub.svg" alt="Featured on SaaSHub" style="height:28px;vertical-align:middle">
+    </a>
+    <a href="https://stackshare.io/cronread" rel="nofollow noopener" target="_blank" title="CronRead on StackShare">
+      <img src="https://img.shields.io/badge/StackShare-CronRead-blue?logo=stackshare&style=flat-square" alt="CronRead on StackShare" style="height:22px;vertical-align:middle">
+    </a>
+  </div>
 </footer>
 
 </body>
