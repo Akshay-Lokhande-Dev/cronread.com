@@ -112,14 +112,14 @@
 
 <nav>
   <div class="nav-inner">
-    <a href="../index.html" class="nav-logo">CRONREAD</a>
+    <a href="/" class="nav-logo">CRONREAD</a>
     <div class="nav-links" id="navLinks">
-      <a href="../index.html">Cron Tool</a>
-      <a href="../unix-timestamp-converter/">Timestamp</a>
-      <a href="../jwt-decoder/">JWT Decoder</a>
-      <a href="../yaml-json-converter/">YAML ↔ JSON</a>
-      <a href="../base64-encoder/">Base64</a>
-      <a href="../blog/cron-examples.html">Examples</a>
+      <a href="/">Cron Tool</a>
+      <a href="/unix-timestamp-converter/">Timestamp</a>
+      <a href="/jwt-decoder/">JWT Decoder</a>
+      <a href="/yaml-json-converter/">YAML ↔ JSON</a>
+      <a href="/base64-encoder/">Base64</a>
+      <a href="/blog/cron-examples/">Examples</a>
     </div>
   </div>
     <button class="nav-hamburger" id="navHamburger" onclick="document.getElementById('navLinks').classList.toggle('open');this.classList.toggle('open')" aria-label="Toggle navigation">
@@ -135,7 +135,7 @@
     <h1>Linux Crontab<br><span class="hl">Examples &amp; Reference</span></h1>
     <p class="hero-sub">30+ real Linux crontab examples with working commands — backups, log rotation, scripts, system maintenance, @reboot jobs, environment variables, and everything you need for crontab -e.</p>
     <div class="cta-row">
-      <a href="../index.html" class="cta-btn">⚡ Validate Your Cron Expression</a>
+      <a href="/" class="cta-btn">⚡ Validate Your Cron Expression</a>
       <a href="#examples" class="cta-secondary">Jump to Examples ↓</a>
     </div>
   </div>
@@ -528,44 +528,72 @@ MAILTO=""
           <tr><th>Guide</th><th>What you'll learn</th></tr>
         </thead>
         <tbody>
-          <tr><td><a href="cron-examples.html">Cron Expression Examples</a></td><td>50+ cron expression patterns with human-readable descriptions</td></tr>
-          <tr><td><a href="kubernetes-cronjob-examples.html">Kubernetes CronJob Examples</a></td><td>YAML CronJob specs, concurrencyPolicy, history limits</td></tr>
-          <tr><td><a href="github-actions-cron-examples.html">GitHub Actions Cron Examples</a></td><td>Scheduled workflows, UTC gotcha, workflow_dispatch</td></tr>
-          <tr><td><a href="aws-eventbridge-cron-examples.html">AWS EventBridge Cron</a></td><td>AWS 6-field cron syntax, rate() expressions</td></tr>
-          <tr><td><a href="cron-syntax-guide.html">Cron Syntax Guide</a></td><td>Deep-dive into every cron field and operator</td></tr>
+          <tr><td><a href="/blog/cron-examples/">Cron Expression Examples</a></td><td>50+ cron expression patterns with human-readable descriptions</td></tr>
+          <tr><td><a href="/blog/kubernetes-cronjob-examples/">Kubernetes CronJob Examples</a></td><td>YAML CronJob specs, concurrencyPolicy, history limits</td></tr>
+          <tr><td><a href="/blog/github-actions-cron-examples/">GitHub Actions Cron Examples</a></td><td>Scheduled workflows, UTC gotcha, workflow_dispatch</td></tr>
+          <tr><td><a href="/blog/aws-eventbridge-cron-examples/">AWS EventBridge Cron</a></td><td>AWS 6-field cron syntax, rate() expressions</td></tr>
+          <tr><td><a href="/blog/cron-syntax-guide/">Cron Syntax Guide</a></td><td>Deep-dive into every cron field and operator</td></tr>
         </tbody>
       </table>
     </div>
   </section>
 
   <div class="cta-row" style="margin-top:3rem">
-    <a href="../index.html" class="cta-btn">⚡ Validate Your Crontab Expression</a>
+    <a href="/" class="cta-btn">⚡ Validate Your Crontab Expression</a>
   </div>
 
 </div><!-- /wrap -->
 
 <footer>
-    <div class="footer-links">
-    <a href="../">CronRead Home</a> |
-    <a href="../unix-timestamp-converter/">Timestamp Converter</a> |
-    <a href="../jwt-decoder/">JWT Decoder</a> |
-    <a href="../yaml-json-converter/">YAML ↔ JSON</a> |
-    <a href="../base64-encoder/">Base64</a> |
-    <a href="../sql-explainer/">SQL Explainer</a> |
-    <a href="cron-examples.html">Cron Examples</a> |
-    <a href="cron-syntax-guide.html">Cron Syntax</a> |
-    <a href="cron-job-examples.html">Cron Job Examples</a> |
-    <a href="linux-crontab-examples.html">Linux Crontab</a>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="/">Cron Expression Parser</a></li>
+        <li><a href="/unix-timestamp-converter/">Timestamp Converter</a></li>
+        <li><a href="/jwt-decoder/">JWT Decoder</a></li>
+        <li><a href="/yaml-json-converter/">YAML ↔ JSON</a></li>
+        <li><a href="/base64-encoder/">Base64 Encoder</a></li>
+        <li><a href="/sql-explainer/">SQL Explainer</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Guides</h4>
+      <ul>
+        <li><a href="/blog/cron-syntax-guide/">Cron Syntax Guide</a></li>
+        <li><a href="/blog/cron-expression-explainer/">Cron Expression Explained</a></li>
+        <li><a href="/blog/cron-expression-tester/">Cron Expression Tester</a></li>
+        <li><a href="/blog/crontab-vs-systemd-timer/">Crontab vs Systemd</a></li>
+        <li><a href="/blog/aws-eventbridge-cron-expression-guide/">AWS EventBridge Guide</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Examples</h4>
+      <ul>
+        <li><a href="/blog/cron-examples/">50 Cron Examples</a></li>
+        <li><a href="/blog/cron-job-examples/">Cron Job Examples</a></li>
+        <li><a href="/blog/linux-crontab-examples/">Linux Crontab</a></li>
+        <li><a href="/blog/docker-cron-job-examples/">Docker Cron Jobs</a></li>
+        <li><a href="/blog/github-actions-cron-examples/">GitHub Actions Cron</a></li>
+        <li><a href="/blog/kubernetes-cronjob-examples/">Kubernetes CronJob</a></li>
+        <li><a href="/blog/aws-eventbridge-cron-examples/">AWS EventBridge Examples</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Project</h4>
+      <ul>
+        <li><a href="/blog/cronguru-alternative/">CronGuru Alternative</a></li>
+        <li><a href="https://github.com/cronread" rel="noopener" target="_blank">GitHub</a></li>
+      </ul>
+    </div>
   </div>
-  <p style="margin-top:.6rem">© 2026 CronRead · Free developer tools · No ads, no tracking</p>
-
-  <div class="footer-badges" style="margin-top:0.8rem;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;">
-    <a href="https://www.saashub.com/cronread-alternatives" rel="nofollow noopener" target="_blank" title="CronRead on SaaSHub">
-      <img src="https://cdn-b.saashub.com/images/app/badges/featured-on-saashub.svg" alt="Featured on SaaSHub" style="height:28px;vertical-align:middle">
-    </a>
-    <a href="https://stackshare.io/cronread" rel="nofollow noopener" target="_blank" title="CronRead on StackShare">
-      <img src="https://img.shields.io/badge/StackShare-CronRead-blue?logo=stackshare&style=flat-square" alt="CronRead on StackShare" style="height:22px;vertical-align:middle">
-    </a>
+  <div class="footer-bottom">
+    <span class="footer-brand">CronRead</span>
+    <div class="footer-legal">
+      <a href="https://www.saashub.com/cronread-com-alternatives" rel="nofollow noopener" target="_blank">SaaSHub</a>
+      <a href="https://stackshare.io/cron-expression-generator-timestamp-jwt-yaml-base64-tools-cronread" rel="nofollow noopener" target="_blank">StackShare</a>
+    </div>
+    <span>© 2026 CronRead · Free developer tools · No ads, no tracking</span>
   </div>
 </footer>
 

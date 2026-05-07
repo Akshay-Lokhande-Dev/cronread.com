@@ -499,6 +499,20 @@ body {
   background-image: radial-gradient(circle at 20% 20%, rgba(129,140,248,.06) 0%, transparent 45%),
                     radial-gradient(circle at 80% 80%, rgba(167,139,250,.05) 0%, transparent 45%);
 }
+
+/* ── FOOTER ── */
+footer{padding:3rem 1rem 1.5rem;color:var(--muted);font-size:13px;position:relative;z-index:1;border-top:1px solid var(--border)}
+.footer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;max-width:960px;margin:0 auto 2rem}
+.footer-col h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text1);margin:0 0 .75rem}
+.footer-col ul{list-style:none;margin:0;padding:0}
+.footer-col ul li{margin-bottom:.35rem}
+.footer-col a{color:var(--text2);text-decoration:none;font-size:12.5px;transition:color .15s}
+.footer-col a:hover{color:var(--accent)}
+.footer-bottom{max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;padding-top:1.25rem;border-top:1px solid var(--border);font-size:11.5px}
+.footer-brand{font-weight:700;color:var(--text1);font-size:13px}
+.footer-legal{display:flex;gap:1rem}
+.footer-legal a{color:var(--muted);text-decoration:none}
+.footer-legal a:hover{color:var(--accent)}
 </style>
 <meta property="og:image" content="https://cronread.com/og-image.png">
 <meta property="og:image:alt" content="Cron expression fields explained — CronRead">
@@ -776,27 +790,55 @@ body {
 </div>
 
 <footer>
-    <div class="footer-links">
-    <a href="../">CronRead Home</a> |
-    <a href="../unix-timestamp-converter/">Timestamp Converter</a> |
-    <a href="../jwt-decoder/">JWT Decoder</a> |
-    <a href="../yaml-json-converter/">YAML ↔ JSON</a> |
-    <a href="../base64-encoder/">Base64</a> |
-    <a href="../sql-explainer/">SQL Explainer</a> |
-    <a href="cron-examples.html">Cron Examples</a> |
-    <a href="cron-syntax-guide.html">Cron Syntax</a> |
-    <a href="cron-job-examples.html">Cron Job Examples</a> |
-    <a href="linux-crontab-examples.html">Linux Crontab</a>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="/">Cron Expression Parser</a></li>
+        <li><a href="/unix-timestamp-converter/">Timestamp Converter</a></li>
+        <li><a href="/jwt-decoder/">JWT Decoder</a></li>
+        <li><a href="/yaml-json-converter/">YAML ↔ JSON</a></li>
+        <li><a href="/base64-encoder/">Base64 Encoder</a></li>
+        <li><a href="/sql-explainer/">SQL Explainer</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Guides</h4>
+      <ul>
+        <li><a href="/blog/cron-syntax-guide/">Cron Syntax Guide</a></li>
+        <li><a href="/blog/cron-expression-explainer/">Cron Expression Explained</a></li>
+        <li><a href="/blog/cron-expression-tester/">Cron Expression Tester</a></li>
+        <li><a href="/blog/crontab-vs-systemd-timer/">Crontab vs Systemd</a></li>
+        <li><a href="/blog/aws-eventbridge-cron-expression-guide/">AWS EventBridge Guide</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Examples</h4>
+      <ul>
+        <li><a href="/blog/cron-examples/">50 Cron Examples</a></li>
+        <li><a href="/blog/cron-job-examples/">Cron Job Examples</a></li>
+        <li><a href="/blog/linux-crontab-examples/">Linux Crontab</a></li>
+        <li><a href="/blog/docker-cron-job-examples/">Docker Cron Jobs</a></li>
+        <li><a href="/blog/github-actions-cron-examples/">GitHub Actions Cron</a></li>
+        <li><a href="/blog/kubernetes-cronjob-examples/">Kubernetes CronJob</a></li>
+        <li><a href="/blog/aws-eventbridge-cron-examples/">AWS EventBridge Examples</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Project</h4>
+      <ul>
+        <li><a href="/blog/cronguru-alternative/">CronGuru Alternative</a></li>
+        <li><a href="https://github.com/cronread" rel="noopener" target="_blank">GitHub</a></li>
+      </ul>
+    </div>
   </div>
-  <p style="margin-top:.6rem">© 2026 CronRead · Free developer tools · No ads, no tracking</p>
-
-  <div class="footer-badges" style="margin-top:0.8rem;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;">
-    <a href="https://www.saashub.com/cronread-alternatives" rel="nofollow noopener" target="_blank" title="CronRead on SaaSHub">
-      <img src="https://cdn-b.saashub.com/images/app/badges/featured-on-saashub.svg" alt="Featured on SaaSHub" style="height:28px;vertical-align:middle">
-    </a>
-    <a href="https://stackshare.io/cronread" rel="nofollow noopener" target="_blank" title="CronRead on StackShare">
-      <img src="https://img.shields.io/badge/StackShare-CronRead-blue?logo=stackshare&style=flat-square" alt="CronRead on StackShare" style="height:22px;vertical-align:middle">
-    </a>
+  <div class="footer-bottom">
+    <span class="footer-brand">CronRead</span>
+    <div class="footer-legal">
+      <a href="https://www.saashub.com/cronread-com-alternatives" rel="nofollow noopener" target="_blank">SaaSHub</a>
+      <a href="https://stackshare.io/cron-expression-generator-timestamp-jwt-yaml-base64-tools-cronread" rel="nofollow noopener" target="_blank">StackShare</a>
+    </div>
+    <span>© 2026 CronRead · Free developer tools · No ads, no tracking</span>
   </div>
 </footer>
 
