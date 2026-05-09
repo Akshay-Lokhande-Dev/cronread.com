@@ -322,7 +322,7 @@ systemd-analyze calendar weekly</pre>
     <h2>When to Keep Crontab Instead of Migrating</h2>
     <p>Systemd timers are more powerful, but crontab is still the right choice in several common situations:</p>
     <ul style="margin-top:.6rem;padding-left:1.4rem;display:flex;flex-direction:column;gap:.5rem">
-      <li><strong>Container environments (Docker, Kubernetes):</strong> Containers typically don't run systemd. Use cron inside Docker via a <code>CMD crond -f</code> entrypoint or a dedicated scheduler like <a href="cron-expression-tester/" style="color:var(--accent)">supercronic</a>. For Kubernetes, use a native CronJob resource instead of crontab or systemd.</li>
+      <li><strong>Container environments (Docker, Kubernetes):</strong> Containers typically don't run systemd. Use cron inside Docker via a <code>CMD crond -f</code> entrypoint or a dedicated scheduler like <a href="/cron-expression-tester/" style="color:var(--accent)">supercronic</a>. For Kubernetes, use a native CronJob resource instead of crontab or systemd.</li>
       <li><strong>Non-root user jobs:</strong> Each Linux user can have their own crontab without needing root access. Systemd user-scope timers require more setup (<code>systemctl --user</code>) and loginctl linger to run without an active session.</li>
       <li><strong>Quick one-off additions:</strong> Adding a job with <code>crontab -e</code> takes 10 seconds. Creating a service unit + timer unit + enabling it takes 2–3 minutes. For a simple log-rotation or cache-clear job, crontab's simplicity wins.</li>
       <li><strong>Shared hosting or managed servers:</strong> Many environments don't give you systemd access. Crontab is universally available anywhere you have a login shell.</li>
