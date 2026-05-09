@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>Kubernetes CronJob Examples — 15+ Schedule YAML | CronRead</title>
 <meta name="description" content="15+ Kubernetes CronJob schedule examples with full YAML. Covers timeZone field, concurrencyPolicy, startingDeadlineSeconds, suspend, and troubleshooting tips.">
-<meta name="keywords" content="kubernetes cronjob examples, kubernetes cron job, k8s cronjob, kubernetes cronjob yaml, kubernetes schedule job, kubectl cronjob, kubernetes cron syntax, kubernetes cronjob concurrencyPolicy, kubernetes cronjob tutorial, kubernetes cronjob best practices, kubernetes scheduled job examples, kubernetes cronjob timezone, kubernetes batch job">
+<meta name="keywords" content="kubernetes cronjob examples, kubernetes cron job, k8s cronjob, kubernetes cronjob yaml, kubernetes cronjob timezone, kubernetes batch job">
 <meta name="author" content="CronRead">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://cronread.com/blog/kubernetes-cronjob-examples/">
@@ -294,7 +294,7 @@ kubectl patch cronjob my-cronjob -p '{"spec":{"suspend":false}}'  # Resume</pre>
     <li><strong>suspend: true</strong> — Check if CronJob is suspended: <code>kubectl get cronjob my-cronjob -o jsonpath='{.spec.suspend}'</code></li>
     <li><strong>Image pull errors</strong> — The Job pod may be failing to pull the image. Check pod events.</li>
     <li><strong>RBAC</strong> — Ensure the service account has permissions for what the job does.</li>
-    <li><strong>Schedule syntax</strong> — Validate at <a href="/" CronRead</a> before deploying.</li>
+    <li><strong>Schedule syntax</strong> — Validate at <a href="/">CronRead</a> before deploying.</li>
     <li><strong>Missed runs > 100</strong> — Lower <code>startingDeadlineSeconds</code> or restart the controller.</li>
   </ul>
 </section>
@@ -351,7 +351,7 @@ kubectl patch cronjob my-cronjob -p '{"spec":{"suspend":false}}'  # Resume</pre>
       <ul>
         <li><a href="/blog/cron-syntax-guide/">Cron Syntax Guide</a></li>
         <li><a href="/blog/cron-expression-explainer/">Cron Expression Explained</a></li>
-        <li><a href="/blog/cron-expression-tester/">Cron Expression Tester</a></li>
+        <li><a href="/cron-expression-tester/">Cron Expression Tester</a></li>
         <li><a href="/blog/crontab-vs-systemd-timer/">Crontab vs Systemd</a></li>
         <li><a href="/blog/aws-eventbridge-cron-expression-guide/">AWS EventBridge Guide</a></li>
       </ul>
