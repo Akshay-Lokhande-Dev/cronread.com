@@ -1,0 +1,15 @@
+/*
+  X-Robots-Tag: index, follow
+  X-Content-Type-Options: nosniff
+
+/sitemap.xml
+  Cache-Control: public, max-age=3600
+
+/*.html
+  Cache-Control: public, max-age=86400
+
+/blog/*
+  Cache-Control: public, max-age=86400
+
+/cronread-seo.css
+  Cache-Control: public, max-age=604800
