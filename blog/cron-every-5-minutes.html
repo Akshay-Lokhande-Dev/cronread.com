@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-site-verification" content="hygno1xKjeM1YmTvoTcE9RjtWHuF3_G1sViNreVlyE4" />
+<title>Cron Expression Every 5 Minutes — */5 * * * * Explained | CronRead</title>
+<meta name="description" content="The cron expression to run every 5 minutes is */5 * * * *. See what it means, next run times, AWS EventBridge version, and copy-paste snippets for Kubernetes, GitHub Actions, and Docker.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://cronread.com/blog/cron-every-5-minutes/">
+<meta property="og:title" content="Cron Expression Every 5 Minutes — */5 * * * *">
+<meta property="og:description" content="Cron expression to run every 5 minutes is */5 * * * *. Next runs, AWS format, K8s YAML and more.">
+<meta property="og:url" content="https://cronread.com/blog/cron-every-5-minutes/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../cronread-seo.css">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"What is the cron expression for every 5 minutes?","acceptedAnswer":{"@type":"Answer","text":"The cron expression to run every 5 minutes is */5 * * * * — this runs at minutes 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55 of every hour, every day."}},
+    {"@type":"Question","name":"What does */5 mean in cron?","acceptedAnswer":{"@type":"Answer","text":"*/5 means 'every 5 units'. In the minutes field, */5 means every 5 minutes: at 0, 5, 10, 15... up to 55. The * means 'all values' and /5 means 'every 5th one'."}},
+    {"@type":"Question","name":"What is the AWS EventBridge cron for every 5 minutes?","acceptedAnswer":{"@type":"Answer","text":"AWS EventBridge uses a 6-field format. Every 5 minutes in EventBridge is: cron(0/5 * * * ? *)"}}
+  ]
+}
+</script>
+</head>
+<body>
+<header style="background:#0f0f1a;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;">
+  <a href="/" style="color:#7c6dfa;font-weight:700;font-size:1.1rem;text-decoration:none;font-family:'Sora',sans-serif;">CronRead</a>
+  <nav style="display:flex;gap:1.5rem;">
+    <a href="/" style="color:#aaa;font-size:0.85rem;text-decoration:none;">Cron Generator</a>
+    <a href="/blog/cron-examples/" style="color:#aaa;font-size:0.85rem;text-decoration:none;">Examples</a>
+  </nav>
+</header>
+
+<main style="max-width:860px;margin:0 auto;padding:2rem 1.5rem;font-family:'Sora',sans-serif;">
+
+  <div style="margin-bottom:0.5rem;">
+    <a href="/blog/cron-examples/" style="color:#7c6dfa;font-size:0.85rem;text-decoration:none;">← Cron Examples</a>
+  </div>
+
+  <h1 style="font-size:2rem;font-weight:700;color:#1a1a2e;margin:0.5rem 0 0.25rem;">Cron Expression: Every 5 Minutes</h1>
+  <p style="color:#666;font-size:1rem;margin:0 0 2rem;">The answer, explained, with ready-to-use snippets.</p>
+
+  <!-- THE ANSWER - big and clear -->
+  <div style="background:#0f0f1a;border-radius:12px;padding:2rem;margin-bottom:2rem;text-align:center;">
+    <p style="color:#888;font-size:0.85rem;margin:0 0 0.5rem;text-transform:uppercase;letter-spacing:0.05em;">Cron Expression</p>
+    <code style="font-family:'JetBrains Mono',monospace;font-size:2.5rem;color:#7c6dfa;font-weight:600;">*/5 * * * *</code>
+    <p style="color:#ccc;margin:1rem 0 0;font-size:1rem;">Runs at minutes 0, 5, 10, 15 … 55 — every hour, every day</p>
+    <button onclick="navigator.clipboard.writeText('*/5 * * * *');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)" style="margin-top:1rem;background:#7c6dfa;color:#fff;border:none;border-radius:6px;padding:0.5rem 1.5rem;cursor:pointer;font-size:0.9rem;">Copy</button>
+  </div>
+
+  <!-- Field breakdown -->
+  <h2 style="font-size:1.4rem;color:#1a1a2e;margin:2rem 0 1rem;">What Does */5 * * * * Mean?</h2>
+  <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:0.9rem;">
+      <thead><tr style="background:#f5f5ff;">
+        <th style="padding:0.75rem;border:1px solid #e0e0f0;text-align:left;font-family:'JetBrains Mono',monospace;">Field</th>
+        <th style="padding:0.75rem;border:1px solid #e0e0f0;text-align:left;">Value</th>
+        <th style="padding:0.75rem;border:1px solid #e0e0f0;text-align:left;">Meaning</th>
+      </tr></thead>
+      <tbody>
+        <tr><td style="padding:0.75rem;border:1px solid #e0e0f0;font-family:'JetBrains Mono',monospace;color:#7c6dfa;">*/5</td><td style="padding:0.75rem;border:1px solid #e0e0f0;">Minute</td><td style="padding:0.75rem;border:1px solid #e0e0f0;">Every 5 minutes (0, 5, 10 … 55)</td></tr>
+        <tr><td style="padding:0.75rem;border:1px solid #e0e0f0;font-family:'JetBrains Mono',monospace;color:#7c6dfa;">*</td><td style="padding:0.75rem;border:1px solid #e0e0f0;">Hour</td><td style="padding:0.75rem;border:1px solid #e0e0f0;">Every hour (0–23)</td></tr>
+        <tr><td style="padding:0.75rem;border:1px solid #e0e0f0;font-family:'JetBrains Mono',monospace;color:#7c6dfa;">*</td><td style="padding:0.75rem;border:1px solid #e0e0f0;">Day of month</td><td style="padding:0.75rem;border:1px solid #e0e0f0;">Every day</td></tr>
+        <tr><td style="padding:0.75rem;border:1px solid #e0e0f0;font-family:'JetBrains Mono',monospace;color:#7c6dfa;">*</td><td style="padding:0.75rem;border:1px solid #e0e0f0;">Month</td><td style="padding:0.75rem;border:1px solid #e0e0f0;">Every month</td></tr>
+        <tr><td style="padding:0.75rem;border:1px solid #e0e0f0;font-family:'JetBrains Mono',monospace;color:#7c6dfa;">*</td><td style="padding:0.75rem;border:1px solid #e0e0f0;">Day of week</td><td style="padding:0.75rem;border:1px solid #e0e0f0;">Any day of week</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Variations -->
+  <h2 style="font-size:1.4rem;color:#1a1a2e;margin:2rem 0 1rem;">Common Variations</h2>
+  <div style="display:grid;gap:0.75rem;">
+    <div style="background:#f8f9ff;border-radius:8px;padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+      <div><code style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:#7c6dfa;">* * * * *</code><span style="margin-left:1rem;color:#555;font-size:0.9rem;">Every 1 minute</span></div>
+      <button onclick="navigator.clipboard.writeText('* * * * *');this.textContent='✓';setTimeout(()=>this.textContent='Copy',1500)" style="background:#7c6dfa;color:#fff;border:none;border-radius:5px;padding:0.3rem 0.8rem;cursor:pointer;font-size:0.8rem;">Copy</button>
+    </div>
+    <div style="background:#f0f0ff;border:2px solid #7c6dfa;border-radius:8px;padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+      <div><code style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:#7c6dfa;">*/5 * * * *</code><span style="margin-left:1rem;color:#555;font-size:0.9rem;">Every 5 minutes ← you are here</span></div>
+      <button onclick="navigator.clipboard.writeText('*/5 * * * *');this.textContent='✓';setTimeout(()=>this.textContent='Copy',1500)" style="background:#7c6dfa;color:#fff;border:none;border-radius:5px;padding:0.3rem 0.8rem;cursor:pointer;font-size:0.8rem;">Copy</button>
+    </div>
+    <div style="background:#f8f9ff;border-radius:8px;padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+      <div><code style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:#7c6dfa;">*/10 * * * *</code><span style="margin-left:1rem;color:#555;font-size:0.9rem;">Every 10 minutes</span></div>
+      <button onclick="navigator.clipboard.writeText('*/10 * * * *');this.textContent='✓';setTimeout(()=>this.textContent='Copy',1500)" style="background:#7c6dfa;color:#fff;border:none;border-radius:5px;padding:0.3rem 0.8rem;">Copy</button>
+    </div>
+    <div style="background:#f8f9ff;border-radius:8px;padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+      <div><code style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:#7c6dfa;">*/15 * * * *</code><span style="margin-left:1rem;color:#555;font-size:0.9rem;">Every 15 minutes</span></div>
+      <button onclick="navigator.clipboard.writeText('*/15 * * * *');this.textContent='✓';setTimeout(()=>this.textContent='Copy',1500)" style="background:#7c6dfa;color:#fff;border:none;border-radius:5px;padding:0.3rem 0.8rem;cursor:pointer;font-size:0.8rem;">Copy</button>
+    </div>
+    <div style="background:#f8f9ff;border-radius:8px;padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+      <div><code style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:#7c6dfa;">*/30 * * * *</code><span style="margin-left:1rem;color:#555;font-size:0.9rem;">Every 30 minutes</span></div>
+      <button onclick="navigator.clipboard.writeText('*/30 * * * *');this.textContent='✓';setTimeout(()=>this.textContent='Copy',1500)" style="background:#7c6dfa;color:#fff;border:none;border-radius:5px;padding:0.3rem 0.8rem;cursor:pointer;font-size:0.8rem;">Copy</button>
+    </div>
+  </div>
+
+  <!-- Platform snippets -->
+  <h2 style="font-size:1.4rem;color:#1a1a2e;margin:2rem 0 1rem;">Platform-Specific Snippets</h2>
+
+  <h3 style="font-size:1rem;color:#555;margin:1rem 0 0.5rem;">AWS EventBridge</h3>
+  <div style="background:#1a1a2e;border-radius:8px;padding:1rem 1.25rem;position:relative;">
+    <code style="font-family:'JetBrains Mono',monospace;color:#a3e635;font-size:0.9rem;">cron(0/5 * * * ? *)</code>
+    <button onclick="navigator.clipboard.writeText('cron(0/5 * * * ? *)');this.textContent='✓';setTimeout(()=>this.textContent='Copy',1500)" style="position:absolute;top:0.75rem;right:0.75rem;background:#333;color:#ccc;border:none;border-radius:4px;padding:0.25rem 0.6rem;cursor:pointer;font-size:0.75rem;">Copy</button>
+  </div>
+  <p style="color:#666;font-size:0.85rem;margin:0.5rem 0 1.5rem;">Note: AWS uses 6 fields and requires <code>?</code> in day-of-week. Standard */5 becomes 0/5.</p>
+
+  <h3 style="font-size:1rem;color:#555;margin:1rem 0 0.5rem;">Kubernetes CronJob</h3>
+  <div style="background:#1a1a2e;border-radius:8px;padding:1rem 1.25rem;position:relative;">
+    <pre style="margin:0;color:#a3e635;font-family:'JetBrains Mono',monospace;font-size:0.85rem;white-space:pre-wrap;">apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: every-5-minutes
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: job
+            image: your-image:latest</pre>
+    <button onclick="navigator.clipboard.writeText('apiVersion: batch/v1\nkind: CronJob\nmetadata:\n  name: every-5-minutes\nspec:\n  schedule: \"*/5 * * * *\"\n  jobTemplate:\n    spec:\n      template:\n        spec:\n          restartPolicy: OnFailure\n          containers:\n          - name: job\n            image: your-image:latest');this.textContent='✓';setTimeout(()=>this.textContent='Copy',1500)" style="position:absolute;top:0.75rem;right:0.75rem;background:#333;color:#ccc;border:none;border-radius:4px;padding:0.25rem 0.6rem;cursor:pointer;font-size:0.75rem;">Copy</button>
+  </div>
+
+  <h3 style="font-size:1rem;color:#555;margin:1.5rem 0 0.5rem;">GitHub Actions</h3>
+  <div style="background:#1a1a2e;border-radius:8px;padding:1rem 1.25rem;position:relative;">
+    <pre style="margin:0;color:#a3e635;font-family:'JetBrains Mono',monospace;font-size:0.85rem;white-space:pre-wrap;">on:
+  schedule:
+    - cron: '*/5 * * * *'</pre>
+    <button onclick="navigator.clipboard.writeText('on:\n  schedule:\n    - cron: \'*/5 * * * *\'');this.textContent='✓';setTimeout(()=>this.textContent='Copy',1500)" style="position:absolute;top:0.75rem;right:0.75rem;background:#333;color:#ccc;border:none;border-radius:4px;padding:0.25rem 0.6rem;cursor:pointer;font-size:0.75rem;">Copy</button>
+  </div>
+  <p style="color:#666;font-size:0.85rem;margin:0.5rem 0 1.5rem;">⚠️ GitHub Actions minimum schedule is 5 minutes. Shorter intervals are ignored.</p>
+
+  <!-- FAQ -->
+  <h2 style="font-size:1.4rem;color:#1a1a2e;margin:2rem 0 1rem;">Frequently Asked Questions</h2>
+  <div style="display:grid;gap:1rem;">
+    <details style="background:#f8f9ff;border-radius:8px;padding:1rem 1.25rem;">
+      <summary style="font-weight:600;cursor:pointer;color:#1a1a2e;">Does */5 * * * * run exactly every 5 minutes from when I start it?</summary>
+      <p style="margin:0.75rem 0 0;color:#555;">No. Cron runs at fixed clock times, not relative to when the job started. */5 * * * * runs at :00, :05, :10, :15 … regardless of when you deploy. If you deploy at 12:03, the first run is at 12:05.</p>
+    </details>
+    <details style="background:#f8f9ff;border-radius:8px;padding:1rem 1.25rem;">
+      <summary style="font-weight:600;cursor:pointer;color:#1a1a2e;">How many times does */5 * * * * run per day?</summary>
+      <p style="margin:0.75rem 0 0;color:#555;">288 times per day. That's 12 runs per hour × 24 hours = 288 total runs.</p>
+    </details>
+    <details style="background:#f8f9ff;border-radius:8px;padding:1rem 1.25rem;">
+      <summary style="font-weight:600;cursor:pointer;color:#1a1a2e;">What's the difference between */5 and 0/5 in cron?</summary>
+      <p style="margin:0.75rem 0 0;color:#555;">In standard Unix cron, */5 and 0/5 are identical — both mean "every 5 minutes starting at 0". AWS EventBridge only supports 0/5 syntax (not */5), so use 0/5 in AWS contexts.</p>
+    </details>
+    <details style="background:#f8f9ff;border-radius:8px;padding:1rem 1.25rem;">
+      <summary style="font-weight:600;cursor:pointer;color:#1a1a2e;">Can I run every 5 minutes only during business hours?</summary>
+      <p style="margin:0.75rem 0 0;color:#555;">Yes: <code style="font-family:'JetBrains Mono',monospace;background:#eee;padding:0.1rem 0.4rem;border-radius:3px;">*/5 9-17 * * 1-5</code> runs every 5 minutes from 9am to 5pm, Monday to Friday.</p>
+    </details>
+  </div>
+
+  <!-- CTA to tool -->
+  <div style="background:linear-gradient(135deg,#7c6dfa22,#a855f722);border:1px solid #7c6dfa44;border-radius:12px;padding:1.5rem 2rem;margin:2.5rem 0;text-align:center;">
+    <p style="font-weight:600;color:#1a1a2e;margin:0 0 0.5rem;font-size:1.1rem;">Need a different interval?</p>
+    <p style="color:#666;margin:0 0 1rem;font-size:0.9rem;">Use the CronRead generator — type plain English and get the cron expression instantly.</p>
+    <a href="/" style="background:#7c6dfa;color:#fff;text-decoration:none;border-radius:8px;padding:0.65rem 1.75rem;font-weight:600;font-size:0.95rem;display:inline-block;">Open Cron Generator →</a>
+  </div>
+
+  <!-- Related articles -->
+  <h2 style="font-size:1.2rem;color:#1a1a2e;margin:2rem 0 0.75rem;">Related Articles</h2>
+  <ul style="line-height:2.2;padding-left:1.5rem;color:#7c6dfa;">
+    <li><a href="/blog/cron-examples/" style="color:#7c6dfa;">50 Cron Expression Examples</a></li>
+    <li><a href="/blog/cron-syntax-guide/" style="color:#7c6dfa;">Complete Cron Syntax Guide</a></li>
+    <li><a href="/blog/aws-eventbridge-cron-examples/" style="color:#7c6dfa;">AWS EventBridge Cron Examples</a></li>
+    <li><a href="/blog/kubernetes-cronjob-examples/" style="color:#7c6dfa;">Kubernetes CronJob Examples</a></li>
+    <li><a href="/blog/github-actions-cron-examples/" style="color:#7c6dfa;">GitHub Actions Cron Schedules</a></li>
+  </ul>
+
+  <!-- Tools section -->
+  <section style="background:#f8f9fa;border:1px solid #e9ecef;border-radius:8px;padding:1.5rem 2rem;margin:2rem 0;">
+    <h3 style="margin:0 0 1rem;font-size:1rem;color:#333;">🔧 Other Free Developer Tools</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:0.75rem;">
+      <a href="/" style="background:#fff;border:1px solid #dee2e6;border-radius:6px;padding:0.4rem 0.85rem;color:#495057;text-decoration:none;font-size:0.9rem;">⏱ Cron Generator</a>
+      <a href="/unix-timestamp-converter/" style="background:#fff;border:1px solid #dee2e6;border-radius:6px;padding:0.4rem 0.85rem;color:#495057;text-decoration:none;font-size:0.9rem;">🕐 Timestamp Converter</a>
+      <a href="/jwt-decoder/" style="background:#fff;border:1px solid #dee2e6;border-radius:6px;padding:0.4rem 0.85rem;color:#495057;text-decoration:none;font-size:0.9rem;">🔑 JWT Decoder</a>
+      <a href="/yaml-json-converter/" style="background:#fff;border:1px solid #dee2e6;border-radius:6px;padding:0.4rem 0.85rem;color:#495057;text-decoration:none;font-size:0.9rem;">📄 YAML ↔ JSON</a>
+      <a href="/base64-encoder/" style="background:#fff;border:1px solid #dee2e6;border-radius:6px;padding:0.4rem 0.85rem;color:#495057;text-decoration:none;font-size:0.9rem;">🔤 Base64 Encoder</a>
+    </div>
+  </section>
+
+</main>
+
+<footer style="background:#1a1a2e;color:#ccc;padding:2rem 1rem 1rem;margin-top:3rem;font-size:0.9rem;">
+  <div style="max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;gap:2rem;justify-content:space-between;">
+    <div>
+      <h4 style="color:#fff;margin:0 0 0.75rem;">Developer Tools</h4>
+      <ul style="list-style:none;padding:0;margin:0;line-height:2;">
+        <li><a href="/" style="color:#aaa;text-decoration:none;">Cron Expression Generator</a></li>
+        <li><a href="/unix-timestamp-converter/" style="color:#aaa;text-decoration:none;">Unix Timestamp Converter</a></li>
+        <li><a href="/jwt-decoder/" style="color:#aaa;text-decoration:none;">JWT Decoder</a></li>
+        <li><a href="/yaml-json-converter/" style="color:#aaa;text-decoration:none;">YAML ↔ JSON</a></li>
+        <li><a href="/base64-encoder/" style="color:#aaa;text-decoration:none;">Base64 Encoder</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="color:#fff;margin:0 0 0.75rem;">Cron by Interval</h4>
+      <ul style="list-style:none;padding:0;margin:0;line-height:2;">
+        <li><a href="/blog/cron-every-5-minutes/" style="color:#7c6dfa;text-decoration:none;">Every 5 minutes</a></li>
+        <li><a href="/blog/cron-examples/" style="color:#aaa;text-decoration:none;">50 Cron Examples</a></li>
+        <li><a href="/blog/cron-syntax-guide/" style="color:#aaa;text-decoration:none;">Cron Syntax Guide</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="color:#fff;margin:0 0 0.75rem;">Cloud Guides</h4>
+      <ul style="list-style:none;padding:0;margin:0;line-height:2;">
+        <li><a href="/blog/aws-eventbridge-cron-expression-guide/" style="color:#aaa;text-decoration:none;">AWS EventBridge</a></li>
+        <li><a href="/blog/kubernetes-cronjob-examples/" style="color:#aaa;text-decoration:none;">Kubernetes CronJob</a></li>
+        <li><a href="/blog/github-actions-cron-examples/" style="color:#aaa;text-decoration:none;">GitHub Actions</a></li>
+      </ul>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid #333;color:#666;">
+    © 2026 CronRead · Free developer tools · No ads, no tracking
+  </div>
+</footer>
+</body>
+</html>
