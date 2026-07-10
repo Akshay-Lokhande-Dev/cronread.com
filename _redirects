@@ -15,3 +15,6 @@
 
 # Old thin redirect stub page
 /blog/cron-expression-tester /  302
+
+# Sitewide dead internal link fix - linked from 15+ blog pages but never existed as a real page
+/cron-expression-tester/ /  301
