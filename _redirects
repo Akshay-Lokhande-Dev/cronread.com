@@ -1,32 +1,17 @@
 # Redirect old flat blog URLs (pre-restructure) to current /blog/ structure
-/aws-eventbridge-cron-examples /blog/aws-eventbridge-cron-examples/ 301
-/aws-eventbridge-cron-expression-guide /blog/aws-eventbridge-cron-expression-guide/ 301
-/cron-every-5-minutes /blog/cron-every-5-minutes/ 301
-/cron-examples /blog/cron-examples/ 301
-/cron-expression-explainer /blog/cron-expression-explainer/ 301
-/cron-job-examples /blog/cron-job-examples/ 301
-/cron-syntax-guide /blog/cron-syntax-guide/ 301
-/cronguru-alternative /blog/cronguru-alternative/ 301
-/crontab-vs-systemd-timer /blog/crontab-vs-systemd-timer/ 301
-/docker-cron-job-examples /blog/docker-cron-job-examples/ 301
-/github-actions-cron-examples /blog/github-actions-cron-examples/ 301
-/kubernetes-cronjob-examples /blog/kubernetes-cronjob-examples/ 301
-/linux-crontab-examples /blog/linux-crontab-examples/ 301
-
-# Normalize trailing slash on /blog/ URLs (no-slash -> canonical slash version)
-/blog/aws-eventbridge-cron-examples /blog/aws-eventbridge-cron-examples/ 301
-/blog/aws-eventbridge-cron-expression-guide /blog/aws-eventbridge-cron-expression-guide/ 301
-/blog/cron-every-5-minutes /blog/cron-every-5-minutes/ 301
-/blog/cron-examples /blog/cron-examples/ 301
-/blog/cron-expression-explainer /blog/cron-expression-explainer/ 301
-/blog/cron-job-examples /blog/cron-job-examples/ 301
-/blog/cron-syntax-guide /blog/cron-syntax-guide/ 301
-/blog/cronguru-alternative /blog/cronguru-alternative/ 301
-/blog/crontab-vs-systemd-timer /blog/crontab-vs-systemd-timer/ 301
-/blog/docker-cron-job-examples /blog/docker-cron-job-examples/ 301
-/blog/github-actions-cron-examples /blog/github-actions-cron-examples/ 301
-/blog/kubernetes-cronjob-examples /blog/kubernetes-cronjob-examples/ 301
-/blog/linux-crontab-examples /blog/linux-crontab-examples/ 301
+/aws-eventbridge-cron-examples /blog/aws-eventbridge-cron-examples 301
+/aws-eventbridge-cron-expression-guide /blog/aws-eventbridge-cron-expression-guide 301
+/cron-every-5-minutes /blog/cron-every-5-minutes 301
+/cron-examples /blog/cron-examples 301
+/cron-expression-explainer /blog/cron-expression-explainer 301
+/cron-job-examples /blog/cron-job-examples 301
+/cron-syntax-guide /blog/cron-syntax-guide 301
+/cronguru-alternative /blog/cronguru-alternative 301
+/crontab-vs-systemd-timer /blog/crontab-vs-systemd-timer 301
+/docker-cron-job-examples /blog/docker-cron-job-examples 301
+/github-actions-cron-examples /blog/github-actions-cron-examples 301
+/kubernetes-cronjob-examples /blog/kubernetes-cronjob-examples 301
+/linux-crontab-examples /blog/linux-crontab-examples 301
 
 # Old thin redirect stub page
 /blog/cron-expression-tester /  302
