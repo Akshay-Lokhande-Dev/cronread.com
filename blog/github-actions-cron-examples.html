@@ -71,6 +71,14 @@
         "@type": "Answer",
         "text": "Use 1-5 in the day-of-week field. For example: '0 9 * * 1-5' runs at 9 AM UTC Monday through Friday. Remember that 1=Monday and 5=Friday in cron (0=Sunday)."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use GitHub Actions as a free GitHub scheduler?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The schedule trigger under on: runs on GitHub's own servers, making it a common free GitHub scheduler for nightly builds, dependency updates, and periodic API calls, with no extra infrastructure to host or pay for beyond normal Actions minutes."
+      }
     }
   ]
 }
@@ -491,7 +499,7 @@ jobs:
     <div class="faq-list">
       <div class="faq-item">
         <div class="faq-q">What timezone does GitHub Actions cron use?</div>
-        <div class="faq-a">Always UTC. There is no way to set a timezone on the <code>schedule</code> trigger. Convert your desired local time to UTC before writing the cron expression. <a href="/" CronRead's timezone calculator</a> does this automatically.</div>
+        <div class="faq-a">Always UTC. There is no way to set a timezone on the <code>schedule</code> trigger. Convert your desired local time to UTC before writing the cron expression. <a href="/">CronRead's timezone calculator</a> does this automatically.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">What is the minimum cron interval in GitHub Actions?</div>
@@ -508,6 +516,10 @@ jobs:
       <div class="faq-item">
         <div class="faq-q">How do I know which schedule triggered the workflow?</div>
         <div class="faq-a">Use <code>${{ github.event.schedule }}</code> in your workflow steps. It contains the cron string that triggered the run, or is empty for manual (<code>workflow_dispatch</code>) runs.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I use GitHub Actions as a free GitHub scheduler?</div>
+        <div class="faq-a">Yes — this is the most common way developers set up a GitHub scheduler without any extra infrastructure. The <code>schedule</code> trigger under <code>on:</code> runs on GitHub's own servers, so there's nothing to host or pay for beyond your normal Actions minutes. It's a solid choice for nightly builds, dependency updates, and periodic API calls, as long as you can tolerate the occasional 15-30 minute delay and the 5-minute minimum interval.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">Do scheduled workflows run on forks?</div>
