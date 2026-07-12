@@ -6,10 +6,10 @@
   Cache-Control: public, max-age=3600
 
 /*.html
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=3600, must-revalidate
 
 /blog/*
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=3600, must-revalidate
 
 /cronread-seo.css
-  Cache-Control: public, max-age=604800
+  Cache-Control: public, max-age=3600, must-revalidate
