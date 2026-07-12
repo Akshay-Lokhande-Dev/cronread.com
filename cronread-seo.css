@@ -75,7 +75,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-a { color: var(--accent); text-decoration: none; }
+a, a:visited, a:link { color: var(--accent); text-decoration: none; }
 a:hover { color: var(--accent2); text-decoration: underline; }
 
 /* ── Navigation ────────────────────────────────────────────── */
