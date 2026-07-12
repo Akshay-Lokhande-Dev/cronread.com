@@ -325,7 +325,7 @@ systemd-analyze calendar weekly</pre>
     <h2>When to Keep Crontab Instead of Migrating</h2>
     <p>Systemd timers are more powerful, but crontab is still the right choice in several common situations:</p>
     <ul style="margin-top:.6rem;padding-left:1.4rem;display:flex;flex-direction:column;gap:.5rem">
-      <li><strong>Container environments (Docker, Kubernetes):</strong> Containers typically don't run systemd. Use cron inside Docker via a <code>CMD crond -f</code> entrypoint or a dedicated scheduler like <a href="/cron-expression-tester/" style="color:var(--accent)">supercronic</a>. For Kubernetes, use a native CronJob resource instead of crontab or systemd.</li>
+      <li><strong>Container environments (Docker, Kubernetes):</strong> Containers typically don't run systemd. Use cron inside Docker via a <code>CMD crond -f</code> entrypoint or a dedicated scheduler like <a href="/" style="color:var(--accent)">supercronic</a>. For Kubernetes, use a native CronJob resource instead of crontab or systemd.</li>
       <li><strong>Non-root user jobs:</strong> Each Linux user can have their own crontab without needing root access. Systemd user-scope timers require more setup (<code>systemctl --user</code>) and loginctl linger to run without an active session.</li>
       <li><strong>Quick one-off additions:</strong> Adding a job with <code>crontab -e</code> takes 10 seconds. Creating a service unit + timer unit + enabling it takes 2–3 minutes. For a simple log-rotation or cache-clear job, crontab's simplicity wins.</li>
       <li><strong>Shared hosting or managed servers:</strong> Many environments don't give you systemd access. Crontab is universally available anywhere you have a login shell.</li>
@@ -369,7 +369,7 @@ systemd-analyze calendar weekly</pre>
           <tr><td><a href="/blog/linux-crontab-examples/">Linux Crontab Examples</a></td><td>30+ crontab examples, @shortcuts, output logging</td></tr>
           <tr><td><a href="/blog/docker-cron-job-examples/">Docker Cron Job Examples</a></td><td>supercronic, ofelia, Dockerfile cron patterns</td></tr>
           <tr><td><a href="/blog/kubernetes-cronjob-examples/">Kubernetes CronJob Examples</a></td><td>K8s CronJob YAML, concurrencyPolicy, history</td></tr>
-          <tr><td><a href="/cron-expression-tester/">Cron Expression Tester</a></td><td>Validate any cron expression online for free</td></tr>
+          <tr><td><a href="/">Cron Expression Tester</a></td><td>Validate any cron expression online for free</td></tr>
           <tr><td><a href="/blog/cron-syntax-guide/">Cron Syntax Guide</a></td><td>Full reference for all cron fields and operators</td></tr>
         </tbody>
       </table>
@@ -413,7 +413,7 @@ systemd-analyze calendar weekly</pre>
       <ul>
         <li><a href="/blog/cron-syntax-guide/">Cron Syntax Guide</a></li>
         <li><a href="/blog/cron-expression-explainer/">Cron Expression Explained</a></li>
-        <li><a href="/cron-expression-tester/">Cron Expression Tester</a></li>
+        <li><a href="/">Cron Expression Tester</a></li>
         <li><a href="/blog/crontab-vs-systemd-timer/">Crontab vs Systemd</a></li>
         <li><a href="/blog/aws-eventbridge-cron-expression-guide/">AWS EventBridge Guide</a></li>
       </ul>
