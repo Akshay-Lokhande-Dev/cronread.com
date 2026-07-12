@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="google-site-verification" content="hygno1xKjeM1YmTvoTcE9RjtWHuF3_G1sViNreVlyE4" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>About CronRead | Free Cron & Developer Tools</title>
+<meta name="description" content="Learn about CronRead — a free, browser-based toolkit for cron expressions, timestamps, JWTs, YAML/JSON conversion, and more.">
+<meta name="robots" content="index, follow">
+<meta name="author" content="CronRead">
+<link rel="canonical" href="https://cronread.com/about/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="About CronRead">
+<meta property="og:description" content="Learn about CronRead — a free, browser-based toolkit for developers working with cron expressions and everyday scheduling/encoding tasks.">
+<meta property="og:url" content="https://cronread.com/about/">
+<meta property="og:site_name" content="CronRead">
+<meta property="og:image" content="https://cronread.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="About CronRead">
+<meta name="twitter:description" content="Learn about CronRead — a free, browser-based toolkit for developers.">
+<link rel="stylesheet" href="../cronread-seo.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">CRONREAD</a>
+    <div class="nav-links" id="navLinks">
+      <a href="../index.html">Cron Tool</a>
+      <a href="../unix-timestamp-converter/">Timestamp</a>
+      <a href="../jwt-decoder/">JWT Decoder</a>
+      <a href="../yaml-json-converter/">YAML ↔ JSON</a>
+      <a href="../base64-encoder/">Base64</a>
+      <a href="../blog/cron-examples.html">Examples</a>
+    </div>
+  </div>
+  <button class="nav-hamburger" id="navHamburger" onclick="document.getElementById('navLinks').classList.toggle('open');this.classList.toggle('open')" aria-label="Toggle navigation">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="wrap">
+
+<h1>About CronRead</h1>
+
+<p>CronRead is a free, browser-based toolkit for developers who work with cron expressions, timestamps, and other everyday scheduling and encoding tasks. We built it because most cron tools online only go one way — you paste a cron string and get an explanation, but you can't go the other way around, and you rarely get ready-to-use snippets for the platform you're actually deploying to.</p>
+
+<p>CronRead lets you type a cron expression, a macro like <code>@weekly</code>, or even plain English like "every weekday at 9am" — and instantly get the equivalent cron string, a human-readable explanation, upcoming run times in your own timezone, and copy-paste snippets for AWS EventBridge, Kubernetes CronJobs, Terraform, GitHub Actions, and the AWS CLI.</p>
+
+<h2>Why we built it</h2>
+<p>Cron syntax hasn't changed much in decades, but the platforms that use it have multiplied — AWS, Kubernetes, GitHub Actions, and traditional Linux crontabs all have their own quirks (like AWS EventBridge's 6-field format and its day-of-month/day-of-week rule). We wanted one place to write, validate, and convert a schedule without digging through five different sets of docs.</p>
+
+<h2>How it works</h2>
+<p>CronRead runs entirely in your browser. There's no account, and the core tools keep working even without an internet connection once the page has loaded.</p>
+
+<h2>What else is on the site</h2>
+<p>Beyond the cron tools, CronRead also hosts a small set of related developer utilities — a Unix timestamp converter, a JWT decoder, a YAML/JSON converter, a Base64 encoder, and a SQL explainer — along with guides on cron syntax, AWS EventBridge, and platform-specific scheduling examples.</p>
+
+<h2>Get in touch</h2>
+<p>Found a bug, have a feature request, or spotted an incorrect cron explanation? Reach out via <a href="https://github.com/cronread">our GitHub</a>. We read everything.</p>
+
+</div>
+
+<footer>
+    <div class="footer-links">
+    <a href="../">CronRead Home</a> |
+    <a href="../unix-timestamp-converter/">Timestamp Converter</a> |
+    <a href="../jwt-decoder/">JWT Decoder</a> |
+    <a href="../yaml-json-converter/">YAML ↔ JSON</a> |
+    <a href="../base64-encoder/">Base64</a> |
+    <a href="../sql-explainer/">SQL Explainer</a> |
+    <a href="../about/">About</a> |
+    <a href="../privacy-policy/">Privacy Policy</a> |
+    <a href="../disclaimer/">Disclaimer</a>
+  </div>
+  <p style="margin-top:.6rem">© 2026 CronRead · Free developer tools</p>
+</footer>
+
+</body>
+</html>
