@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AWS Scheduler — Free EventBridge Cron Scheduler | CronRead</title>
+<meta name="description" content="Free AWS Scheduler for EventBridge. Create AWS cron and rate expressions, validate 6-field schedules, convert local time to UTC, and copy ready-to-use expressions.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://cronread.com/aws-scheduler/">
+<link rel="stylesheet" href="/cronread-seo.css">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebApplication",
+  "name":"AWS Scheduler",
+  "url":"https://cronread.com/aws-scheduler/",
+  "description":"Free AWS EventBridge scheduler helper for creating, validating and converting cron and rate expressions.",
+  "applicationCategory":"DeveloperApplication",
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}
+}
+</script>
+</head>
+<body>
+<nav><div class="nav-inner"><a class="nav-logo" href="/">CronRead</a><div class="nav-links"><a href="/aws-cron-generator/">AWS Cron Generator</a><a href="/aws-rate-expression-generator/">AWS Rate Generator</a><a href="/cron-timezone-converter/">Timezone Converter</a></div></div></nav>
+<main class="wrap">
+<header class="hero">
+<div class="hero-tag">AWS SCHEDULER</div>
+<h1>AWS Scheduler</h1>
+<p class="hero-sub">Build recurring AWS EventBridge schedules with cron or rate expressions. Validate 6-field AWS cron syntax, convert local time to UTC, and get ready-to-use expressions for Lambda, ECS, and other scheduled workloads.</p>
+<div class="cta-row"><a class="cta-btn" href="/aws-cron-generator/">⚡ Generate AWS Cron</a><a class="cta-secondary" href="/blog/aws-eventbridge-cron-examples/">See AWS Cron Examples →</a></div>
+</header>
+<section>
+<h2>How AWS EventBridge scheduling works</h2>
+<p>AWS EventBridge supports two schedule expression types: <code>cron()</code> for calendar-based schedules and <code>rate()</code> for fixed intervals. AWS cron uses six fields: minutes, hours, day-of-month, month, day-of-week, and year.</p>
+<pre>cron(0 9 ? * MON-FRI *)
+
+# 9:00 AM UTC, Monday through Friday
+
+rate(5 minutes)
+
+# Every 5 minutes</pre>
+</section>
+<section>
+<h2>AWS Scheduler tools</h2>
+<ul>
+<li><a href="/aws-cron-generator/">AWS Cron Expression Generator</a> — build and validate 6-field EventBridge cron.</li>
+<li><a href="/aws-rate-expression-generator/">AWS Rate Expression Generator</a> — create fixed-interval rate expressions.</li>
+<li><a href="/cron-validator/">Cron Validator</a> — validate standard 5-field cron when you are not using AWS syntax.</li>
+<li><a href="/cron-timezone-converter/">Cron Timezone Converter</a> — convert a desired local time to UTC.</li>
+<li><a href="/cron-next-run-calculator/">Next Run Calculator</a> — inspect upcoming schedule times.</li>
+</ul>
+</section>
+<section>
+<h2>Common AWS Scheduler examples</h2>
+<div class="table-wrap"><table><thead><tr><th>Schedule</th><th>Expression</th></tr></thead><tbody>
+<tr><td>Every 5 minutes</td><td><code>rate(5 minutes)</code></td></tr>
+<tr><td>Every hour</td><td><code>rate(1 hour)</code></td></tr>
+<tr><td>Every day at midnight UTC</td><td><code>cron(0 0 ? * * *)</code></td></tr>
+<tr><td>Weekdays at 9 AM UTC</td><td><code>cron(0 9 ? * MON-FRI *)</code></td></tr>
+<tr><td>Every Monday at 8 AM UTC</td><td><code>cron(0 8 ? * MON *)</code></td></tr>
+<tr><td>First day of every month</td><td><code>cron(0 0 1 * ? *)</code></td></tr>
+</tbody></table></div>
+</section>
+<section>
+<h2>AWS cron uses UTC</h2>
+<p>EventBridge cron schedules use UTC. If you need a workflow at a local time, convert the target time to UTC before creating the expression. For example, 9:00 AM IST is 03:30 UTC, so a weekday schedule is <code>cron(30 3 ? * MON-FRI *)</code>.</p>
+<p>For regions affected by daylight saving time, review the UTC conversion when the local offset changes.</p>
+</section>
+<section>
+<h2>Why does AWS cron use ?</h2>
+<p>AWS EventBridge requires either day-of-month or day-of-week to be <code>?</code>. This is one of the biggest differences from traditional Linux cron and a common source of validation errors.</p>
+</section>
+<section>
+<h2>AWS cron vs rate expressions</h2>
+<p>Use <code>rate()</code> when you only care about a repeating interval, such as every 5 minutes or every hour. Use <code>cron()</code> when you need a calendar schedule such as weekdays at 9 AM or the first day of each month.</p>
+</section>
+<section>
+<h2>More AWS EventBridge cron help</h2>
+<p>Read the <a href="/blog/aws-eventbridge-cron-expression-guide/">AWS EventBridge cron expression guide</a> or browse <a href="/blog/aws-eventbridge-cron-examples/">20+ AWS EventBridge cron examples</a> before deploying a schedule.</p>
+</section>
+</main>
+<footer>© 2026 CronRead · Free developer tools</footer>
+</body>
+</html>
