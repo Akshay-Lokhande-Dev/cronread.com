@@ -13,6 +13,9 @@
 /kubernetes-cronjob-examples /blog/kubernetes-cronjob-examples 301
 /linux-crontab-examples /blog/linux-crontab-examples 301
 
+# Normalize the legacy .html form used by old structured-data URLs
+/blog/github-actions-cron-examples.html /blog/github-actions-cron-examples 301
+
 # Old thin redirect stub page
 /blog/cron-expression-tester /  302
 
