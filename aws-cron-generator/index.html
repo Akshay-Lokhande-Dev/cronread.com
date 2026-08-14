@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AWS Cron Expression Generator | EventBridge Cron Builder & Validator</title>
+<meta name="description" content="Free AWS EventBridge cron expression generator and validator. Build 6-field AWS cron schedules, check syntax, and understand cron() and rate() expressions.">
+<link rel="canonical" href="https://cronread.com/aws-cron-generator/">
+<meta name="robots" content="index,follow">
+<style>body{font-family:system-ui,sans-serif;max-width:900px;margin:auto;padding:24px;line-height:1.6}input,button{padding:12px;font-size:16px}input{width:min(100%,560px)}button{cursor:pointer;margin:8px 0}code{background:#f2f2f2;padding:3px 6px}.box{padding:18px;border:1px solid #ddd;border-radius:10px;margin:18px 0}.error{color:#b00020}.ok{color:#087a32}</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"AWS Cron Expression Generator","url":"https://cronread.com/aws-cron-generator/","applicationCategory":"DeveloperApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+</head><body>
+<p><a href="/">← CronRead</a></p>
+<h1>AWS EventBridge Cron Expression Generator</h1>
+<p>Generate and validate AWS EventBridge <code>cron()</code> expressions. AWS uses six fields: minutes, hours, day-of-month, month, day-of-week and year.</p>
+<div class="box"><label for="cron"><strong>Enter 6-field AWS cron</strong></label><br><input id="cron" value="0 9 ? * MON-FRI *" aria-label="AWS cron expression"><br><button onclick="validateCron()">Validate AWS Cron</button><p id="result"></p></div>
+<h2>AWS cron examples</h2><ul><li><code>0 9 ? * MON-FRI *</code> — weekdays at 9:00 UTC</li><li><code>0 0 1 * ? *</code> — first day of every month</li><li><code>0 12 ? * MON#1 *</code> — first Monday at noon</li></ul>
+<h2>Cron or rate expression?</h2><p>Use <code>rate(5 minutes)</code> for fixed intervals. Use <code>cron(...)</code> when you need an exact calendar schedule.</p>
+<h2>Important AWS EventBridge rule</h2><p>Day-of-month and day-of-week cannot both be concrete values. Use <code>?</code> in one of those fields when the other field is specified.</p>
+<p>Need standard cron? <a href="/">Use the main CronRead cron generator and explainer</a>. Read more: <a href="/blog/aws-eventbridge-cron-expression-guide/">AWS EventBridge cron guide</a>.</p>
+<script>function validateCron(){const v=document.getElementById('cron').value.trim().replace(/^cron\(|\)$/g,'');const a=v.split(/\s+/),r=document.getElementById('result');if(a.length!==6){r.className='error';r.textContent='Invalid: AWS EventBridge cron requires 6 fields.';return}const dom=a[2],dow=a[4];if(dom!=='?'&&dow!=='?'){r.className='error';r.textContent='Invalid: use ? in either day-of-month or day-of-week.';return}r.className='ok';r.textContent='Valid basic AWS EventBridge cron structure: '+v}</script>
+</body></html>
