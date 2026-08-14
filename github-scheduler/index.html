@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GitHub Scheduler — Free GitHub Actions Cron Scheduler | CronRead</title>
+<meta name="description" content="GitHub Scheduler for recurring tasks. Build GitHub Actions cron schedules, convert local time to UTC, validate expressions, and copy ready-to-use workflow YAML.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://cronread.com/github-scheduler/">
+<link rel="stylesheet" href="/cronread-seo.css">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebApplication",
+  "name":"GitHub Scheduler",
+  "url":"https://cronread.com/github-scheduler/",
+  "description":"Free GitHub Actions scheduler helper for creating, validating and converting cron schedules.",
+  "applicationCategory":"DeveloperApplication",
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}
+}
+</script>
+</head>
+<body>
+<nav><div class="nav-inner"><a class="nav-logo" href="/">CronRead</a><div class="nav-links"><a href="/github-actions-cron-generator/">GitHub Actions Generator</a><a href="/cron-validator/">Cron Validator</a><a href="/cron-timezone-converter/">Timezone Converter</a></div></div></nav>
+<main class="wrap">
+<header class="hero">
+<div class="hero-tag">GITHUB SCHEDULER</div>
+<h1>GitHub Scheduler</h1>
+<p class="hero-sub">Create reliable recurring GitHub Actions schedules with cron. Generate workflow YAML, validate your expression, and convert local times to GitHub's UTC schedule.</p>
+<div class="cta-row"><a class="cta-btn" href="/github-actions-cron-generator/">⚡ Generate GitHub Actions Workflow</a><a class="cta-secondary" href="/blog/github-actions-cron-examples/">See Cron Examples →</a></div>
+</header>
+<section class="card">
+<h2>How GitHub Actions scheduling works</h2>
+<p>GitHub Actions uses a 5-field POSIX-style cron expression in the <code>on.schedule</code> trigger. Scheduled workflows run from the default branch and use UTC.</p>
+<pre>name: Scheduled Task
+
+on:
+  schedule:
+    - cron: '0 9 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  scheduled:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Scheduled task running"</pre>
+</section>
+<section>
+<h2>GitHub Scheduler tools</h2>
+<ul>
+<li><a href="/github-actions-cron-generator/">GitHub Actions Cron Generator</a> — generate ready-to-copy workflow YAML.</li>
+<li><a href="/cron-validator/">Cron Validator</a> — check that your 5-field expression is valid.</li>
+<li><a href="/cron-timezone-converter/">Cron Timezone Converter</a> — convert a desired local time to UTC.</li>
+<li><a href="/cron-next-run-calculator/">Next Run Calculator</a> — see upcoming execution times.</li>
+</ul>
+</section>
+<section>
+<h2>Common GitHub scheduler examples</h2>
+<div class="table-wrap"><table><thead><tr><th>Schedule</th><th>Cron</th></tr></thead><tbody>
+<tr><td>Every 5 minutes</td><td><code>*/5 * * * *</code></td></tr>
+<tr><td>Every hour</td><td><code>0 * * * *</code></td></tr>
+<tr><td>Every day at midnight UTC</td><td><code>0 0 * * *</code></td></tr>
+<tr><td>Weekdays at 9 AM UTC</td><td><code>0 9 * * 1-5</code></td></tr>
+<tr><td>Every Monday at 8 AM UTC</td><td><code>0 8 * * 1</code></td></tr>
+<tr><td>First day of every month</td><td><code>0 0 1 * *</code></td></tr>
+</tbody></table></div>
+</section>
+<section>
+<h2>GitHub Actions cron uses UTC</h2>
+<p>If you want a workflow to run at a local time, convert that time to UTC before writing the schedule. Daylight-saving changes can affect fixed UTC schedules, so review the conversion when your target timezone changes offset.</p>
+<p>For example, 9:00 AM IST is 03:30 UTC, so a weekday schedule can be <code>30 3 * * 1-5</code>.</p>
+</section>
+<section>
+<h2>Why add workflow_dispatch?</h2>
+<p>Keep <code>workflow_dispatch</code> beside the schedule so you can manually run and debug a workflow without waiting for the next scheduled execution.</p>
+</section>
+<section>
+<h2>More GitHub Actions cron help</h2>
+<p>Read the full <a href="/blog/github-actions-cron-examples/">GitHub Actions cron examples guide</a> for workflow templates, UTC examples, troubleshooting and scheduling patterns.</p>
+</section>
+</main>
+<footer>© 2026 CronRead · Free developer tools</footer>
+</body>
+</html>
