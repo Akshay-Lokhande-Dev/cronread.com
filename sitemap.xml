@@ -5,6 +5,7 @@
   <url><loc>https://cronread.com/cron-next-run-calculator/</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://cronread.com/cron-timezone-converter/</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://cronread.com/quartz-cron-validator/</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://cronread.com/aws-scheduler/</loc><lastmod>2026-08-14</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://cronread.com/aws-cron-generator/</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://cronread.com/aws-rate-expression-generator/</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://cronread.com/kubernetes-cronjob-generator/</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
@@ -24,8 +25,8 @@
   <url><loc>https://cronread.com/blog/kubernetes-cronjob-examples/</loc><lastmod>2026-06-02</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://cronread.com/blog/github-actions-cron-examples/</loc><lastmod>2026-08-14</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://cronread.com/blog/crontab-vs-systemd-timer/</loc><lastmod>2026-06-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://cronread.com/blog/aws-eventbridge-cron-expression-guide/</loc><lastmod>2026-06-02</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://cronread.com/blog/aws-eventbridge-cron-examples/</loc><lastmod>2026-06-02</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://cronread.com/blog/aws-eventbridge-cron-expression-guide/</loc><lastmod>2026-08-14</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://cronread.com/blog/aws-eventbridge-cron-examples/</loc><lastmod>2026-08-14</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://cronread.com/blog/cronguru-alternative/</loc><lastmod>2026-06-02</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://cronread.com/about/</loc><lastmod>2026-07-12</lastmod><changefreq>yearly</changefreq><priority>0.5</priority></url>
   <url><loc>https://cronread.com/privacy-policy/</loc><lastmod>2026-07-12</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
